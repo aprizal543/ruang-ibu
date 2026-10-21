@@ -1,5 +1,6 @@
 import { Route, Routes } from 'react-router-dom'
 import HomePage from './pages/HomePage'
+import TherapyPage from './pages/TherapyPage'
 
 function NotBuiltYet() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/" element={<HomePage />} />
+      <Route path="/terapi" element={<TherapyPage />} />
       <Route path="*" element={<NotBuiltYet />} />
     </Routes>
   )

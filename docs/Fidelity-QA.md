@@ -148,3 +148,84 @@ Compared Phase 1.4 first-viewport captures against Phase 1.2 at all three target
 - Clinical material remains in review. This polish adds no therapeutic instruction or efficacy/clinical-validation claim.
 
 No screens 02–08, design tokens, hero, photo, PWA architecture, backend, or medical copy were changed. **Status: APPROVED VISUAL BASELINE v1.0.**
+
+## Phase 2 — Jenis Terapi (Screen 02 only)
+
+**Date:** 21 October 2026
+
+**Scope:** New `/terapi` route only; the Phase 1.4 homepage baseline remains frozen.
+**Status at Phase 2 initial implementation:** placeholders remained a visual-fidelity blocker; see Phase 2B below for integration and updated QA.
+
+### Browser captures
+
+Initial implementation captures were stored in ignored `tmp/` and are not part of the approved archive. Final Phase 2B screenshots and interaction evidence are archived below.
+
+### Implementation and reference comparison
+
+- Added `/terapi` with a centered-title header, 44 x 44 px back/search controls, editorial introduction, four keyboard-operable category filters, four compact therapy rows, empty state, and the unchanged shared six-tab navigation. `Terapi` is active on this route.
+- Reused Phosphor icons verified from the installed package exports: `ArrowLeftIcon`, `MagnifyingGlassIcon`, `XIcon`, `WindIcon`, `MusicNotesIcon`, `FlowerIcon`, `HandHeartIcon`, and `CaretRightIcon`. The shared bottom navigation remains untouched.
+- The search filters both title and description and composes with the selected category. Pressing Escape clears and closes search. The back control navigates to history when available and falls back to Beranda for a direct URL.
+- `/terapi` links to each detail route; the four not-yet-built detail routes still show the honest existing fallback. The homepage CTA route was exercised and opens `/terapi`.
+- The approved homepage screenshot at 390 x 844 was compared to [`home-phase1.4-first-390x844.png`](evidence/approved-homepage-v1.0/home-phase1.4-first-390x844.png). No material homepage difference was found; homepage source, tokens, shared navigation styles, and hero assets were not changed.
+- The heading, palette, list density, row geometry, and bottom navigation follow Screen 02's approved visual. Copy in the intro deliberately avoids the reference mockup's unreviewed efficacy/safety wording and states that materials remain in clinical review. Category metadata is accompanied by a note that categories are not safety recommendations.
+
+### Asset and clinical status at initial implementation
+
+- Asset audit found no licensed therapy thumbnails. No screenshot crop or homepage hero image was reused. All four rows therefore use conspicuous temporary tiles marked "Foto disiapkan"; real thumbnails are still required before visual approval.
+- Added `public/therapy-botanical.svg`, an original hand-authored vector used only as a restrained botanical accent. Its provenance is recorded in `assets/ASSET-LICENSE-MANIFEST.md`. It is a simpler illustration than the botanical artwork in the reference.
+- All four topics and descriptions remain educational prototypes in **peninjauan klinis**. No procedural instructions, efficacy claims, safety guarantees, invented sources, or clinical approval status were added.
+
+### Interaction, accessibility, and technical QA
+
+- Agent Browser verified category behavior: `Hamil` returns 3 topics and `Bersalin` returns 4 based on editorial metadata. The `Hamil` + "musik" combination returns one result; an unmatched query returns the empty state. The visible six-tab bar keeps `Terapi` active.
+- The `/terapi` search input is keyboard-operable and has a programmatic label; Escape dismisses it. The first keyboard Tab reaches the visible-on-focus "Lewati ke konten" link. Search clear uses Phosphor `XIcon`; category controls have 44 px minimum height and header controls are 44 x 44 px.
+- At 375, 390, and 430 px, document and body scroll widths matched the viewport; no horizontal overflow was found. At 375 x 812 the last row bottom is 732 px and fixed navigation begins at 736 px. At 390 x 844 they are 751.6 and 768 px; at 430 x 932 they are 751.6 and 856 px. The footer status can be reached by scrolling and remains above the fixed navigation at document end.
+- Direct navigation to a detail route shows "Halaman ini sedang disiapkan". Opening `/terapi` directly and activating Back safely returns to Beranda. The Beranda "Jelajahi Terapi" link opens the new route.
+- `npm.cmd run typecheck` — passed.
+- `npm.cmd run build` — passed, including the existing Vite PWA `injectManifest` build.
+
+### Anti UI Slop review and remaining differences at initial implementation
+
+- The page follows the reference's editorial intro, category pills, and compact vertical list. It adds no dashboard/bento patterns, e-commerce controls, statistics, testimonials, fake playback, or decorative external assets.
+- The largest remaining difference is the absence of four real, separately licensed therapy photographs. Their placeholders are intentionally explicit and block final visual-fidelity approval.
+- The hand-authored botanical accent is vector-flat and does not match the reference's finer botanical illustration. The approved photos embedded in the mockup were not extracted.
+- Intro copy and wrapping differ from the screenshot by design because the reference wording contains unreviewed clinical promises. All therapy material remains pending clinical review.
+
+No screens 03–08, PWA architecture, backend, design tokens, homepage source, or homepage design were changed.
+
+## Phase 2B — Therapy asset integration and visual QA
+
+**Date:** 21 October 2026
+**Scope:** Selected Pexels photos integrated into the four existing `/terapi` rows; no other screen implemented.
+**Status:** **APPROVED VISUAL BASELINE v1.0** for the Screen 02 layout and selected thumbnail appearance. AI provenance and individual model-release evidence remain **UNVERIFIED**; this approval does not change clinical review status.
+
+### Captures
+
+| Viewport | Approved initial list |
+|---|---|
+| 375 × 812 | [`therapy-375x812.png`](evidence/approved-therapy-v1.0/therapy-375x812.png) |
+| 390 × 844 | [`therapy-390x844.png`](evidence/approved-therapy-v1.0/therapy-390x844.png) |
+| 430 × 932 | [`therapy-430x932.png`](evidence/approved-therapy-v1.0/therapy-430x932.png) |
+
+Interaction evidence: [Hamil filter](evidence/approved-therapy-v1.0/therapy-filter-hamil-390x844.png), [music search](evidence/approved-therapy-v1.0/therapy-search-music-390x844.png), [combined filter and search](evidence/approved-therapy-v1.0/therapy-filter-search-hamil-music-390x844.png), and [empty search](evidence/approved-therapy-v1.0/therapy-empty-390x844.png). Homepage regression screenshot: [390 × 844](evidence/approved-therapy-v1.0/homepage-regression-390x844.png).
+
+### Asset provenance and visual review
+
+- The four official Pexels source pages and license were checked on 21 October 2026. Original JPEGs are retained under `assets/images/therapy/`; 360 × 340 WebP derivatives are served from `public/images/therapy/`. Source URLs, named photographers, license, available metadata, access date, and review status are recorded in `assets/ASSET-LICENSE-MANIFEST.md`.
+- The Pexels license permits website use, subject to its terms. Individual pages identify the photographers and show the selected photos as free to use: [Pavel Danilyuk](https://www.pexels.com/photo/a-pregnant-woman-meditating-7055703/), [Aljona Ovtšinnikova](https://www.pexels.com/photo/steel-luxury-headphones-lying-on-bed-26836541/), [DΛVΞ GΛRCIΛ](https://www.pexels.com/photo/pregnant-woman-relaxing-peacefully-indoors-34318004/), and [Catherine Chechun](https://www.pexels.com/photo/close-up-of-hands-on-pregnant-belly-35711736/). See the [Pexels license](https://www.pexels.com/license/). No page or available metadata establishes AI provenance or individual model-release status; both remain **UNVERIFIED**. These photos are not considered finally approved solely based on license.
+- The four images correspond to their topics and work as small mobile crops. **Relaksasi Otot Ringan and Pijat Pendamping photos are general illustrative imagery, not demonstrations of therapy techniques.** Remaining source-to-master differences: breathing photo does not show the subject's face; music photo is cooler and brighter than the warm reference; relaxation is a close-up rather than the reference pose; massage includes a green garment and visible watch. The botanical accent was shifted and reduced so it no longer competes with intro copy.
+- The duplicate review-status line below the list was removed to keep the final row clear of fixed navigation; review status remains in the intro. No clinical claims or instructions were added. All therapy materials remain pending clinical review.
+
+### Browser and technical QA
+
+- Agent Browser captured the three listed viewport sizes and verified the initial list, Hamil filter, music search, combined filter/search, empty state, Escape behavior, keyboard entry through the skip link, and active Terapi navigation.
+- At 375, 390, and 430 px, document width equals viewport width. The last list row ends at 725.45, 742.63, and 745.67 px respectively; fixed navigation begins at 736, 768, and 856 px. The 375 px page remains scrollable.
+- Homepage first viewport was pixel-compared with the approved 390 × 844 baseline: exact match (mean RGB difference 0; no differing pixels).
+- `npm.cmd run typecheck` — passed (`tsc -b --pretty`).
+- `npm.cmd run build` — passed; Vite and the existing PWA `injectManifest` build completed.
+
+### Approved baseline freeze
+
+- The user approved the Screen 02 visual layout and selected thumbnail appearance. These three screenshots are the permanent v1.0 baseline; the equivalent working captures remain under ignored `tmp/`.
+- The selected photos remain marked **UNVERIFIED** for non-AI origin and individual model-release evidence. Pexels source/license records are preserved in the asset manifest. All therapy content remains pending clinical review.
+- Screen 02 implementation and evidence are ready for the requested Git checkpoint. No other screen is included in this baseline.
