@@ -1,0 +1,49 @@
+/* Ruang Ibu • design tokens v1.0
+ * Colors are approximate reference-derived candidates.
+ * Keep palette/layout locked unless visual QA proves an adjustment is necessary.
+ * Clinical copy may override reference only to avoid false claims.
+ */
+:root {
+  --ri-forest: #124d3d;
+  --ri-forest-pressed: #0b3a2f;
+  --ri-ink: #202b28;
+  --ri-terra: #7b4030;
+  --ri-paper: #f8f4ee;
+  --ri-ivory: #fffbf7;
+  --ri-peach: #f3d9ce;
+  --ri-sage: #aebca7;
+  --ri-moss: #586f5b;
+  --ri-muted: #686a65;
+  --ri-border: #ebe5dd;
+  --ri-danger: #b83e32;
+  --ri-danger-bg: #fce8e3;
+
+  --ri-font-display: 'Fraunces', Georgia, serif;
+  --ri-font-body: 'DM Sans', system-ui, sans-serif;
+  --ri-space-1: 4px;
+  --ri-space-2: 8px;
+  --ri-space-3: 12px;
+  --ri-space-4: 16px;
+  --ri-space-5: 20px;
+  --ri-space-6: 24px;
+  --ri-space-8: 32px;
+  --ri-space-10: 40px;
+  --ri-space-12: 48px;
+  --ri-radius-sm: 12px;
+  --ri-radius-md: 16px;
+  --ri-radius-lg: 24px;
+  --ri-radius-pill: 999px;
+  --ri-page-gutter: 20px;
+  --ri-bottom-nav-height: 76px;
+  --ri-touch-min: 44px;
+}
+@media (min-width: 420px) {
+  :root { --ri-page-gutter: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
