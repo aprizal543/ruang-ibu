@@ -25,7 +25,7 @@ const therapies: Therapy[] = [
   {
     title: 'Teknik Pernapasan',
     description: 'Mengenal perhatian pada napas dan relaksasi.',
-    href: '/terapi/pernapasan-dan-relaksasi',
+    href: '/terapi/teknik-pernapasan',
     categories: ['Hamil', 'Bersalin', 'Relaksasi'],
     image: 'breathing.webp',
   },

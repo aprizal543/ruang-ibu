@@ -1,4 +1,7 @@
 import { Route, Routes } from 'react-router-dom'
+import TherapyDetailPage from './components/therapy/TherapyDetailPage'
+import { therapyArticles } from './content/therapyArticles'
+import { therapyReferences } from './content/therapyReferences'
 import HomePage from './pages/HomePage'
 import TherapyPage from './pages/TherapyPage'
 
@@ -17,6 +20,10 @@ export default function App() {
     <Routes>
       <Route path="/" element={<HomePage />} />
       <Route path="/terapi" element={<TherapyPage />} />
+      <Route
+        path="/terapi/teknik-pernapasan"
+        element={<TherapyDetailPage article={therapyArticles['teknik-pernapasan']} references={therapyReferences} />}
+      />
       <Route path="*" element={<NotBuiltYet />} />
     </Routes>
   )

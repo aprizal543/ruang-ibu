@@ -229,3 +229,271 @@ Interaction evidence: [Hamil filter](evidence/approved-therapy-v1.0/therapy-filt
 - The user approved the Screen 02 visual layout and selected thumbnail appearance. These three screenshots are the permanent v1.0 baseline; the equivalent working captures remain under ignored `tmp/`.
 - The selected photos remain marked **UNVERIFIED** for non-AI origin and individual model-release evidence. Pexels source/license records are preserved in the asset manifest. All therapy content remains pending clinical review.
 - Screen 02 implementation and evidence are ready for the requested Git checkpoint. No other screen is included in this baseline.
+
+## Phase 2.1 — Detail edukasi Teknik Pernapasan
+
+**Date:** 21 October 2026
+**Scope:** `/terapi/teknik-pernapasan` only, using a typed data-driven detail template.
+**Status:** **READY FOR USER VISUAL REVIEW**. Clinical material remains a draft; practice instructions are locked and no clinical approval is recorded.
+
+### Source audit and content governance
+
+- The research material is present in `reference/MATERI-DRAF-v0.2.md`, Article T01, with the bibliography at the end of that document. `docs/Clinical-Review-Log.md` still lists T01 as awaiting review; no reviewer, qualification, review date, or approval was found.
+- The screen uses a bounded summary adapted from the T01 draft. Source-linked context and evidence point to [WHO intrapartum recommendations](https://www.who.int/publications/i/item/9789241550215), [NICE NG235 recommendations 1.6.3–1.6.6](https://www.nice.org.uk/guidance/ng235/chapter/Recommendations), [Cochrane CD009514](https://www.cochrane.org/evidence/CD009514_relaxation-techniques-pain-management-labour), and the [NHS anxiety-in-pregnancy guidance](https://www.nhs.uk/pregnancy/mental-health-in-pregnancy-and-after-the-birth/anxiety-in-pregnancy/). These references were opened and checked on 21 October 2026. The page summarizes scope and limitations; it does not promise outcomes.
+- Metadata is typed and separate from presentation: ID, slug, title, categories, clinical-review state, references, update date, optional approval date, and revision history. T01 is `draft`, with no reviewer or approval date.
+- Step-by-step practice content stays locked unless both the guide and the article's clinical-review state are approved. No steps are present in the current article data. Audio availability is represented separately; because no licensed/recorded audio is available, the page shows text only and renders no player.
+
+### Browser screenshots
+
+Agent Browser captured the initial viewport and full page at each requested size. Fixed navigation remains at its viewport position in a full-page capture; the separate footer captures below show the true scrolled state.
+
+| Viewport | First viewport | Full page | Scrolled footer |
+|---|---|---|---|
+| 375 × 812 | [First](../tmp/fidelity/phase2_1/detail-first-375x812.png) | [Full](../tmp/fidelity/phase2_1/detail-full-375x812.png) | [Footer](../tmp/fidelity/phase2_1/detail-footer-375x812.png) |
+| 390 × 844 | [First](../tmp/fidelity/phase2_1/detail-first-390x844.png) | [Full](../tmp/fidelity/phase2_1/detail-full-390x844.png) | [Footer](../tmp/fidelity/phase2_1/detail-footer-390x844.png) |
+| 430 × 932 | [First](../tmp/fidelity/phase2_1/detail-first-430x932.png) | [Full](../tmp/fidelity/phase2_1/detail-full-430x932.png) | [Footer](../tmp/fidelity/phase2_1/detail-footer-430x932.png) |
+
+Regression captures: [Homepage 390 × 844](../tmp/fidelity/phase2_1/home-regression-390x844.png) and [Jenis Terapi 390 × 844](../tmp/fidelity/phase2_1/catalog-regression-390x844.png). Both were pixel-compared with their approved baselines: dimensions match and mean RGB difference is 0, with no differing pixels. The browser-only scrollbar setting is not application CSS.
+
+### QA results
+
+- Phase 2.1C supersedes the detail-content assertions with a mother-facing section order and source disclosure; the current [Agent Browser content script](../qa/phase2_1c-content.browser.mjs) checks the revised version.
+- The final catalog return link remains above the fixed navigation at all three viewport sizes; the separate footer screenshots show visible space beneath the link.
+- Contrast ratios calculated from the rendered design tokens: body ink/paper **13.33:1**, muted/paper **4.99:1**, forest/paper **8.90:1**, safety red/danger background **4.72:1**, and white/forest button **9.75:1**. These meet WCAG AA text contrast; editorial terra/paper is **7.32:1**.
+- `npm.cmd run typecheck` — passed. `npm.cmd run build` — passed, including the existing PWA `injectManifest` build.
+- Anti UI Slop review: no dashboard cards, bento grid, fabricated metrics, new imagery, or audio controls without audio. The page uses a single-column editorial reading flow with restrained rules and one safety notice.
+
+### Remaining review items
+
+- There is no approved screen crop for a therapy-detail article, so the detail layout follows the approved Design System and Screen 02 header/navigation patterns. The screenshots are ready for visual review, not implied approval.
+- T01's sources and summary are traceable, but the clinical wording—including the safety summary—still requires review by a qualified lecturer or health professional. No practice instruction is exposed; audio remains unavailable.
+- Full-page capture shows the fixed bottom navigation over the captured viewport area by browser design. Use the dedicated footer capture to judge the actual document end and navigation clearance.
+
+No homepage/catalog visual styling, PWA architecture, backend, other detail page, or clinical-review status was changed. No Git commit was created.
+
+## Phase 2.1A — Editorial refinement: Detail Teknik Pernapasan
+
+**Date:** 21 October 2026
+**Scope:** Editorial presentation and citation display for `/terapi/teknik-pernapasan`; no changes to the approved Beranda or catalog.
+**Status:** **READY FOR VISUAL REVIEW**. T01 remains a draft, and its practice guide remains locked.
+
+### UX and copy changes
+
+- The detail header now reads **Detail Terapi**. H1 and both audience categories are unchanged.
+- Added a short, source-linked **Sekilas** summary and a compact two-column text navigation to Pengertian, Bukti ilmiah, Keselamatan, and Referensi. The links are normal anchors with 44 px minimum row height and visible keyboard focus.
+- Removed internal development language (T01 in running copy, source-document version, and displayed revision history) from the reading flow. The article ID, source document, and revision history remain in typed content metadata.
+- Split the evidence summary into shorter paragraphs and simplified the wording while retaining the same scope, evidence certainty, and limitations from the T01 draft and cited sources.
+- Safety copy now uses the 16 px editorial body size for easier phone reading; its existing safety wording remains in review.
+- All revised summary, context, evidence, definition, and safety wording remains **pending clinical review**. No practice steps are exposed, and no new safety or efficacy claim was added.
+
+### Citation and source audit
+
+- Visible citations now follow first-citation order **[1]–[4]**, mapped to original content IDs `S1`, `S2`, `S3`, and `S5`. The source IDs remain unchanged in data; no S4 was invented or inserted.
+- **[1] S1:** WHO, *WHO recommendations: intrapartum care for a positive childbirth experience*, published 7 February 2018. Official page title, year, and URL checked: [WHO source](https://www.who.int/publications/i/item/9789241550215).
+- **[2] S2:** NICE, *Intrapartum care* (NG235), published 29 September 2023 and last updated 9 June 2026. The article cites recommendations 1.6.3 and 1.6.5 only. The official recommendations page is linked; direct retrieval returned 403 in the browsing tool, while NICE's indexed page and official NG235 PDF expose the title, dates, and cited recommendations: [NICE recommendations](https://www.nice.org.uk/guidance/ng235/chapter/Recommendations), [official NG235 PDF](https://www.nice.org.uk/guidance/ng235/resources/intrapartum-care-pdf-%2066143897812933).
+- **[3] S3:** Cochrane, *Relaxation techniques for pain management in labour*, published 28 March 2018. The linked evidence page identifies CD009514 and DOI 10.1002/14651858.CD009514.pub2; the article does not display or add a DOI: [Cochrane source](https://www.cochrane.org/evidence/CD009514_relaxation-techniques-pain-management-labour).
+- **[4] S5:** NHS, *Anxiety in pregnancy*, last reviewed 17 March 2026. The page title, review date, and URL checked: [NHS source](https://www.nhs.uk/pregnancy/mental-health-in-pregnancy-and-after-the-birth/anxiety-in-pregnancy/).
+- Citation links resolve to the matching local source entries; source entries link to their official pages. Source publication/review dates are separate from the app's accessed date (**21 October 2026**).
+
+### Browser evidence
+
+Agent Browser captured the updated detail at all required viewport sizes. As before, fixed navigation is pinned to the viewport in full-page captures; use the footer capture to assess the actual document end.
+
+| Viewport | First viewport | Full page | Scrolled footer |
+|---|---|---|---|
+| 375 × 812 | [First](../tmp/fidelity/phase2_1a/detail-first-375x812.png) | [Full](../tmp/fidelity/phase2_1a/detail-full-375x812.png) | [Footer](../tmp/fidelity/phase2_1a/detail-footer-375x812.png) |
+| 390 × 844 | [First](../tmp/fidelity/phase2_1a/detail-first-390x844.png) | [Full](../tmp/fidelity/phase2_1a/detail-full-390x844.png) | [Footer](../tmp/fidelity/phase2_1a/detail-footer-390x844.png) |
+| 430 × 932 | [First](../tmp/fidelity/phase2_1a/detail-first-430x932.png) | [Full](../tmp/fidelity/phase2_1a/detail-full-430x932.png) | [Footer](../tmp/fidelity/phase2_1a/detail-footer-430x932.png) |
+
+Fresh regression captures: [Beranda](../tmp/fidelity/phase2_1a/home-regression-390x844.png) and [Jenis Terapi](../tmp/fidelity/phase2_1a/catalog-regression-390x844.png). Each matched its approved 390 × 844 baseline exactly (same dimensions, mean RGB difference 0, no differing pixels).
+
+### QA and remaining review
+
+- [Agent Browser acceptance](../qa/phase2_1a-visual.browser.mjs) captured all nine Phase 2.1A detail screenshots and both regression screenshots. The current interaction coverage is maintained in [Phase 2.1C content QA](../qa/phase2_1c-content.browser.mjs).
+- Bottom navigation clearance at the final catalogue link is **40 px** at 375, 390, and 430 px. Scroll width equals the viewport; the article remains scrollable. Focus order reaches the article anchor navigation by keyboard.
+- Contrast remains token-based and unchanged: forest/paper **8.90:1**, terra/paper **7.32:1**, body ink/paper **13.33:1**, muted/paper **4.99:1**, and safety text/background **4.72:1**.
+- `npm.cmd run typecheck` and `npm.cmd run build` both passed after the final screenshot pass; the production build completed the existing PWA `injectManifest` step. The PWA configuration and shared navigation were not changed.
+- No dedicated approved detail-page screenshot exists; the editorial layout is ready for user review, not approved by implication. Full-page fixed-navigation stitching remains a browser-capture limitation. All rewritten clinical wording and the existing safety text await qualified review; article status remains draft.
+
+No homepage/catalog visual styles, design tokens, PWA architecture, other detail page, or clinical-review status were changed. No Git commit was created.
+
+## Phase 2.1B — Patient-friendly content and UX refinement
+
+**Date:** 21 October 2026
+**Scope:** User-facing copy and progressive disclosure on `/terapi/teknik-pernapasan`; no other therapy page.
+**Status:** **READY FOR CONTENT & VISUAL REVIEW.** Article T01 remains `draft` / pending clinical review. The practice guide remains locked. No commit was created.
+
+### Copy and clinical traceability
+
+The heading hierarchy is now question-led while preserving the Phase 2.1A H1 **Teknik Pernapasan**, Detail Terapi header, categories, and shared navigation. The introduction is headed **Mengenal Teknik Pernapasan** and gives a short summary. Evidence uncertainty remains visible in that summary and in the primary research paragraph. A native, keyboard-operable disclosure contains the supporting detail about variation between approaches; the reference list remains visible and numbered [1]–[4].
+
+| Teks lama | Teks baru | Sumber pendukung | Alasan | Perlu review klinis? |
+|---|---|---|---|---|
+| “Untuk persalinan, pernapasan dapat menjadi salah satu pilihan relaksasi sesuai preferensi ibu. Penelitian menggunakan beragam teknik relaksasi dan kepastian buktinya rendah hingga sangat rendah. Karena itu, hasil bagi setiap ibu belum dapat dipastikan.” | “Saat persalinan, teknik pernapasan dapat menjadi salah satu pilihan relaksasi sesuai keinginan Ibu. Penelitian memakai cara yang beragam dan kepastian buktinya rendah hingga sangat rendah. Jadi, hasilnya belum tentu sama bagi setiap orang.” | WHO recommendation 21 [1]; NICE 1.6.3 and 1.6.5 [2]; Cochrane CD009514 [3] | Kalimat lebih langsung dan mempertahankan pilihan ibu, rendah–sangat rendah, serta ketidakpastian hasil. | Ya |
+| Heading “Pengertian”; “Pernapasan untuk relaksasi berarti memperhatikan napas yang terasa nyaman sambil berupaya melepaskan ketegangan tubuh. Bagian ini mengenalkan konsep, bukan latihan yang harus diikuti.” | Heading “Apa itu teknik pernapasan?”; “Teknik pernapasan untuk relaksasi berarti memperhatikan napas yang terasa nyaman sambil berusaha melepas ketegangan tubuh. Penjelasan ini hanya mengenalkan konsep, bukan panduan latihan.” | Draf T01 v0.2, bagian “Apa itu teknik pernapasan untuk relaksasi?” | Mengganti istilah dan frasa formal tanpa menambah hasil atau instruksi praktik. | Ya |
+| Heading “Tujuan dan konteks”; penjelasan formal WHO/NICE dan NHS menyebut “kecocokan untuk kondisi tiap orang”. | Heading “Kapan teknik ini dibahas?”; bagian persalinan kini berbunyi “Untuk persalinan, WHO mencantumkan pernapasan sebagai salah satu pilihan relaksasi bagi ibu hamil sehat yang menginginkan dukungan untuk menghadapi nyeri. NICE juga menyarankan agar pilihan Ibu menggunakan teknik pernapasan dan relaksasi didukung. Rekomendasi ini tidak menjamin hasil yang sama bagi setiap orang.” Bagian kehamilan memakai “Informasi ini bersifat umum dan tidak menilai kondisi pribadi Ibu.” | WHO [1]; NICE [2]; NHS *Anxiety in pregnancy* [4] | Memisahkan konteks persalinan dan kehamilan dengan kalimat pendek; mempertahankan cakupan populasi dan batas individualisasi. | Ya |
+| Dua paragraf di “Bukti ilmiah” menerangkan cakupan Cochrane, variasi, kepastian rendah–sangat rendah, dan tidak adanya satu pola napas terbaik. | Primary: “Tinjauan Cochrane menilai kepastian bukti manfaat teknik relaksasi saat persalinan masih rendah hingga sangat rendah. Hasil penelitian belum cukup pasti untuk memastikan hasil yang sama bagi setiap Ibu.” Disclosure “Apa saja yang diteliti?”: “Tinjauan tersebut mencakup beberapa pendekatan, termasuk pernapasan, visualisasi, yoga, dan musik. Cara yang diteliti beragam, sehingga belum dapat ditentukan satu pola napas yang paling tepat.” | Cochrane CD009514 [3] | Menjaga kualitas dan keterbatasan bukti tetap terlihat; memindahkan rincian variasi metode ke disclosure native. | Ya |
+| “Pengenalan ini bukan latihan mengejan atau menahan kontraksi dan tidak menggantikan penilaian maupun arahan tenaga kesehatan. Artikel ini tidak menilai kondisi pribadi atau menentukan kecocokan suatu kegiatan bagi seseorang.” | “Penjelasan ini bukan latihan mengejan atau menahan kontraksi. Informasi ini tidak menggantikan penilaian atau arahan tenaga kesehatan. Halaman ini tidak dapat menilai kondisi pribadi atau memastikan suatu kegiatan cocok untuk Ibu.” Heading menjadi “Hal yang perlu Ibu perhatikan”. | Draf T01 v0.2, batasan edukasi dan bagian “Hal yang harus diperhatikan” | Memecah larangan dan batas halaman menjadi kalimat lebih mudah dipindai. | Ya |
+| “Panduan langkah demi langkah belum ditampilkan. Materi praktik akan tetap dikunci sampai ditinjau dan disetujui oleh dosen kebidanan atau tenaga kesehatan yang kompeten.” | “Panduan langkah demi langkah belum ditampilkan karena materi masih menunggu peninjauan klinis.” Heading “Panduan praktik — menunggu peninjauan”. | Status T01 pada Clinical Review Log; tidak ada panduan praktik yang disetujui | Menjelaskan status saat ini tanpa menjanjikan waktu atau hasil persetujuan. | Ya, sebelum membuka panduan |
+| “Draf · menunggu telaah klinis” / “Belum ada persetujuan klinis yang tercatat.” | “Materi masih berupa draf” / “Belum ditinjau oleh tenaga kesehatan.” | Status draft T01 pada data artikel dan Clinical Review Log | Menjelaskan status review dengan istilah yang lebih umum, tanpa menaikkan status persetujuan. | Ya, status tetap harus diverifikasi |
+| “Audio pendamping belum tersedia. Tidak ada pemutar audio pada halaman ini.” | Heading “Audio relaksasi — jika tersedia”; “Audio relaksasi belum tersedia.” | Status ketersediaan media pada data artikel; belum ada audio yang tersedia | Menghapus pengulangan sambil tetap jelas bahwa audio belum tersedia; tidak ada player palsu. | Ya, bila materi audio dikembangkan |
+
+### Reference audit
+
+- Local source IDs and display order are unchanged: `S1` WHO [1], `S2` NICE [2], `S3` Cochrane [3], and `S5` NHS [4]. No S4, source, author, result, or DOI was added. Reference titles, dates and URLs remain the values recorded in `src/content/therapyReferences.ts`.
+- The WHO page confirms title and publication date (7 February 2018). Cochrane confirms title, date (28 March 2018), evidence certainty ranging from low to very low, varied approaches, and DOI CD009514.pub2. NHS confirms the title and page review date (17 March 2026), and suggests breathing exercises/meditation to help relax and contacting a GP or midwife when anxiety is persistent. These claims retain the conservative scope in the app.
+- NICE direct page retrieval returned 403 in the web reader. NICE's indexed official recommendations page exposes 1.6.3 (breathing exercises may reduce pain during latent first stage) and 1.6.5 (support the choice to use breathing/relaxation techniques); the app cites these two recommendations without claiming guaranteed benefit. This URL remains clickable in browser QA.
+- All edited clinical language is marked as requiring qualified review. `Clinical-Review-Log.md` remains awaiting review for T01; no reviewer, qualification, or approval date was invented. The article's status is still draft.
+
+### Screenshots and QA
+
+Agent Browser screenshots are in ignored `tmp/fidelity/phase2_1b/`. Full-page captures stitch the fixed navigation at a viewport position; use the separate footer capture to inspect the actual document end.
+
+| Viewport | First viewport | Full page | Scrolled footer |
+|---|---|---|---|
+| 375 × 812 | [First](../tmp/fidelity/phase2_1b/detail-first-375x812.png) | [Full](../tmp/fidelity/phase2_1b/detail-full-375x812.png) | [Footer](../tmp/fidelity/phase2_1b/detail-footer-375x812.png) |
+| 390 × 844 | [First](../tmp/fidelity/phase2_1b/detail-first-390x844.png) | [Full](../tmp/fidelity/phase2_1b/detail-full-390x844.png) | [Footer](../tmp/fidelity/phase2_1b/detail-footer-390x844.png) |
+| 430 × 932 | [First](../tmp/fidelity/phase2_1b/detail-first-430x932.png) | [Full](../tmp/fidelity/phase2_1b/detail-full-430x932.png) | [Footer](../tmp/fidelity/phase2_1b/detail-footer-430x932.png) |
+
+Regression screenshots: [Beranda](../tmp/fidelity/phase2_1b/home-regression-390x844.png) and [Jenis Terapi](../tmp/fidelity/phase2_1b/catalog-regression-390x844.png). Pixel comparison against the approved 390 × 844 baselines found Beranda identical (no differing pixels). Katalog dimensions match; only 2 pixels differ within a 1 × 3 px bounding box at x=20, y=730, with no visible layout or content change. The same small difference appears against the Phase 2.1A catalog capture, so it is treated as capture/rendering variation rather than a regression.
+
+- Phase 2.1B's evidence disclosure is superseded in Phase 2.1C by the concise source disclosure; see the current QA results below.
+- `npm.cmd run typecheck` — passed (`tsc -b --pretty`).
+- `npm.cmd run build` — passed, including Vite production output and PWA `injectManifest`.
+- The native `<details>/<summary>` disclosure is operable with keyboard; heading order and visible anchor navigation remain intact. No shared components, design tokens, homepage, catalog, PWA configuration, or other therapy page changed in this phase.
+
+### Remaining review items
+
+- All user-facing clinical rewrites and the existing safety paragraph still need a qualified clinical review. Plain-language editing is not clinical approval.
+- The research disclosure is collapsed by default, but the low-to-very-low certainty and uncertainty of outcomes remain visible in the summary and primary evidence text. The source list stays open and reachable.
+- The standard full-page screenshot still shows fixed navigation stitched into the captured page; dedicated footer views show the true scroll end and clearance. No material responsive overflow or footer obstruction was found.
+
+No Git commit was created. No therapy other than Teknik Pernapasan was implemented.
+
+## Phase 2.1C — Mother-friendly health education content
+
+**Date:** 22 October 2026
+**Scope:** Content hierarchy and source presentation on `/terapi/teknik-pernapasan`. Visual design direction, header, bottom navigation, typefaces, colors, icons, homepage, and therapy catalog remain unchanged.
+**Status:** **READY FOR CONTENT & VISUAL REVIEW.** T01 remains `draft` / pending clinical review. Practice instructions are locked; there is no audio player. No Git commit was created.
+
+### Final article structure
+
+1. **Mengenal Teknik Pernapasan** — short introduction with a plain statement that individual experience can differ and the option may not fit every condition.
+2. **Apa itu teknik pernapasan?** — simple concept explanation; explicitly not a practice guide.
+3. **Apa tujuannya?** — distinguishes the purpose of offering a relaxation option from any promised outcome.
+4. **Kapan teknik ini dapat dipertimbangkan?** — separates general pregnancy self-care information from labor context without assessing an individual mother.
+5. **Hal yang perlu Ibu perhatikan** — visible safety boundary; not hidden in a disclosure.
+6. **Panduan untuk Ibu** — clear pending-review notice; steps remain locked.
+7. **Audio Pendamping** — states that audio is not available.
+8. **Sumber Informasi** — short source list under a native disclosure, with four direct official links.
+
+### Copy and source mapping
+
+| Teks lama / yang dihapus | Teks final / penyajian baru | Sumber atau data pendukung | Alasan | Perlu review klinis? |
+|---|---|---|---|---|
+| Ringkasan Phase 2.1B menyebut “Penelitian memakai cara yang beragam dan kepastian buktinya rendah hingga sangat rendah.” | “Teknik pernapasan dapat menjadi salah satu pilihan relaksasi saat persalinan. Manfaat yang dirasakan bisa berbeda pada setiap Ibu. Pilihan ini belum tentu sesuai untuk semua kondisi.” | WHO S1, NICE S2, dan Cochrane S3; catatan kualitas bukti internal `T01-E01` | Menghapus istilah akademik dari alur baca, tetap menyampaikan variasi pengalaman dan tidak menjanjikan hasil. | Ya |
+| “Pengertian”; “Teknik pernapasan untuk relaksasi berarti memperhatikan napas yang terasa nyaman sambil berusaha melepas ketegangan tubuh.” | “Apa itu teknik pernapasan?”; “Dalam relaksasi, teknik pernapasan berarti memperhatikan napas yang terasa nyaman. Penjelasan ini mengenalkan konsep saja, bukan panduan latihan.” | Materi draf T01 v0.2; pemetaan lokal `referenceIds: [S1, S2]` | Definisi singkat dan tidak menyatakan hasil terapeutik. | Ya |
+| Tidak ada section tujuan yang berdiri sendiri. | “Teknik ini dibahas sebagai salah satu pilihan untuk membantu Ibu merasa lebih rileks saat persalinan. Tujuannya memberi pilihan sesuai keinginan Ibu; hasil tertentu tidak dapat dijanjikan.” | WHO S1, NICE S2, Cochrane S3; `referenceIds` disimpan pada paragraf | Menjelaskan tujuan pembahasan dan membedakannya dari manfaat yang dijamin. | Ya |
+| “WHO mencantumkan…” / “NICE juga menyarankan…” dan penyebutan NHS dalam narasi. | Kehamilan: “Selama kehamilan, latihan pernapasan dan meditasi disebut sebagai pilihan perawatan diri untuk membantu rileks. Informasi ini bersifat umum dan bukan penilaian terhadap kondisi Ibu. Jika rasa cemas terasa terus-menerus atau mengganggu aktivitas, bicarakan dengan bidan atau dokter.” Persalinan: “Dalam pedoman persalinan, teknik pernapasan tercantum sebagai salah satu pilihan relaksasi bagi ibu hamil sehat yang menginginkan dukungan untuk nyeri. Pilihan dan manfaat yang dirasakan dapat berbeda pada setiap orang.” | NHS S5; WHO S1; NICE S2; Cochrane S3 | Memisahkan konteks, menghindari klaim penggunaan untuk semua kondisi, dan menghilangkan nada laporan sumber dari narasi. | Ya |
+| Section “Apa yang diketahui dari penelitian?” menyebut Cochrane, variasi metode, dan tingkat kepastian rendah hingga sangat rendah. | Tidak ada section penelitian atau rincian metodologi pada halaman pengguna. Rincian dipindahkan ke `internalEvidenceNotes` dalam data artikel. Ketidakpastian disampaikan sederhana pada pengantar: “Manfaat yang dirasakan bisa berbeda pada setiap Ibu” dan “Pilihan ini belum tentu sesuai untuk semua kondisi.” | Cochrane S3; `internalEvidenceNotes` `T01-E01`, certainty `low_to_very_low`, `referenceIds: [S3]` | Mempertahankan kualitas bukti dan hubungan sumber di data internal tanpa membuat halaman terasa seperti jurnal. | Ya |
+| “Penjelasan ini bukan latihan mengejan atau menahan kontraksi. Informasi ini tidak menggantikan penilaian atau arahan tenaga kesehatan. Halaman ini tidak dapat menilai kondisi pribadi…” | “Penjelasan ini bukan latihan mengejan atau menahan kontraksi. Website ini tidak dapat menilai kondisi pribadi Ibu atau memastikan suatu kegiatan cocok untuk Ibu. Informasi ini tidak menggantikan pemeriksaan atau arahan bidan dan dokter.” | Batasan draf T01 dan kebijakan keselamatan proyek | Mempertahankan batas keselamatan dalam bahasa langsung; tetap terlihat sebagai bagian utama. | Ya |
+| “Panduan langkah demi langkah belum ditampilkan karena materi masih menunggu peninjauan klinis.” | Heading “Panduan untuk Ibu”; “Panduan praktik belum tersedia. Materi masih menunggu peninjauan dari dosen kebidanan atau tenaga kesehatan yang kompeten.” | Clinical Review Log; T01 tetap pending | Menyebut siapa yang perlu meninjau tanpa membuka langkah atau menjanjikan waktu persetujuan. | Ya, sebelum panduan dibuka |
+| Sumber tampil dengan nomor sitasi, judul artikel lengkap, dan tanggal akses. | Section **Sumber Informasi** dengan tautan singkat di dalam disclosure “Lihat sumber yang digunakan”; tanpa nomor berulang di paragraf. | Data sumber S1, S2, S3, S5 dipertahankan dengan judul resmi, organisasi, URL, tanggal, dan ID asli. | Membuat sumber mudah dicapai tanpa mendominasi bacaan; klaim tetap terhubung dengan ID referensi pada data. | Ya, verifikasi akhir sebelum publikasi |
+
+### Data and reference governance
+
+- `TherapyParagraph.referenceIds` tetap menyimpan hubungan antara setiap isi dan sumbernya. `internalEvidenceNotes` menyimpan kualitas bukti Cochrane sebagai `low_to_very_low`, rincian cakupan, klaim terkait, dan ID referensi. Catatan ini tidak dirender dalam UI.
+- Judul resmi, organisasi penerbit, tahun, tanggal tinjau, URL, tanggal akses, serta ID S1, S2, S3, dan S5 tetap ada pada data sumber. UI menampilkan label ringkas berbahasa Indonesia; DOI dan nomor sitasi tidak ditambahkan ke narasi.
+- S1 WHO menjelaskan rekomendasi relaksasi untuk ibu hamil sehat yang menginginkan dukungan nyeri saat persalinan. S2 NICE 1.6.3 menyebut kemungkinan pengurangan nyeri kala laten dan 1.6.5 meminta dukungan terhadap pilihan penggunaan teknik napas/relaksasi. S3 Cochrane menyebut kepastian bukti rendah sampai sangat rendah dan variasi cara penggunaan. S5 NHS menyebut latihan napas/meditasi sebagai hal yang dapat dicoba untuk membantu rileks serta menyarankan berbicara dengan bidan atau dokter jika kecemasan menetap. Sumber dibuka kembali pada 22 Oktober 2026: [WHO](https://www.who.int/publications/i/item/9789241550215), [NICE](https://www.nice.org.uk/guidance/ng235/chapter/Recommendations), [Cochrane](https://www.cochrane.org/evidence/CD009514_relaxation-techniques-pain-management-labour), [NHS](https://www.nhs.uk/pregnancy/mental-health-in-pregnancy-and-after-the-birth/anxiety-in-pregnancy/).
+- `Clinical-Review-Log.md` mencatat revision 0.4 sebagai **Awaiting review**. Tidak ada reviewer, tanggal persetujuan, atau status Approved yang ditambahkan.
+
+### Screenshots and QA
+
+Agent Browser captures are in ignored `tmp/fidelity/phase2_1c/`. Fixed navigation appears at a stitched viewport position in full-page captures; the separate footer captures show the actual page end.
+
+| Viewport | First viewport | Full page | Scrolled footer |
+|---|---|---|---|
+| 375 × 812 | [First](../tmp/fidelity/phase2_1c/detail-first-375x812.png) | [Full](../tmp/fidelity/phase2_1c/detail-full-375x812.png) | [Footer](../tmp/fidelity/phase2_1c/detail-footer-375x812.png) |
+| 390 × 844 | [First](../tmp/fidelity/phase2_1c/detail-first-390x844.png) | [Full](../tmp/fidelity/phase2_1c/detail-full-390x844.png) | [Footer](../tmp/fidelity/phase2_1c/detail-footer-390x844.png) |
+| 430 × 932 | [First](../tmp/fidelity/phase2_1c/detail-first-430x932.png) | [Full](../tmp/fidelity/phase2_1c/detail-full-430x932.png) | [Footer](../tmp/fidelity/phase2_1c/detail-footer-430x932.png) |
+
+Regression captures: [Homepage](../tmp/fidelity/phase2_1c/home-regression-390x844.png) and [catalog](../tmp/fidelity/phase2_1c/catalog-regression-390x844.png). Pixel comparison found both images identical to their approved 390 × 844 baseline (no differing pixels). The expanded [source list](../tmp/fidelity/phase2_1c/detail-sources-open-390x844.png) was captured separately.
+
+- `node qa/phase2_1c-content.browser.mjs` — passed: required section order, no academic research section or visible repeated citation numbers, preserved source links, native source disclosure by mouse and keyboard, safe locked practice/audio states, anchors, route/back/fallback behavior, one H1, responsive overflow, scrolling, and bottom navigation clearance (40 px at all three widths).
+- `node qa/phase2_1c-visual.browser.mjs` — passed and captured first, full-page, footer, and Beranda/catalog regression screenshots at the required sizes.
+- `npm.cmd run typecheck` — passed. `npm.cmd run build` — passed, including the existing PWA `injectManifest` build.
+- Visual QA found no material composition change. The source disclosure adds no new palette, card, icon family, or design token.
+
+### Clinical review still required
+
+Every patient-facing clinical rewrite, including the summary, purpose, pregnancy and labor context, and safety paragraph, remains **DRAFT / PENDING CLINICAL REVIEW**. The mother-friendly wording has not been clinically validated. The page includes no breathing steps, frequency, duration, or audio playback. No other therapy detail page was implemented.
+
+No Git commit was created.
+
+### Phase 2.1C — Final copy adjustment (revision 0.5)
+
+Minimal copy-only update to the Teknik Pernapasan article. No UI, layout, typography, token, navigation, or shared component changes were made.
+
+| Area | Previous wording | Final wording | Support and rationale | Clinical review |
+|---|---|---|---|---|
+| Mengenal Teknik Pernapasan | “Manfaat yang dirasakan bisa berbeda pada setiap Ibu.” | “Manfaatnya belum dapat dipastikan dan bisa berbeda pada setiap Ibu.” | WHO notes very-low-certainty beneficial effects; Cochrane rates the evidence from low to very low and describes varied techniques. The sentence states uncertainty plainly without promising an outcome. [WHO](https://iris.who.int/bitstream/handle/10665/260178/9789241550215-eng.pdf), [Cochrane](https://www.cochrane.org/evidence/CD009514_relaxation-techniques-pain-management-labour). | Required; remains DRAFT / PENDING CLINICAL REVIEW. |
+| Kapan teknik ini dapat dipertimbangkan — persalinan | “Dalam pedoman persalinan, teknik pernapasan tercantum sebagai salah satu pilihan relaksasi bagi ibu hamil sehat yang menginginkan dukungan untuk nyeri. Pilihan dan manfaat yang dirasakan dapat berbeda pada setiap orang.” | “Bagi ibu hamil sehat yang menginginkan dukungan untuk menghadapi nyeri saat persalinan, teknik pernapasan dapat menjadi salah satu pilihan relaksasi. Pilihan ini mengikuti keinginan Ibu.” | Plain-language paraphrase retains WHO's healthy-pregnancy/request-for-pain-relief scope and preference condition; NICE supports the woman's choice of breathing and relaxation techniques. It does not present a guaranteed benefit. [WHO](https://www.who.int/publications/i/item/9789241550215), [NICE NG235 1.6.3 and 1.6.5](https://www.nice.org.uk/guidance/ng235/chapter/Recommendations). | Required; remains DRAFT / PENDING CLINICAL REVIEW. |
+
+The article data retains reference IDs `S1`, `S2`, and `S3`; evidence notes are unchanged. Revision history is now 0.5, dated 22 October 2026. `Clinical-Review-Log.md` records this revision as **Awaiting review**; no approval is implied.
+
+Fresh Agent Browser captures (the existing Phase 2.1C files were refreshed after the copy update):
+
+| Viewport | First viewport | Full page | Footer |
+|---|---|---|---|
+| 375 × 812 | [First](../tmp/fidelity/phase2_1c/detail-first-375x812.png) | [Full](../tmp/fidelity/phase2_1c/detail-full-375x812.png) | [Footer](../tmp/fidelity/phase2_1c/detail-footer-375x812.png) |
+| 390 × 844 | [First](../tmp/fidelity/phase2_1c/detail-first-390x844.png) | [Full](../tmp/fidelity/phase2_1c/detail-full-390x844.png) | [Footer](../tmp/fidelity/phase2_1c/detail-footer-390x844.png) |
+| 430 × 932 | [First](../tmp/fidelity/phase2_1c/detail-first-430x932.png) | [Full](../tmp/fidelity/phase2_1c/detail-full-430x932.png) | [Footer](../tmp/fidelity/phase2_1c/detail-footer-430x932.png) |
+
+- `node qa/phase2_1c-content.browser.mjs` — passed, including assertions for the revised benefit and labor wording, source mapping, responsive overflow, keyboard interactions, locked practice/audio, navigation, and 40 px bottom-navigation clearance at all three widths.
+- `node qa/phase2_1c-visual.browser.mjs` — passed and refreshed the detail captures and 390 × 844 homepage/catalog regression captures.
+- Pixel comparison of the refreshed homepage and catalog captures against their approved 390 × 844 baselines found no differing pixels.
+- `npm.cmd run typecheck` — passed. `npm.cmd run build` — passed, including PWA `injectManifest`.
+- No material visual differences were introduced. The revised copy remains subject to clinical review; wording is not clinically approved.
+
+## Phase 2.1 — Final baseline freeze
+
+**Status:** **APPROVED THERAPY DETAIL VISUAL & EDITORIAL BASELINE v1.0**. This approval covers the UI/UX, article structure, and editorial presentation only.
+
+| Area | Frozen status |
+|---|---|
+| UI/UX and editorial presentation | **APPROVED** |
+| Clinical content | **DRAFT / PENDING CLINICAL REVIEW**; revision 0.6 is recorded as Awaiting review in `Clinical-Review-Log.md`. |
+| Practical instructions | **LOCKED** pending qualified clinical review. |
+| Audio | **UNAVAILABLE**; no audio player is rendered. |
+
+The baseline locks the detail header and six-tab bottom navigation, Fraunces and DM Sans typography, approved palette, eight-part article structure, anchor navigation, safety notice, source disclosure, spacing and responsive layout, reusable React template, and clinical-review state handling. Changes to these elements require user approval. The approved Beranda and Jenis Terapi baselines were not modified.
+
+### Reusable template structure
+
+- `TherapyDetailPage.tsx` provides the shared presentation template.
+- `therapyArticles.ts` holds typed article content, clinical state, locked-guide/audio states, evidence notes, and revision history.
+- `therapyReferences.ts` holds source metadata and URLs; paragraphs retain their reference IDs.
+- `therapyContent.types.ts` defines the data contracts. No other therapy detail page is implemented.
+
+### Final copy adjustment
+
+In **Kapan teknik ini dapat dipertimbangkan?**, the labor paragraph ends: “Ibu dapat membicarakan pilihan ini dengan bidan yang mendampingi agar sesuai dengan kondisi dan kebutuhan Ibu.” This is preference-led editorial wording consistent with WHO recommendation 21 and NICE NG235 recommendations 1.1.3, 1.4.1–1.4.2, 1.4.8, and 1.6.5. It does not claim efficacy or replace individualized clinical assessment. The sentence and article remain pending clinical review. [WHO](https://www.who.int/publications/i/item/9789241550215), [NICE NG235](https://www.nice.org.uk/guidance/ng235/chapter/Recommendations).
+
+### Permanent baseline evidence
+
+Agent Browser captures are stored in `docs/evidence/approved-therapy-detail-v1.0/`:
+
+| Viewport | First viewport | Full page | Scrolled footer |
+|---|---|---|---|
+| 375 × 812 | [First](evidence/approved-therapy-detail-v1.0/first-375x812.png) | [Full](evidence/approved-therapy-detail-v1.0/full-375x812.png) | [Footer](evidence/approved-therapy-detail-v1.0/footer-375x812.png) |
+| 390 × 844 | [First](evidence/approved-therapy-detail-v1.0/first-390x844.png) | [Full](evidence/approved-therapy-detail-v1.0/full-390x844.png) | [Footer](evidence/approved-therapy-detail-v1.0/footer-390x844.png) |
+| 430 × 932 | [First](evidence/approved-therapy-detail-v1.0/first-430x932.png) | [Full](evidence/approved-therapy-detail-v1.0/full-430x932.png) | [Footer](evidence/approved-therapy-detail-v1.0/footer-430x932.png) |
+
+Regression captures: [Beranda 390 × 844](evidence/approved-therapy-detail-v1.0/home-regression-390x844.png) and [Jenis Terapi 390 × 844](evidence/approved-therapy-detail-v1.0/catalog-regression-390x844.png). At all article viewports, browser QA covers keyboard access to anchor links and source disclosure, route/back navigation, locked practice/audio, no horizontal overflow, and at least 40 px clearance from the fixed bottom navigation.
+
+- `node qa/phase2_1c-content.browser.mjs` — passed, including final copy and source-linked context assertions.
+- `node qa/phase2_1c-visual.browser.mjs` — passed; captured first, full-page, footer, and homepage/catalog regression states at the required viewport sizes.
+- Homepage and catalog regression screenshots at 390 × 844 match the approved baselines pixel-for-pixel.
+- `npm.cmd run typecheck`, `npm.cmd run build`, and `git diff --check` — passed. Build includes the existing PWA `injectManifest` step.
+
+No clinical content was marked approved. No deployment was performed.
