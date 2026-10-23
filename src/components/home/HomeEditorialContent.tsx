@@ -130,6 +130,7 @@ export default function HomeEditorialContent() {
           <Link to="/tanda-bahaya">Kenali tanda bahaya</Link>
           <Link to="/sumber">Lihat sumber informasi</Link>
           <Link to="/tentang">Tentang</Link>
+          <Link to="/faq">Tanya Jawab</Link>
         </nav>
         <p className="home-safety-footer__brand">© Ruang Ibu</p>
       </footer>

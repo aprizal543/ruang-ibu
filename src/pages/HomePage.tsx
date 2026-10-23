@@ -11,11 +11,16 @@ const benefits = [
   { label: 'Sumber tersedia', Icon: UsersThreeIcon },
 ]
 
-export default function HomePage() {
+interface HomePageProps {
+  menuOpen: boolean
+  onOpenMenu: () => void
+}
+
+export default function HomePage({ menuOpen, onOpenMenu }: HomePageProps) {
   return (
     <div className="home-shell">
       <a className="skip-link sr-only focus:not-sr-only" href="#main-content">Lewati ke konten</a>
-      <Header />
+      <Header menuOpen={menuOpen} onOpenMenu={onOpenMenu} />
 
       <main className="home-main" id="main-content">
         <div className="home-first-screen">

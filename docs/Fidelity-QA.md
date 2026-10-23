@@ -765,3 +765,79 @@ Agent Browser QA checks rendered thumb geometry at 0, 5 and 10 for both sliders,
 Final Agent Browser QA passed at 375 × 812, 390 × 844 and 430 × 932. At 390 × 844, both thumb centers matched the 0/5/10 positions at the minimum, midpoint and maximum. Focus-visible outlines remained present and did not change thumb geometry. Validation, pointer and keyboard input, summary, reset, reload privacy, no answer transmission/storage, horizontal overflow, nav clearance, and approved-route smoke checks passed. The production build and typecheck passed, and `git diff --check` passed.
 
 **Status: PHASE 4 — FINAL EVALUATION UI/UX APPROVED.** Evidence: [unevaluated](evidence/phase-4-final-evaluation/evaluation-empty-390x844.png), [values 0/10](evidence/phase-4-final-evaluation/evaluation-filled-390x844.png), and [summary](evidence/phase-4-final-evaluation/evaluation-summary-390x844.png). Intermediate 0/5/10 captures are ignored temporary QA evidence. No deployment was performed.
+
+## Relaxation Experience redesign — 23 October 2026
+
+Updated only `/relaksasi` and its nested immersive route `/relaksasi/:trackId`, using the approved Screen 05 and Screen 06 compositions. The catalog keeps the editorial botanical introduction, active/inactive filters (Semua, Musik, Suara Alam), three compact illustrated rows, the fixed six-tab navigation, and the existing closed-by-default audio credits disclosure. No breathing collection or new audio was added. The search control filters the current three tracks locally.
+
+The immersive player uses one persistent `<audio>` element owned by the nested route parent. Catalog and player controls share playback state, so returning to the catalog preserves the current source and position; selecting another track uses the same element. Playback starts only after an explicit play action. The player hides the bottom tabs and provides a clear back link, actual media duration/progress, seek, volume, play/pause, and previous/next. Missing media reports an actionable error. Slow background drift and catalog playback bars follow playback state; `prefers-reduced-motion` disables decorative motion. No timer, shuffle, repeat, favorite, or false control was added.
+
+Three Pexels scenery photographs are recorded with source pages, photographers, the Pexels License, file dimensions, derivation crops, and output sizes in `assets/ASSET-LICENSE-MANIFEST.md`. The source pages provide photographic/camera metadata, but AI provenance and individual release evidence are **UNVERIFIED**. They are atmospheric imagery and do not represent therapeutic techniques. Image choice and visual composition remain pending the user's visual review.
+
+Agent Browser QA (`node qa/relaxation-experience.browser.mjs`) covers filters/search/empty state, one audio element, no autoplay, real playback and pause, seek, volume, next-track continuation, browser Back, same-track position retention across catalog/player navigation, media loading/error UI, keyboard seek, reduced motion, closed/open credit disclosure, direct track routes, and mobile layout at 375 × 812, 390 × 844, and 430 × 932. Evidence:
+
+- [Catalog — 390 × 844](evidence/relaxation-redesign/catalog-390x844.png)
+- [Immersive player paused — 390 × 844](evidence/relaxation-redesign/player-paused-390x844.png)
+- [Immersive player playing — 390 × 844](evidence/relaxation-redesign/player-playing-390x844.png)
+- [Catalog with audio playing — 390 × 844](evidence/relaxation-redesign/catalog-playing-390x844.png)
+
+Typecheck, production build, browser QA, `git diff --check`, and route smoke regression for Homepage, Therapy Catalog, Therapy Detail, Pregnancy Guide, Birth Guide, and Evaluation **PASS**. Browser QA confirms real playback advances, pause stops it, seek and volume change the media element, only one audio element exists, the active track resumes across the catalog/player route transition, no autoplay occurs, and no audio files are listed in the generated PWA service-worker precache. The browser used Chromium via Agent Browser; Safari/iOS playback has not been tested. No baseline approval, Git commit, or deployment is implied.
+
+**Status: READY FOR USER VISUAL REVIEW.** The catalog and immersive-player compositions and new Pexels image choices have not yet been approved as a visual baseline.
+
+## Curated relaxation music collection — initial candidate set (historical, 23 October 2026)
+
+Added five candidate instrumentals to the existing catalog/player: *Gymnopédie No. 1*, *The Years Grow Quiet*, *Wholesome*, *Solace*, and *Sleep (Piano Only Mix)*. They remain **candidates pending human listening and user selection**; no subjective listening pass is claimed. Metadata describes instrumental character only and makes no clinical or effectiveness claims. The existing catalog and immersive-player design, shared single audio element, playback controls, categories, search, and artwork system are retained. The music category now contains six tracks; Suara Alam still contains two. The same three already documented Pexels photos are reused as catalog thumbnails/player backgrounds; no new image has been added.
+
+The five source pages and license terms were checked, and source files are retained under `assets/audio/source/`. Four tracks are MP3 derivatives at 192 kbps; *The Years Grow Quiet* uses Wikimedia Commons' MP3 transcode (170 kbps) from the listed CC BY 4.0 FLAC page, with no further re-encode. Tracks are not trimmed. *Gymnopédie No. 1* receives 1 dB gain reduction before encoding to leave additional headroom. FFprobe verified durations: 3:07.09, 4:13.75, 6:03.81, 5:56.36, and 3:04.36. FFmpeg `ebur128` measurements on delivered MP3s reported integrated loudness −21.2, −16.3, −16.7, −14.4, and −14.8 LUFS respectively; true peaks −1.3, −1.2, −2.8, −1.2, and −1.3 dBFS. These are technical checks only and do not verify that a person hears no lyrics, distortion, or abrupt transitions.
+
+Agent Browser evidence for the updated collection is saved in `evidence/relaxation-music-collection/`. QA extends the approved Relaxation player checks to all eight tracks: direct routes, local media metadata and duration, no autoplay, explicit playback/pause for a new track, filters/search, source/license disclosure, one audio element, image loading, seek/volume/previous/next, reduced motion, error state, overflow, fixed navigation clearance at 375×812, 390×844 and 430×932, and smoke regression of approved routes. Safari/iOS playback has not been tested. Audio derivatives remain excluded from PWA precache. No commit or deployment was made.
+
+**Status: READY FOR USER AUDIO AND VISUAL REVIEW.**
+
+### Earlier licensing hold before track replacement (historical, 23 October 2026)
+
+Rechecked Scott Buckley's official track, usage, and licensing pages. Although `Solace` and `Sleep (Piano Only Mix)` have CC BY 4.0 pages and are listed for some website/software uses, the same official terms require synchronization with other media and prohibit resale in isolation and redistribution/reupload to music streaming platforms. Ruang Ibu's standalone, on-demand catalog/player use is not clearly resolved by those terms. Both records now carry internal `NOT_CLEARED_FOR_PUBLIC_RELEASE` status. Their files remain only in this un-deployed candidate branch; do not publish them unless the rights holder clarifies this exact use or replacement music is selected.
+
+Suggested replacements for user review only: Kevin MacLeod's `Avec Soin` and `Friday Morning`. Incompetech identifies both as CC BY 4.0 and its official FAQ explicitly allows streaming-site use with credit. They were not downloaded, integrated, or heard for this check; user choice and listening review remain pending.
+
+Loading audit: catalog mounts one `<audio preload="none">` element without a source. The source is assigned only after an individual track selection; the build's PWA glob includes HTML/JS/CSS/WebP/WOFF2 and excludes MP3. Agent Browser checks verify zero audio resource requests on initial catalog load, exactly one request after selecting the first track, and no MP3 URL in the built service-worker precache. The existing credit disclosure continues to expose each track title, creator, source URL, license URL, original filename, and conversion note. No layout, imagery, player control, filter, or animation changed.
+
+Listening checklist for each of the five new music candidates (Gymnopédie No. 1, The Years Grow Quiet, Wholesome, Solace, Sleep):
+
+- Listen near the beginning, middle, and end.
+- Check that playback volume feels comfortable and consistent; listen for sudden loudness jumps.
+- Note any abrupt changes, distortion, unwanted sounds, or lyrics.
+- Decide whether the overall character fits the intended quiet/restful collection.
+- Record the track, timestamp, issue (if any), and keep/remove recommendation. This is a subjective user review, not a medical assessment.
+
+Typecheck, production build, `git diff --check`, and targeted Agent Browser checks pass. No commit or deployment was made. **Waiting for user selection of the final music collection.**
+
+### Final music replacement QA (23 October 2026)
+
+Replaced only the two Scott Buckley candidates with *Avec Soin* and *Friday Morning* by Kevin MacLeod. Incompetech's exact track pages identify the matching ISRCs (USUAN1100860 and USUAN1100224), source lengths (2:25 and 3:30), creator, and CC BY 4.0 attribution. Its [FAQ](https://incompetech.com/music/royalty-free/faq.html) explicitly allows streaming-site use with credit; the app's closed-by-default but readily discoverable “Kredit dan lisensi audio” disclosure includes title, creator and incompetech.com, track-page link, CC BY 4.0 license link, original filename, and conversion note.
+
+FFprobe confirms the delivered files are MP3 stereo 44.1 kHz / 192 kbps: Avec Soin 145.084 s, 3,483,746 bytes, −16.6 LUFS, LRA 12.6 LU, true peak −0.3 dBFS; Friday Morning 210.312 s, 5,049,251 bytes, −28.5 LUFS, LRA 7.2 LU, true peak −9.3 dBFS. Friday Morning's downloaded embedded cover art was not included in the audio-only derivative. No file was trimmed, remixed, or gain-adjusted. These technical measurements do not replace listening review; human listening for the start, middle, end, volume comfort, abrupt changes, distortion, and suitability remains **PENDING**.
+
+The active collection still has eight tracks (six music, two nature), with total served audio size 32,902,090 bytes. Scott Buckley's Solace and Sleep files were removed from source assets, public assets, and the current build; the old direct routes now show the “Audio tidak ditemukan” fallback with a return link to `/relaksasi`. Their former NOT CLEARED status and rights decision remain documented as historical context only. The existing artwork and all catalog/player layout, controls, filters, backgrounds, and animation remain unchanged. Artist name was added to local search matching.
+
+Updated Agent Browser evidence at 390 × 844:
+
+- [Relaksasi catalog](evidence/relaxation-music-collection/catalog-390x844.png)
+- [Avec Soin immersive player](evidence/relaxation-music-collection/player-avec-soin-390x844.png)
+
+The focused browser QA verifies eight catalog rows, six Musik/two Suara Alam filter counts, title and creator search, credits and license links for all tracks, on-demand-only audio requests, explicit play/pause for each of the five expanded music tracks, valid media metadata, player navigation/seek/volume, no autoplay or duplicate audio element, graceful old Scott route fallback, no MP3 in PWA precache, and layout/nav clearance at 375 × 812, 390 × 844, and 430 × 932. Human listening remains unverified. No commit or deployment was made.
+
+### Website completion sprint — 23 October 2026
+
+Activated the approved homepage hamburger menu and added the About Ruang Ibu, source directory, FAQ, and safety-information routes. The menu follows the approved Screen 08 information hierarchy, keeps all six primary destinations, and closes on route navigation. It locks background scroll, makes the background inert while open, supports Escape and keyboard focus cycling, and restores focus to the menu trigger when dismissed without navigating. About and information pages use the existing editorial type and color tokens, retain the six-tab navigation, and link to relevant existing app routes.
+
+Agent Browser QA passed using Chromium with CSS viewports confirmed at 375 × 812, 390 × 844, 430 × 932, and 1440 × 900. It verified the menu destinations, direct loading of `/tentang`, `/sumber`, `/faq`, and `/tanda-bahaya`, six-tab navigation, homepage footer destinations, keyboard focus behavior, scroll locking, focus restoration, and no horizontal overflow on the homepage or menu. Evidence: [About — 390 × 844](evidence/website-completion/tentang-390x844.png), [menu — 390 × 844](evidence/website-completion/menu-390x844.png), and [menu — 1440 × 900](evidence/website-completion/menu-desktop-1440x900.png). Typecheck, production build, and `git diff --check` pass.
+
+The approved Relaxation catalog, player, and eight-track collection were left unchanged. Audio deep QA was not repeated in this sprint. Human listening remains pending for the collection; note the measured loudness difference between *Avec Soin* (−16.6 LUFS) and *Friday Morning* (−28.5 LUFS) for Final Release QA. No commit or deployment was made.
+
+### Final frontend checkpoint verification — 23 October 2026
+
+Final Agent Browser smoke QA passed for direct loading of all application routes, including the four utility pages and all eight active audio routes. The homepage menu and six-tab navigation passed at 375 × 812, 390 × 844, 430 × 932, 1280 × 720, and 1440 × 900. The menu's scroll container and Tanda Bahaya destination remain reachable at 1280 × 720. Evaluation QA passed for the current comfort/anxiety-only form, validation, summary/reset, and no answer network or persistent-storage use. Audio QA passed for eight listed tracks (six music, two nature), real play/pause, seek, volume, track navigation, no autoplay, single audio element, on-demand loading, credits, and exclusion from PWA precache. Typecheck, production build, and `git diff --check` passed. No deployment was performed.
+
+Items still requiring separate Final Release QA: real Safari/iOS playback; offline PWA behavior on a device; human listening of all eight tracks, including the measured *Avec Soin* (−16.6 LUFS) versus *Friday Morning* (−28.5 LUFS) loudness difference; source/content verification for the Tanda Bahaya page; final license/provenance checks for photographic assets (AI origin and model releases remain unverified where recorded); and a Cloudflare Pages deployment test. These have not been treated as passed or as approval for public release.

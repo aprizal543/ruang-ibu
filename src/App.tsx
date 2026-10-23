@@ -1,3 +1,4 @@
+import { useCallback, useRef, useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
 import TherapyDetailPage from './components/therapy/TherapyDetailPage'
 import { therapyArticles } from './content/therapyArticles'
@@ -5,48 +6,62 @@ import { therapyReferences } from './content/therapyReferences'
 import HomePage from './pages/HomePage'
 import TherapyPage from './pages/TherapyPage'
 import RelaxationPage from './pages/RelaxationPage'
+import ImmersiveAudioPage from './pages/ImmersiveAudioPage'
+import RelaxationExperience from './features/relaxation/RelaxationExperience'
 import PregnancyGuidePage from './pages/PregnancyGuidePage'
 import BirthGuidePage from './pages/BirthGuidePage'
 import EvaluationPage from './pages/EvaluationPage'
-
-function NotBuiltYet() {
-  return (
-    <main className="not-built" aria-labelledby="not-built-title">
-      <h1 id="not-built-title">Halaman ini sedang disiapkan</h1>
-      <p>Untuk saat ini, silakan kembali ke Beranda.</p>
-      <a href="/">Kembali ke Beranda</a>
-    </main>
-  )
-}
+import { AboutPage, FaqPage, NotFoundPage, SafetyPage, SourcesPage } from './pages/InformationPages'
+import SiteMenu from './components/layout/SiteMenu'
 
 export default function App() {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuTriggerRef = useRef<HTMLElement | null>(null)
+
+  const openMenu = useCallback(() => {
+    menuTriggerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    setMenuOpen(true)
+  }, [])
+
+  const closeMenu = useCallback(() => setMenuOpen(false), [])
+
   return (
-    <Routes>
-      <Route path="/" element={<HomePage />} />
-      <Route path="/terapi" element={<TherapyPage />} />
-      <Route path="/relaksasi" element={<RelaxationPage />} />
-      <Route path="/hamil" element={<PregnancyGuidePage />} />
-      <Route path="/bersalin" element={<BirthGuidePage />} />
-      <Route path="/evaluasi" element={<EvaluationPage />} />
-      <Route path="/panduan/hamil" element={<PregnancyGuidePage />} />
-      <Route path="/panduan/bersalin" element={<BirthGuidePage />} />
-      <Route
-        path="/terapi/teknik-pernapasan"
-        element={<TherapyDetailPage article={therapyArticles['teknik-pernapasan']} references={therapyReferences} />}
-      />
-      <Route
-        path="/terapi/terapi-musik"
-        element={<TherapyDetailPage article={therapyArticles['musik-relaksasi']} references={therapyReferences} />}
-      />
-      <Route
-        path="/terapi/relaksasi-otot-ringan"
-        element={<TherapyDetailPage article={therapyArticles['relaksasi-otot-ringan']} references={therapyReferences} />}
-      />
-      <Route
-        path="/terapi/pijat-pendamping"
-        element={<TherapyDetailPage article={therapyArticles['pijat-pendamping-persalinan']} references={therapyReferences} />}
-      />
-      <Route path="*" element={<NotBuiltYet />} />
-    </Routes>
+    <>
+      <Routes>
+        <Route path="/" element={<HomePage menuOpen={menuOpen} onOpenMenu={openMenu} />} />
+        <Route path="/terapi" element={<TherapyPage />} />
+        <Route path="/relaksasi" element={<RelaxationExperience />}>
+          <Route index element={<RelaxationPage />} />
+          <Route path=":trackId" element={<ImmersiveAudioPage />} />
+        </Route>
+        <Route path="/hamil" element={<PregnancyGuidePage />} />
+        <Route path="/bersalin" element={<BirthGuidePage />} />
+        <Route path="/evaluasi" element={<EvaluationPage />} />
+        <Route path="/panduan/hamil" element={<PregnancyGuidePage />} />
+        <Route path="/panduan/bersalin" element={<BirthGuidePage />} />
+        <Route
+          path="/terapi/teknik-pernapasan"
+          element={<TherapyDetailPage article={therapyArticles['teknik-pernapasan']} references={therapyReferences} />}
+        />
+        <Route
+          path="/terapi/terapi-musik"
+          element={<TherapyDetailPage article={therapyArticles['musik-relaksasi']} references={therapyReferences} />}
+        />
+        <Route
+          path="/terapi/relaksasi-otot-ringan"
+          element={<TherapyDetailPage article={therapyArticles['relaksasi-otot-ringan']} references={therapyReferences} />}
+        />
+        <Route
+          path="/terapi/pijat-pendamping"
+          element={<TherapyDetailPage article={therapyArticles['pijat-pendamping-persalinan']} references={therapyReferences} />}
+        />
+        <Route path="/tentang" element={<AboutPage />} />
+        <Route path="/sumber" element={<SourcesPage />} />
+        <Route path="/faq" element={<FaqPage />} />
+        <Route path="/tanda-bahaya" element={<SafetyPage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+      <SiteMenu open={menuOpen} onClose={closeMenu} onNavigate={closeMenu} triggerRef={menuTriggerRef} />
+    </>
   )
 }

@@ -3,6 +3,7 @@ import { mkdirSync, writeFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 
 const origin = process.env.RUANG_IBU_TEST_ORIGIN ?? 'http://127.0.0.1:5174'
+const cdpPort = Number(process.env.RUANG_IBU_CDP ?? 9339)
 const evidenceDir = 'docs/evidence/phase-4-final-evaluation'
 mkdirSync(evidenceDir, { recursive: true })
 const sliderEvidenceDir = 'tmp/fidelity/phase-4-slider-positions'
@@ -35,7 +36,9 @@ function press(key) { browser('press', key) }
 function sliderValue(id) { return Number(evaluate(`document.getElementById("${id}").value`)) }
 function valueText(id) { return evaluate(`document.getElementById("${id}").getAttribute("aria-valuetext")`) }
 async function setViewportViaCdp(width, height, { screenshotPath, expression } = {}) {
-  const targets = await fetch('http://127.0.0.1:9339/json/list').then((response) => response.json())
+  // Keep Agent Browser's mouse-coordinate viewport in sync with CDP emulation.
+  browser('set', 'viewport', String(width), String(height))
+  const targets = await fetch(`http://127.0.0.1:${cdpPort}/json/list`).then((response) => response.json())
   const target = targets.find((item) => item.type === 'page' && item.url.includes('/evaluasi'))
   assert.ok(target, 'Agent Browser has the Evaluation page attached')
   const socket = new WebSocket(target.webSocketDebuggerUrl)
@@ -93,7 +96,7 @@ async function assertThumbAt(id, expected) {
     `${id} thumb should visually sit at ${expected}/10; got ${JSON.stringify(geometry)}`)
 }
 
-browser('connect', '9339')
+browser('connect', String(cdpPort))
 browser('open', origin + '/evaluasi')
 browser('wait', '--load', 'networkidle')
 await setViewportViaCdp(390, 844, { screenshotPath: `${evidenceDir}/evaluation-empty-390x844.png` })

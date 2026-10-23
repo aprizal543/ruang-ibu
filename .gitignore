@@ -12,6 +12,13 @@ test-results/
 # Local agent skill installations are machine tooling, not product source
 .agents/
 
+# Browser automation state, credentials, and local profiles
+.agent-browser/
+.playwright/
+playwright/.auth/
+browser-profiles/
+browser-data/
+
 # Tooling noise
 *.log
 *.log.*
