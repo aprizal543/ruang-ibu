@@ -203,6 +203,28 @@
   line-height: 1.65;
 }
 
+.therapy-detail__source-guide > p {
+  max-width: 44ch;
+  margin: 0 0 11px;
+  color: var(--ri-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+.therapy-detail__source-guide-list {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding-left: 23px;
+  color: var(--ri-ink);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.therapy-detail__source-guide-list li { padding-left: 3px; }
+.therapy-detail__guide-sources { display: inline-flex; gap: 7px; margin-left: 5px; }
+.therapy-detail__guide-sources a,
+.therapy-detail__audio-link { color: var(--ri-forest); font-size: 12px; font-weight: 650; text-underline-offset: 2px; }
+.therapy-detail__audio-link { display: inline-flex; min-height: 44px; align-items: center; margin-top: 6px; }
+
 .therapy-detail__section p + p {
   margin-top: 13px;
 }

@@ -30,23 +30,23 @@ const therapies: Therapy[] = [
     image: 'breathing.webp',
   },
   {
-    title: 'Terapi Musik',
+    title: 'Musik untuk Relaksasi',
     description: 'Mengenal musik dan suara yang terasa menenangkan.',
-    href: '/terapi/musik-relaksasi',
-    categories: ['Hamil', 'Bersalin', 'Relaksasi'],
+    href: '/terapi/terapi-musik',
+    categories: ['Bersalin', 'Relaksasi'],
     image: 'music.webp',
   },
   {
-    title: 'Relaksasi Otot Ringan',
-    description: 'Mengenal cara memperhatikan dan melepas ketegangan.',
+    title: 'Relaksasi Tubuh',
+    description: 'Mengenal perhatian lembut pada rasa nyaman tubuh.',
     href: '/terapi/relaksasi-otot-ringan',
-    categories: ['Hamil', 'Bersalin', 'Relaksasi'],
+    categories: ['Relaksasi'],
     image: 'relaxation.webp',
   },
   {
     title: 'Pijat Pendamping',
     description: 'Mengenal sentuhan dengan persetujuan dan kenyamanan ibu.',
-    href: '/terapi/pijat-pendamping-persalinan',
+    href: '/terapi/pijat-pendamping',
     categories: ['Bersalin'],
     image: 'partner-massage.webp',
   },
@@ -136,7 +136,7 @@ export default function TherapyPage() {
           <img className="therapy-intro__botanical" src="/therapy-botanical.svg" alt="" aria-hidden="true" />
           <div className="therapy-intro__content">
             <h2 id="therapy-heading">Kenali Berbagai Terapi Komplementer</h2>
-            <p>Jelajahi topik edukasi untuk mengenal pilihan terapi komplementer. Seluruh materi masih dalam peninjauan klinis.</p>
+            <p>Kenali pilihan edukasi dan sumber informasinya. Materi ini tidak menggantikan arahan bidan atau dokter.</p>
           </div>
         </section>
 

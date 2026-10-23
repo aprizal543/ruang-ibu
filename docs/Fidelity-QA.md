@@ -497,3 +497,151 @@ Regression captures: [Beranda 390 × 844](evidence/approved-therapy-detail-v1.0/
 - `npm.cmd run typecheck`, `npm.cmd run build`, and `git diff --check` — passed. Build includes the existing PWA `injectManifest` step.
 
 No clinical content was marked approved. No deployment was performed.
+
+## Phase 2.2 — Three additional therapy detail routes
+
+**Implementation status:** ready for user visual review. This phase adds only the detail routes for Terapi Musik, Relaksasi Otot Ringan, and Pijat Pendamping. The shared detail presentation and styling were not materially changed. All three articles are **DRAFT / PENDING CLINICAL REVIEW**; practice guides remain **LOCKED**. Music audio remains **UNAVAILABLE**; the other two articles omit the audio section as not applicable.
+
+### Content audit and scope
+
+| Article | Repository material and identity | Available, source-supported scope | Gaps and status |
+|---|---|---|---|
+| Terapi Musik (T02; source slug `musik-relaksasi`; route `/terapi/terapi-musik`) | Draft T02 in `reference/MATERI-DRAF-v0.2.md`, “Pilih Musik yang Membuat Ibu Nyaman”. Sources WHO S1, NICE S2, and Cochrane S3 are used in the article. | Describes music as an optional preference during labor. The page says the benefit is uncertain and may differ between mothers. | The draft's audio-use suggestions and specific playback guidance are excluded. No verified audio is available. Pregnancy-specific efficacy from the draft's S7 is not presented as a claim for this page. Article and practice guidance await clinical review; practice remains locked. |
+| Relaksasi Otot Ringan (T03; route `/terapi/relaksasi-otot-ringan`) | Draft T03 in `reference/MATERI-DRAF-v0.2.md`, “Melepaskan Ketegangan Otot Secara Lembut”. WHO S1 and Cochrane S3 are mapped in the article. | Introduces progressive muscle relaxation only as a concept and its discussion as a labor relaxation option; it does not assert an individual outcome. The page retains uncertainty and says it cannot determine suitability for a mother's condition. | The draft's movement, body-position, timing, and intensity directions are excluded. No exercise or practice steps are published. Conceptual copy awaits clinical review; practice remains locked. |
+| Pijat Pendamping (T04; source slug `pijat-pendamping-persalinan`; route `/terapi/pijat-pendamping`) | Draft T04 in `reference/MATERI-DRAF-v0.2.md`, “Pijat Pendamping Saat Persalinan…”. WHO S1, NICE S2, Cochrane S4, and NHS S8 are recorded in the article data. | Explains that touch is optional, foregrounds consent and comfort, and frames massage only as a preference-led labor support option. The page does not claim universal safety or a guaranteed effect. | Massage locations, pressure, duration, technique, contraindications, and practice steps are not specified. The page cannot determine which form of touch suits an individual. These details await clinical review; practice remains locked. |
+
+No article is marked **BLOCKED FOR CONTENT** because each has enough traceable material for a limited, conceptual draft page. The omitted practical guidance is separately blocked pending qualified review. No draft is treated as validated.
+
+### Claim-to-source mapping
+
+| Article / content | Source IDs | Use in user-facing content and limits |
+|---|---|---|
+| T02: music as an optional labor preference; no promised reduction in pain or anxiety; benefits may vary | S1 WHO; S2 NICE; S3 Cochrane | S1/S2 support preference-led non-pharmacological options in labor, including music; S3 is retained for internal evidence context and uncertainty. No efficacy promise, individualized recommendation, or audio instruction is rendered. |
+| T03: progressive muscle relaxation as a conceptual labor relaxation option; no claim that it reduces pain or tension for an individual | S1 WHO; S3 Cochrane | S1 provides labor context; S3 informs the uncertainty note internally. Movement instructions and universal suitability claims are omitted. |
+| T04: optional touch/massage in labor; consent and comfort; no universal safety or benefit claim | S1 WHO; S2 NICE; S4 Cochrane; S8 NHS | S1/S2 provide preference-led labor context, including massage. S4 is retained for internal evidence uncertainty. S8 is a general labor pain-relief context link, not support for a specific massage technique. No location, pressure, duration, or technique is published. |
+
+References are linked through the existing structured `referenceIds` metadata. Original source IDs are preserved. S7 from the draft is deliberately not linked to a specific patient-facing T02 efficacy statement because its scope does not justify that statement here. The copy, claims, and source mappings all require qualified clinical review.
+
+### Browser QA evidence
+
+Agent Browser captures are in ignored `tmp/fidelity/phase2_2/`. Each detail page has first viewport, full-page, and scrolled-footer captures for all required viewport sizes:
+
+| Page | 375 × 812 | 390 × 844 | 430 × 932 |
+|---|---|---|---|
+| Terapi Musik | [First](../tmp/fidelity/phase2_2/music-first-375x812.png) · [Full](../tmp/fidelity/phase2_2/music-full-375x812.png) · [Footer](../tmp/fidelity/phase2_2/music-footer-375x812.png) | [First](../tmp/fidelity/phase2_2/music-first-390x844.png) · [Full](../tmp/fidelity/phase2_2/music-full-390x844.png) · [Footer](../tmp/fidelity/phase2_2/music-footer-390x844.png) | [First](../tmp/fidelity/phase2_2/music-first-430x932.png) · [Full](../tmp/fidelity/phase2_2/music-full-430x932.png) · [Footer](../tmp/fidelity/phase2_2/music-footer-430x932.png) |
+| Relaksasi Otot Ringan | [First](../tmp/fidelity/phase2_2/relaksasi-otot-ringan-first-375x812.png) · [Full](../tmp/fidelity/phase2_2/relaksasi-otot-ringan-full-375x812.png) · [Footer](../tmp/fidelity/phase2_2/relaksasi-otot-ringan-footer-375x812.png) | [First](../tmp/fidelity/phase2_2/relaksasi-otot-ringan-first-390x844.png) · [Full](../tmp/fidelity/phase2_2/relaksasi-otot-ringan-full-390x844.png) · [Footer](../tmp/fidelity/phase2_2/relaksasi-otot-ringan-footer-390x844.png) | [First](../tmp/fidelity/phase2_2/relaksasi-otot-ringan-first-430x932.png) · [Full](../tmp/fidelity/phase2_2/relaksasi-otot-ringan-full-430x932.png) · [Footer](../tmp/fidelity/phase2_2/relaksasi-otot-ringan-footer-430x932.png) |
+| Pijat Pendamping | [First](../tmp/fidelity/phase2_2/pijat-pendamping-first-375x812.png) · [Full](../tmp/fidelity/phase2_2/pijat-pendamping-full-375x812.png) · [Footer](../tmp/fidelity/phase2_2/pijat-pendamping-footer-375x812.png) | [First](../tmp/fidelity/phase2_2/pijat-pendamping-first-390x844.png) · [Full](../tmp/fidelity/phase2_2/pijat-pendamping-full-390x844.png) · [Footer](../tmp/fidelity/phase2_2/pijat-pendamping-footer-390x844.png) | [First](../tmp/fidelity/phase2_2/pijat-pendamping-first-430x932.png) · [Full](../tmp/fidelity/phase2_2/pijat-pendamping-full-430x932.png) · [Footer](../tmp/fidelity/phase2_2/pijat-pendamping-footer-430x932.png) |
+
+Separate first/full/footer captures are used because a full-page browser capture can stitch a fixed bottom bar at a viewport coordinate. The footer captures show the real page end and confirm bottom-navigation clearance.
+
+Regression screenshots: [Homepage 375](../tmp/fidelity/phase2_2/home-regression-375x812.png) · [390](../tmp/fidelity/phase2_2/home-regression-390x844.png) · [430](../tmp/fidelity/phase2_2/home-regression-430x932.png); [catalog 375](../tmp/fidelity/phase2_2/catalog-regression-375x812.png) · [390](../tmp/fidelity/phase2_2/catalog-regression-390x844.png) · [430](../tmp/fidelity/phase2_2/catalog-regression-430x932.png); [Technique detail 375](../tmp/fidelity/phase2_2/breathing-regression-375x812.png) · [390](../tmp/fidelity/phase2_2/breathing-regression-390x844.png) · [430](../tmp/fidelity/phase2_2/breathing-regression-430x932.png). All nine regression images matched their corresponding approved baselines pixel-for-pixel (same dimensions; no differing pixel bounding box).
+
+- `node qa/phase2_2-content.browser.mjs` — passed: all three direct routes, catalog links, browser Back and safe back navigation, article-specific references, draft status, locked practice, unavailable music audio, omitted not-applicable audio, keyboard anchor navigation, keyboard source disclosure, unknown-route fallback, horizontal overflow, and bottom-navigation clearance.
+- `node qa/phase2_2-visual.browser.mjs` — passed; captured 27 detail states and 9 baseline regressions at the required viewports.
+- Visual review found no material change to the shared detail template. The three articles retain the approved editorial typography, palette, header, anchor navigation, and fixed six-tab navigation.
+- `npm.cmd run typecheck` — passed.
+- `npm.cmd run build` — passed, including the existing PWA `injectManifest` build.
+- `git diff --check` — passed (Git emitted only its standard LF-to-CRLF working-copy warnings on Windows).
+
+No changes were made to the homepage, catalog layout, existing Teknik Pernapasan content, PWA architecture, or design tokens. No commit or deployment was performed.
+
+## Phase 2.4 — source-verified content integration
+
+**Scope:** evidence-bounded article-data and category-metadata changes for T01–T04 only. Shared presentation, typography, spacing, colors, navigation, images, and PWA behavior were not changed. Existing approved visual baselines were preserved. All content remains DRAFT / PENDING CLINICAL REVIEW; practical guides remain LOCKED; audio remains UNAVAILABLE.
+
+### Browser QA evidence
+
+Screenshots are generated in the ignored working directory `tmp/fidelity/phase2_4/` by `node qa/phase2_4-visual.browser.mjs`:
+
+| Page | 375 × 812 | 390 × 844 | 430 × 932 |
+|---|---|---|---|
+| T01 Teknik Pernapasan — first/full/footer | `teknik-pernapasan-{first,full,footer}-375x812.png` | `teknik-pernapasan-{first,full,footer}-390x844.png` | `teknik-pernapasan-{first,full,footer}-430x932.png` |
+| T02 Terapi Musik — first/full/footer | `terapi-musik-{first,full,footer}-375x812.png` | `terapi-musik-{first,full,footer}-390x844.png` | `terapi-musik-{first,full,footer}-430x932.png` |
+| T03 Relaksasi Otot Ringan — first/full/footer | `relaksasi-otot-ringan-{first,full,footer}-375x812.png` | `relaksasi-otot-ringan-{first,full,footer}-390x844.png` | `relaksasi-otot-ringan-{first,full,footer}-430x932.png` |
+| T04 Pijat Pendamping — first/full/footer | `pijat-pendamping-{first,full,footer}-375x812.png` | `pijat-pendamping-{first,full,footer}-390x844.png` | `pijat-pendamping-{first,full,footer}-430x932.png` |
+| Homepage/catalog regression | `homepage-regression-375x812.png`; `catalog-regression-375x812.png` | `homepage-regression-390x844.png`; `catalog-regression-390x844.png` | `homepage-regression-430x932.png`; `catalog-regression-430x932.png` |
+
+### QA results
+
+- `node qa/phase2_4-content.browser.mjs` — passed: article copy/source links, user-facing review state, locked practice, route navigation tab, anchor count, category metadata/filter results, horizontal overflow, and footer clearance at all three viewports.
+- `node qa/phase2_4-visual.browser.mjs` — captures the first viewport, full page, footer, and homepage/catalog regressions at all required viewports; visual inspection and technical checks are recorded after capture.
+- No article category/status change unlocks a practice guide or claims individual suitability. T03 remains a content-definition blocker.
+
+## Phase 2.2A — final mother-friendly content review
+
+**Scope:** Copy/data refinement for T02, T03, and T04 only. The detail-page layout, typography, colors, routes, category labels, shared components, Homepage, catalog, and Teknik Pernapasan were not changed. The terms and claim/source mappings are recorded in the [Phase 2.2A Clinical Review Log](Clinical-Review-Log.md#phase-22a--final-mother-friendly-copy-review-23-october-2026).
+
+### Copy and source summary
+
+- **T02 Terapi Musik:** clarified that this page covers listening to music chosen by the mother, not a professionally delivered clinical music-therapy service. It does not promise pain relief; benefit remains uncertain. The label `Musik untuk Relaksasi` is only a proposal and was not applied.
+- **T03 Relaksasi Otot Ringan:** clarified that the gentle body-awareness/body-scan variation in the draft is different from progressive muscle relaxation (PMR). The labor evidence for PMR is not presented as evidence for this specific variation. No practice instruction was added.
+- **T04 Pijat Pendamping:** removed institutional narration from the labor context while retaining the mother's choice, right to refuse or stop touch, the requirement that the companion understand a suitable taught technique, and discussion with a midwife.
+- Source mapping remains in article data: S1 WHO, S2 NICE, S3 Cochrane relaxation, S4 Cochrane manual methods, and S8 NHS pain-relief context. The detailed mapping and review-required wording are in the Clinical Review Log. All claims remain draft.
+
+### Screenshots
+
+Agent Browser first viewport, full-page, and scrolled-footer captures are in ignored `tmp/fidelity/phase2_2a/`:
+
+| Viewport | Terapi Musik | Relaksasi Otot Ringan | Pijat Pendamping |
+|---|---|---|---|
+| 375 × 812 | [First](../tmp/fidelity/phase2_2a/music-first-375x812.png) · [Full](../tmp/fidelity/phase2_2a/music-full-375x812.png) · [Footer](../tmp/fidelity/phase2_2a/music-footer-375x812.png) | [First](../tmp/fidelity/phase2_2a/relaksasi-otot-ringan-first-375x812.png) · [Full](../tmp/fidelity/phase2_2a/relaksasi-otot-ringan-full-375x812.png) · [Footer](../tmp/fidelity/phase2_2a/relaksasi-otot-ringan-footer-375x812.png) | [First](../tmp/fidelity/phase2_2a/pijat-pendamping-first-375x812.png) · [Full](../tmp/fidelity/phase2_2a/pijat-pendamping-full-375x812.png) · [Footer](../tmp/fidelity/phase2_2a/pijat-pendamping-footer-375x812.png) |
+| 390 × 844 | [First](../tmp/fidelity/phase2_2a/music-first-390x844.png) · [Full](../tmp/fidelity/phase2_2a/music-full-390x844.png) · [Footer](../tmp/fidelity/phase2_2a/music-footer-390x844.png) | [First](../tmp/fidelity/phase2_2a/relaksasi-otot-ringan-first-390x844.png) · [Full](../tmp/fidelity/phase2_2a/relaksasi-otot-ringan-full-390x844.png) · [Footer](../tmp/fidelity/phase2_2a/relaksasi-otot-ringan-footer-390x844.png) | [First](../tmp/fidelity/phase2_2a/pijat-pendamping-first-390x844.png) · [Full](../tmp/fidelity/phase2_2a/pijat-pendamping-full-390x844.png) · [Footer](../tmp/fidelity/phase2_2a/pijat-pendamping-footer-390x844.png) |
+| 430 × 932 | [First](../tmp/fidelity/phase2_2a/music-first-430x932.png) · [Full](../tmp/fidelity/phase2_2a/music-full-430x932.png) · [Footer](../tmp/fidelity/phase2_2a/music-footer-430x932.png) | [First](../tmp/fidelity/phase2_2a/relaksasi-otot-ringan-first-430x932.png) · [Full](../tmp/fidelity/phase2_2a/relaksasi-otot-ringan-full-430x932.png) · [Footer](../tmp/fidelity/phase2_2a/relaksasi-otot-ringan-footer-430x932.png) | [First](../tmp/fidelity/phase2_2a/pijat-pendamping-first-430x932.png) · [Full](../tmp/fidelity/phase2_2a/pijat-pendamping-full-430x932.png) · [Footer](../tmp/fidelity/phase2_2a/pijat-pendamping-footer-430x932.png) |
+
+Requested 390 × 844 examples: [Terapi Musik first viewport](../tmp/fidelity/phase2_2a/music-first-390x844.png) and [Terapi Musik full page](../tmp/fidelity/phase2_2a/music-full-390x844.png).
+
+### QA results
+
+- `node qa/phase2_2-content.browser.mjs` — passed after updating assertions for term distinction and the revised copy. Direct routes, catalog links, Back navigation, source disclosure, keyboard anchors, draft/locked states, unavailable audio, responsive overflow, and bottom-navigation clearance passed.
+- `node qa/phase2_2-visual.browser.mjs` — passed; 27 new article captures and 9 regression captures saved.
+- Regression images for Homepage, catalog, and Teknik Pernapasan matched approved baseline captures pixel-for-pixel at 375 × 812, 390 × 844, and 430 × 932 (matching dimensions; no differing pixels).
+- `npm.cmd run typecheck` — passed. `npm.cmd run build` — passed, including PWA `injectManifest`. `git diff --check` — passed; Git emitted only Windows LF-to-CRLF working-copy warnings.
+- Visual review found readable copy and intact headings at 375 px; no overflow, anchor, disclosure, locked-guide, or footer-clearance regression was found. Full-page captures stitch the fixed bottom navigation at viewport coordinates, so the separate footer captures remain the source for end-of-page clearance.
+
+### Pending review
+
+All T02/T03/T04 patient-facing changes remain **DRAFT / PENDING CLINICAL REVIEW**. Practical guides stay **LOCKED** and T02 audio stays **UNAVAILABLE**. Category mismatches and recommended corrections are recorded in the Clinical Review Log; catalog labels were not changed. The suggested T02 label change also requires separate editorial approval. No commit was made.
+
+## Phase 2.4 — final verification record (23 October 2026)
+
+`node qa/phase2_4-visual.browser.mjs` completed successfully. It saved 36 article screenshots (first viewport, full page, and scrolled footer for T01–T04 at 375 × 812, 390 × 844, and 430 × 932) plus six homepage/catalog regression screenshots in ignored `tmp/fidelity/phase2_4/`. Visual inspection found no material layout change; homepage and catalog captures match the approved evidence at all three sizes. T01's detail category chip intentionally changes from “Kehamilan trimester III” to the broader “Kehamilan”; shared presentation is unchanged.
+
+`npm.cmd run typecheck`, `npm.cmd run build`, `node qa/phase2_4-content.browser.mjs`, and `git diff --check` all passed. Production build completed the existing PWA `injectManifest` step. Git emitted only standard Windows line-ending warnings. Browser checks covered source links, the native source disclosure opening via keyboard Space, draft/locked states, anchor structure, catalog filters, horizontal overflow, and bottom-navigation footer clearance.
+
+T03 remains a content-definition blocker. All four articles are still DRAFT / PENDING CLINICAL REVIEW, all practice guides remain LOCKED, T02 audio remains UNAVAILABLE, and no commit or deployment was made.
+
+## Phase 2.5 — content, source-based guidance, and audio MVP (23 October 2026)
+
+### Evidence captures
+
+Agent Browser captures and baseline regressions are saved in [`docs/evidence/phase-2.5-review/`](evidence/phase-2.5-review/):
+
+- Full-page T01–T04 at 390 × 844: `t01-breathing-full-390x844.png`, `t02-music-full-390x844.png`, `t03-body-relaxation-full-390x844.png`, `t04-companion-massage-full-390x844.png`.
+- `/relaksasi`: `relaxation-full-390x844.png`; selected player: `relaxation-selected-390x844.png`; active playback: `audio-playing-390x844.png`.
+- Homepage and catalog regression: first viewport `homepage-first-regression-390x844.png`, `therapy-catalog-first-regression-390x844.png`; full captures `homepage-regression-390x844.png`, `therapy-catalog-regression-390x844.png`.
+
+The full-page capture may stitch the fixed bottom navigation at a viewport coordinate. Agent Browser separately scrolled each article/audio page to its end and measured content clearance from the fixed navigation at 375 × 812, 390 × 844, and 430 × 932.
+
+### QA results
+
+- `node qa/phase2_5-audio.browser.mjs` — passed: all four article routes and source-based guidance, source disclosure and guide-source links by keyboard, T01/T02 embedded audio, all three audio files load and play, keyboard play/pause, seek, no autoplay, selecting another track pauses the prior one, active navigation, and no horizontal overflow.
+- `node qa/phase2_5-visual.browser.mjs` — passed: all four articles plus `/relaksasi` at 375, 390, and 430 px; mapped sources, source-based guide presence, horizontal overflow, fixed-navigation footer/credit clearance, and homepage/catalog regression captures.
+- Visual comparison: approved Homepage hero and global navigation remain visually unchanged. Homepage topic names and stale therapy destinations were corrected to the implemented labels/routes; the audio band now correctly says choices are available. Catalog's title and descriptive copy changes are intentional; catalog composition and filters are retained.
+- `npm.cmd run typecheck` — passed. `npm.cmd run build` — passed, including the existing PWA `injectManifest` build. The precache contains 15 entries (629.28 KiB); MP3 files are excluded from precache. No PWA configuration changed.
+- `git diff --check` — passed; Git emitted only standard Windows LF-to-CRLF working-copy warnings.
+
+### Content and media state
+
+- T01, T02, and T04 have bounded `SOURCE_REVIEWED` metadata; T03 remains `DRAFT` because its source scope is limited to grounding/body comfort around emotionally difficult perinatal experiences. Healthier Together returned 403 to direct fetch, although its indexed patient-facing text was available and reviewed.
+- All four `clinicalReview.status` values remain `draft`; none is `CLINICALLY_REVIEWED`. The source-based guides do not certify individual suitability. T03 only offers optional comfort awareness; T04 only offers communication/consent preparation and no massage procedure.
+- Hujan, suara air/alam, and instrumental audio are local playable MP3s. Source originals, creator, duration, license, and derivative details are recorded in the Asset License Manifest. Audio has no guided clinical narration and does not autoplay.
+- No commit or deployment was made.
+
+### Phase 2.5 final MVP checkpoint QA — 23 October 2026
+
+Final targeted changes: the Relaxation page now presents the source title, creator, original source link, license link, and MP3 conversion notice for each recording. The CC BY-SA 4.0 notice is scoped to the rain audio derivative and does not purport to license the whole app. Audio load errors now explain that playback may need an internet connection and tell the reader to reconnect and retry. No shared design tokens, homepage/catalog layout, article structure, or PWA configuration changed.
+
+- `pnpm.cmd typecheck` — PASS; `pnpm.cmd build` — PASS. Production output contains all three MP3 files (5,746,166 bytes total); the generated service worker does not list any audio file for precache. Players use `preload="none"` and do not autoplay.
+- `node qa/phase2_5-audio.browser.mjs` — PASS in Agent Browser/Chromium: three source files load and play; play/pause, keyboard seek and volume, track switching, no autoplay, and a missing-file error state passed. The failure copy includes offline recovery. Actual browser offline emulation and Safari/iOS playback were not available and remain untested.
+- `node qa/phase2_5-visual.browser.mjs` — PASS at 375 × 812, 390 × 844, and 430 × 932 for T01–T04 and `/relaksasi`, including horizontal overflow, source presence, footer clearance, and homepage/catalog regression. Updated evidence captures are in `docs/evidence/phase-2.5-review/`.
+- All audio is ambient/instrumental only. T01/T02/T04 retain `SOURCE_REVIEWED` source status and `DRAFT` clinical status; T03 remains `DRAFT`. No clinical review is claimed.

@@ -14,6 +14,10 @@ export type TherapyClinicalReview =
       approvedAt: string
     }
 
+export type TherapySourceReview =
+  | { status: 'draft' }
+  | { status: 'source_reviewed'; reviewedAt: string }
+
 export interface TherapyReference {
   id: string
   title: string
@@ -38,10 +42,12 @@ export interface TherapyArticleSection {
 
 export type TherapyAudioAvailability =
   | { status: 'unavailable'; message: string }
-  | { status: 'available'; src: string; title: string }
+  | { status: 'not_applicable' }
+  | { status: 'available'; trackId: string }
 
 export type TherapyGuideAvailability =
   | { status: 'locked_pending_review'; message: string }
+  | { status: 'source_based'; note: string; instructions: Array<{ text: string; referenceIds: string[] }> }
   | { status: 'approved'; instructions: string[]; approvedAt: string }
 
 export interface TherapyArticle {
@@ -49,6 +55,7 @@ export interface TherapyArticle {
   slug: string
   title: string
   categories: string[]
+  sourceReview: TherapySourceReview
   clinicalReview: TherapyClinicalReview
   introduction: TherapyParagraph
   sections: TherapyArticleSection[]

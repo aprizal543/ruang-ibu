@@ -8,6 +8,8 @@ import {
 } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
 import BottomTabBar from '../layout/BottomTabBar'
+import AudioPlayer from '../audio/AudioPlayer'
+import { getAudioTrack } from '../../content/audioTracks'
 import type { TherapyArticle, TherapyParagraph, TherapyReference } from '../../content/therapyContent.types'
 import '../../styles/therapy-detail.css'
 
@@ -32,23 +34,20 @@ function ArticleParagraph({ paragraph }: { paragraph: TherapyParagraph }) {
 function ClinicalReviewStatus({ article }: { article: TherapyArticle }) {
   const statusText = article.clinicalReview.status === 'approved'
     ? 'Materi disetujui secara klinis'
-    : article.clinicalReview.status === 'in_review'
-      ? 'Materi sedang ditinjau'
-      : 'Materi masih berupa draf'
+    : article.sourceReview.status === 'source_reviewed'
+      ? 'Informasi edukasi berdasarkan sumber kesehatan'
+      : 'Informasi umum; pilihan dapat berbeda pada setiap Ibu'
 
   return (
-    <aside className="therapy-detail__review-status" aria-label="Status peninjauan materi" role="status">
+    <aside className="therapy-detail__review-status" aria-label="Informasi tentang materi" role="status" data-source-reviewed={article.sourceReview.status === 'source_reviewed' ? '' : undefined}>
       <span className="therapy-detail__status-mark" aria-hidden="true" />
       <div>
         <strong>{statusText}</strong>
         {article.clinicalReview.status === 'approved' && (
           <span>Ditelaah oleh {article.clinicalReview.reviewerName}, {article.clinicalReview.reviewerRole} pada {dateLabel(article.clinicalReview.reviewedAt)}.</span>
         )}
-        {article.clinicalReview.status === 'in_review' && (
-          <span>Peninjauan klinis belum selesai.</span>
-        )}
-        {article.clinicalReview.status === 'draft' && (
-          <span>Belum ditinjau oleh tenaga kesehatan.</span>
+        {article.clinicalReview.status !== 'approved' && (
+          <span>Informasi ini tidak menggantikan pemeriksaan atau arahan tenaga kesehatan.</span>
         )}
       </div>
     </aside>
@@ -80,13 +79,43 @@ function SafetyNotice({ paragraph }: { paragraph: TherapyParagraph }) {
   )
 }
 
-function PracticeGuide({ article }: { article: TherapyArticle }) {
+function PracticeGuide({ article, references }: { article: TherapyArticle; references: Record<string, TherapyReference> }) {
   const guide = article.practiceGuide
   if (guide.status === 'approved' && article.clinicalReview.status === 'approved') {
     return (
       <ol className="therapy-detail__practice-steps">
         {guide.instructions.map((instruction) => <li key={instruction}>{instruction}</li>)}
       </ol>
+    )
+  }
+
+  if (guide.status === 'source_based') {
+    return (
+      <div className="therapy-detail__source-guide" data-source-guide>
+        <p>{guide.note}</p>
+        <ol className="therapy-detail__source-guide-list">
+          {guide.instructions.map((instruction, index) => (
+            <li key={`${article.id}-guide-${index}`}>
+              <span>{instruction.text}</span>
+              {instruction.referenceIds.length > 0 && (
+                <span className="therapy-detail__guide-sources" aria-label="Sumber langkah ini">
+                  {instruction.referenceIds.map((id) => references[id]).filter(Boolean).map((reference) => (
+                    <a
+                      href={`#source-${reference.id}`}
+                      key={reference.id}
+                      aria-label={`Lihat sumber ${reference.displayTitle ?? reference.publisher}`}
+                      onClick={() => {
+                        const disclosure = document.querySelector<HTMLDetailsElement>('[data-source-details]')
+                        if (disclosure) disclosure.open = true
+                      }}
+                    >Sumber</a>
+                  ))}
+                </span>
+              )}
+            </li>
+          ))}
+        </ol>
+      </div>
     )
   }
 
@@ -103,6 +132,8 @@ function PracticeGuide({ article }: { article: TherapyArticle }) {
 }
 
 function AudioCompanion({ audio }: { audio: TherapyArticle['audio'] }) {
+  if (audio.status === 'not_applicable') return null
+
   return (
     <section className="therapy-detail__audio" aria-labelledby="audio-heading">
       <div className="therapy-detail__audio-title">
@@ -110,10 +141,10 @@ function AudioCompanion({ audio }: { audio: TherapyArticle['audio'] }) {
         <h2 id="audio-heading">Audio Pendamping</h2>
       </div>
       {audio.status === 'available' ? (
-        <audio controls preload="none" aria-label={audio.title}>
-          <source src={audio.src} />
-          Browser ini tidak mendukung audio.
-        </audio>
+        <>
+          {getAudioTrack(audio.trackId) && <AudioPlayer track={getAudioTrack(audio.trackId)!} />}
+          <Link className="therapy-detail__audio-link" to="/relaksasi">Lihat pilihan audio lainnya</Link>
+        </>
       ) : (
         <p>{audio.message}</p>
       )}
@@ -179,7 +210,7 @@ export default function TherapyDetailPage({ article, references }: TherapyDetail
             </ul>
             <ClinicalReviewStatus article={article} />
             <section className="therapy-article__summary" aria-labelledby="summary-heading">
-              <h2 id="summary-heading">Mengenal Teknik Pernapasan</h2>
+              <h2 id="summary-heading">Mengenal {article.title}</h2>
               <ArticleParagraph paragraph={article.introduction} />
             </section>
             <nav className="therapy-article__contents" aria-label="Navigasi artikel">
@@ -197,7 +228,7 @@ export default function TherapyDetailPage({ article, references }: TherapyDetail
 
           <section className="therapy-detail__section" aria-labelledby="practice-heading">
             <h2 id="practice-heading">Panduan untuk Ibu</h2>
-            <PracticeGuide article={article} />
+            <PracticeGuide article={article} references={references} />
           </section>
 
           <AudioCompanion audio={article.audio} />

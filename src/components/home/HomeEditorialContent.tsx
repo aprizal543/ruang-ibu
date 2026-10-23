@@ -19,10 +19,10 @@ const guides = [
 ]
 
 const therapies = [
-  { title: 'Teknik Pernapasan', description: 'Mengenal perhatian pada napas dan relaksasi.', href: '/terapi/pernapasan-dan-relaksasi' },
-  { title: 'Terapi Musik', description: 'Mengenal musik dan suara yang terasa menenangkan.', href: '/terapi/musik-relaksasi' },
-  { title: 'Relaksasi Otot Ringan', description: 'Mengenal cara memperhatikan dan melepas ketegangan.', href: '/terapi/relaksasi-otot-ringan' },
-  { title: 'Pijat Pendamping', description: 'Mengenal dukungan sentuhan yang mengutamakan persetujuan dan kenyamanan ibu.', href: '/terapi/pijat-pendamping-persalinan' },
+  { title: 'Teknik Pernapasan', description: 'Mengenal pilihan napas untuk persiapan dan persalinan.', href: '/terapi/teknik-pernapasan' },
+  { title: 'Musik untuk Relaksasi', description: 'Mengenal musik pilihan Ibu sebagai teman suasana.', href: '/terapi/terapi-musik' },
+  { title: 'Relaksasi Tubuh', description: 'Mengenal perhatian lembut pada rasa nyaman tubuh.', href: '/terapi/relaksasi-otot-ringan' },
+  { title: 'Pijat Pendamping', description: 'Mengenal sentuhan dengan persetujuan dan kenyamanan Ibu.', href: '/terapi/pijat-pendamping' },
 ]
 
 function EditorialLink({ to, children, className = '' }: { to: string; children: ReactNode; className?: string }) {
@@ -100,9 +100,9 @@ export default function HomeEditorialContent() {
         <div className="home-audio-band__content">
           <h2 id="ruang-tenang-title">Saat ingin berhenti sejenak.</h2>
           <p>
-            Ruang Ibu dirancang untuk menghadirkan pilihan musik, suara alam, dan narasi relaksasi. Ibu dapat memilih suara yang disukai dan menghentikannya kapan saja.
+            Ruang Ibu menghadirkan pilihan suara alam dan musik instrumental. Ibu dapat memilih audio yang disukai lalu menjeda atau menghentikannya kapan saja.
           </p>
-          <p className="home-audio-band__status">Koleksi audio sedang disiapkan</p>
+          <p className="home-audio-band__status">Pilihan audio tersedia</p>
           <EditorialLink to="/relaksasi">Jelajahi Relaksasi</EditorialLink>
         </div>
       </section>

@@ -27,6 +27,18 @@ Derivative method: centered 360 × 340 px WebP crop, quality 84, Lanczos resampl
 
 The thumbnails are illustrative catalog imagery only. They do not validate the safety, effectiveness, or clinical approval of any therapy. No clinical instruction is conveyed by the images.
 
+## Phase 2.5 — audio selections
+
+Checked and downloaded 2026-10-23. Original files are retained under `assets/audio/source/`; the public MP3s are format-converted derivatives (no remix, added material, or speed change). Durations below are verified from the downloaded source files with ffprobe. MP3 derivatives are deliberately excluded from the PWA precache rules. These recordings are ambient listening only; none contains health advice or guided clinical narration.
+
+| Asset ID | Use | Source original → web derivative | Creator / source page | License and attribution | Verified metadata | Status |
+|---|---|---|---|---|---|---|
+| RI-AUDIO-01 | Hujan lembut | `assets/audio/source/sound-of-light-rainfall.ogg` → `public/audio/soft-rain.mp3` | Mijesty · [Sound of light rainfall](https://commons.wikimedia.org/wiki/File:Sound_of_light_rainfall.ogg) | [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/). Credit “Sound of light rainfall — Mijesty”; link source and license; note MP3 format conversion. Derivative offered under CC BY-SA 4.0. | Ogg Vorbis; 60.26 s; 647,064 bytes; creation metadata 2023-04-27. MP3 723,844 bytes. | Source page/license and downloaded media checked; MP3 plays locally. |
+| RI-AUDIO-02 | Suara air/alam | `assets/audio/source/water-on-rocks.ogg` → `public/audio/water-on-rocks.mp3` | Dsw4 · [Water on Rocks](https://commons.wikimedia.org/wiki/File:Water_on_Rocks.ogg) | [CC BY 3.0](https://creativecommons.org/licenses/by/3.0/). Credit “Water on Rocks — Dsw4”; link source and license; note MP3 format conversion. | Ogg Vorbis; 154.71 s; 3,341,061 bytes. MP3 1,857,350 bytes. | Source page/license and downloaded media checked; MP3 plays locally. |
+| RI-AUDIO-03 | Instrumental ambient | `assets/audio/source/ambient-music-test-yamaha-ck61.flac` → `public/audio/ambient-instrumental.mp3` | Wilfredor · [Ambient music test, Yamaha CK61](https://commons.wikimedia.org/wiki/File:Ambient_music_test,_Yamaha_CK61.flac) | [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/). Attribution not required; courtesy credit “Wilfredor”. | FLAC; 197.75 s; 10,185,435 bytes; source page dates work 2024-02-27. MP3 3,164,972 bytes. | Source page/license and downloaded media checked; MP3 plays locally. |
+
+The Relaxation page exposes each source title, creator, original source link, license link, and the format-conversion note above. The downloaded originals remain unchanged; the website serves MP3 transcodes. The rain recording is distributed as a CC BY-SA 4.0 derivative as a precaution: attribution and the conversion notice are provided, and the same license is linked for that audio. This records terms for the audio file only; it does not apply a ShareAlike license to the application as a whole. Whether format transcoding alone constitutes Adapted Material can depend on the applicable copyright context; this project does not claim a legal determination. See the [CC BY-SA 4.0 legal code](https://creativecommons.org/licenses/by-sa/4.0/legalcode.en), especially its attribution and ShareAlike conditions. The Dsw4 track receives creator/source/license credit under CC BY 3.0; Wilfredor's CC0 credit is courtesy only. No clinical or therapeutic effect is claimed.
+
 Rules:
 - `License/version` cannot be "free from Google" or "found online". Specify license or documented permission.
 - Avoid unsourced audio ripped from social/video platforms.
