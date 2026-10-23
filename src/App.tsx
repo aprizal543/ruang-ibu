@@ -5,6 +5,8 @@ import { therapyReferences } from './content/therapyReferences'
 import HomePage from './pages/HomePage'
 import TherapyPage from './pages/TherapyPage'
 import RelaxationPage from './pages/RelaxationPage'
+import PregnancyGuidePage from './pages/PregnancyGuidePage'
+import BirthGuidePage from './pages/BirthGuidePage'
 
 function NotBuiltYet() {
   return (
@@ -22,6 +24,10 @@ export default function App() {
       <Route path="/" element={<HomePage />} />
       <Route path="/terapi" element={<TherapyPage />} />
       <Route path="/relaksasi" element={<RelaxationPage />} />
+      <Route path="/hamil" element={<PregnancyGuidePage />} />
+      <Route path="/bersalin" element={<BirthGuidePage />} />
+      <Route path="/panduan/hamil" element={<PregnancyGuidePage />} />
+      <Route path="/panduan/bersalin" element={<BirthGuidePage />} />
       <Route
         path="/terapi/teknik-pernapasan"
         element={<TherapyDetailPage article={therapyArticles['teknik-pernapasan']} references={therapyReferences} />}

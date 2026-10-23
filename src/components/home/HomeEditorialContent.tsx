@@ -77,9 +77,8 @@ export default function HomeEditorialContent() {
         title="Kenali pilihan yang terasa sesuai untuk Ibu."
       >
         <p className="home-section-intro">
-          Empat topik edukasi yang sedang disiapkan untuk membantu Ibu memahami berbagai pendekatan pendukung kenyamanan.
+          Jelajahi empat topik edukasi untuk mengenal berbagai pilihan pendukung kenyamanan selama kehamilan dan persalinan.
         </p>
-        <p className="review-status">Materi dalam peninjauan</p>
         <ol className="therapy-list">
           {therapies.map((therapy) => (
             <li className="therapy-entry" key={therapy.href}>
@@ -102,7 +101,6 @@ export default function HomeEditorialContent() {
           <p>
             Ruang Ibu menghadirkan pilihan suara alam dan musik instrumental. Ibu dapat memilih audio yang disukai lalu menjeda atau menghentikannya kapan saja.
           </p>
-          <p className="home-audio-band__status">Pilihan audio tersedia</p>
           <EditorialLink to="/relaksasi">Jelajahi Relaksasi</EditorialLink>
         </div>
       </section>
@@ -128,7 +126,6 @@ export default function HomeEditorialContent() {
             </p>
           </div>
         </div>
-        <p className="home-safety-footer__review">Materi panduan klinis sedang melalui proses peninjauan.</p>
         <nav className="home-safety-footer__links" aria-label="Informasi keselamatan dan sumber">
           <Link to="/tanda-bahaya">Kenali tanda bahaya</Link>
           <Link to="/sumber">Lihat sumber informasi</Link>

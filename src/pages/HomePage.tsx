@@ -8,7 +8,7 @@ import heroImage from '../../assets/images/hero/pexels-hero-mobile.webp'
 const benefits = [
   { label: 'Pilihan edukasi', Icon: LeafIcon },
   { label: 'Mudah dipahami', Icon: HeartIcon },
-  { label: 'Materi dalam peninjauan', Icon: UsersThreeIcon },
+  { label: 'Sumber tersedia', Icon: UsersThreeIcon },
 ]
 
 export default function HomePage() {

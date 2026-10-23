@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import {
   ArrowLeftIcon,
-  BookOpenTextIcon,
   HeadphonesIcon,
   LockKeyIcon,
   WarningCircleIcon,
@@ -11,6 +10,7 @@ import BottomTabBar from '../layout/BottomTabBar'
 import AudioPlayer from '../audio/AudioPlayer'
 import { getAudioTrack } from '../../content/audioTracks'
 import type { TherapyArticle, TherapyParagraph, TherapyReference } from '../../content/therapyContent.types'
+import SourceDisclosure from '../ui/SourceDisclosure'
 import '../../styles/therapy-detail.css'
 
 interface TherapyDetailPageProps {
@@ -18,40 +18,8 @@ interface TherapyDetailPageProps {
   references: Record<string, TherapyReference>
 }
 
-function dateLabel(date: string) {
-  return new Intl.DateTimeFormat('id-ID', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-    timeZone: 'UTC',
-  }).format(new Date(`${date}T00:00:00Z`))
-}
-
 function ArticleParagraph({ paragraph }: { paragraph: TherapyParagraph }) {
   return <p>{paragraph.text}</p>
-}
-
-function ClinicalReviewStatus({ article }: { article: TherapyArticle }) {
-  const statusText = article.clinicalReview.status === 'approved'
-    ? 'Materi disetujui secara klinis'
-    : article.sourceReview.status === 'source_reviewed'
-      ? 'Informasi edukasi berdasarkan sumber kesehatan'
-      : 'Informasi umum; pilihan dapat berbeda pada setiap Ibu'
-
-  return (
-    <aside className="therapy-detail__review-status" aria-label="Informasi tentang materi" role="status" data-source-reviewed={article.sourceReview.status === 'source_reviewed' ? '' : undefined}>
-      <span className="therapy-detail__status-mark" aria-hidden="true" />
-      <div>
-        <strong>{statusText}</strong>
-        {article.clinicalReview.status === 'approved' && (
-          <span>Ditelaah oleh {article.clinicalReview.reviewerName}, {article.clinicalReview.reviewerRole} pada {dateLabel(article.clinicalReview.reviewedAt)}.</span>
-        )}
-        {article.clinicalReview.status !== 'approved' && (
-          <span>Informasi ini tidak menggantikan pemeriksaan atau arahan tenaga kesehatan.</span>
-        )}
-      </div>
-    </aside>
-  )
 }
 
 function ArticleSection({
@@ -79,7 +47,7 @@ function SafetyNotice({ paragraph }: { paragraph: TherapyParagraph }) {
   )
 }
 
-function PracticeGuide({ article, references }: { article: TherapyArticle; references: Record<string, TherapyReference> }) {
+function PracticeGuide({ article }: { article: TherapyArticle }) {
   const guide = article.practiceGuide
   if (guide.status === 'approved' && article.clinicalReview.status === 'approved') {
     return (
@@ -97,21 +65,6 @@ function PracticeGuide({ article, references }: { article: TherapyArticle; refer
           {guide.instructions.map((instruction, index) => (
             <li key={`${article.id}-guide-${index}`}>
               <span>{instruction.text}</span>
-              {instruction.referenceIds.length > 0 && (
-                <span className="therapy-detail__guide-sources" aria-label="Sumber langkah ini">
-                  {instruction.referenceIds.map((id) => references[id]).filter(Boolean).map((reference) => (
-                    <a
-                      href={`#source-${reference.id}`}
-                      key={reference.id}
-                      aria-label={`Lihat sumber ${reference.displayTitle ?? reference.publisher}`}
-                      onClick={() => {
-                        const disclosure = document.querySelector<HTMLDetailsElement>('[data-source-details]')
-                        if (disclosure) disclosure.open = true
-                      }}
-                    >Sumber</a>
-                  ))}
-                </span>
-              )}
             </li>
           ))}
         </ol>
@@ -162,26 +115,18 @@ function ReferenceList({
   const availableReferences = ids.map((id) => references[id]).filter((reference): reference is TherapyReference => Boolean(reference))
 
   return (
-    <section id="section-referensi" className="therapy-detail__section therapy-detail__sources" aria-labelledby="sources-heading">
-      <div className="therapy-detail__section-title">
-        <BookOpenTextIcon size={21} weight="regular" aria-hidden="true" />
-        <h2 id="sources-heading">Sumber Informasi</h2>
-      </div>
-      <details className="therapy-detail__source-disclosure" data-source-details>
-        <summary>Lihat sumber yang digunakan</summary>
-        <ul>
-          {availableReferences.map((reference) => (
-            <li className="therapy-detail__source" id={`source-${reference.id}`} key={reference.id}>
-              <a href={reference.url} target="_blank" rel="noreferrer">{reference.displayTitle ?? reference.publisher}</a>
-              <span>
-                {reference.publisher}
-                {reference.publicationYear ? ` · ${reference.publicationYear}` : ''}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </details>
-    </section>
+    <SourceDisclosure
+      id="section-referensi"
+      className="therapy-detail__sources"
+      sources={availableReferences.map((reference) => ({
+        id: reference.id,
+        title: reference.displayTitle ?? reference.title,
+        publisher: reference.publisher,
+        url: reference.url,
+        metadata: reference.publicationYear ? String(reference.publicationYear) : reference.sourceDateLabel,
+      }))}
+      note="Informasi ini bersifat edukasi dan tidak menggantikan arahan bidan atau dokter."
+    />
   )
 }
 
@@ -208,7 +153,6 @@ export default function TherapyDetailPage({ article, references }: TherapyDetail
             <ul className="therapy-article__categories" aria-label="Kategori materi">
               {article.categories.map((category) => <li key={category}>{category}</li>)}
             </ul>
-            <ClinicalReviewStatus article={article} />
             <section className="therapy-article__summary" aria-labelledby="summary-heading">
               <h2 id="summary-heading">Mengenal {article.title}</h2>
               <ArticleParagraph paragraph={article.introduction} />
@@ -218,7 +162,13 @@ export default function TherapyDetailPage({ article, references }: TherapyDetail
               <a href="#section-tujuan">Apa tujuannya?</a>
               <a href="#section-kapan-dipertimbangkan">Kapan dipertimbangkan?</a>
               <a href="#section-keselamatan">Perhatian</a>
-              <a href="#section-referensi">Sumber</a>
+              <a
+                href="#section-referensi"
+                onClick={() => {
+                  const disclosure = document.querySelector<HTMLDetailsElement>('#section-referensi details')
+                  if (disclosure) disclosure.open = true
+                }}
+              >Sumber</a>
             </nav>
           </header>
 
@@ -228,7 +178,7 @@ export default function TherapyDetailPage({ article, references }: TherapyDetail
 
           <section className="therapy-detail__section" aria-labelledby="practice-heading">
             <h2 id="practice-heading">Panduan untuk Ibu</h2>
-            <PracticeGuide article={article} references={references} />
+            <PracticeGuide article={article} />
           </section>
 
           <AudioCompanion audio={article.audio} />

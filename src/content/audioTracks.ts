@@ -5,6 +5,7 @@ export interface AudioTrack {
   category: 'nature' | 'music'
   src: string
   durationSeconds: number
+  originalFileName: string
   sourceTitle: string
   credit: string
   modification: string
@@ -21,6 +22,7 @@ export const audioTracks: AudioTrack[] = [
     category: 'nature',
     src: '/audio/soft-rain.mp3',
     durationSeconds: 60,
+    originalFileName: 'sound-of-light-rainfall.ogg',
     sourceTitle: 'Sound of light rainfall',
     credit: 'Mijesty',
     modification: 'Konversi format Ogg Vorbis ke MP3; tanpa remix.',
@@ -35,6 +37,7 @@ export const audioTracks: AudioTrack[] = [
     category: 'nature',
     src: '/audio/water-on-rocks.mp3',
     durationSeconds: 155,
+    originalFileName: 'water-on-rocks.ogg',
     sourceTitle: 'Water on Rocks',
     credit: 'Dsw4',
     modification: 'Konversi format Ogg Vorbis ke MP3; tanpa remix.',
@@ -49,6 +52,7 @@ export const audioTracks: AudioTrack[] = [
     category: 'music',
     src: '/audio/ambient-instrumental.mp3',
     durationSeconds: 198,
+    originalFileName: 'ambient-music-test-yamaha-ck61.flac',
     sourceTitle: 'Ambient music test, Yamaha CK61',
     credit: 'Wilfredor',
     modification: 'Konversi format FLAC ke MP3; tanpa remix.',

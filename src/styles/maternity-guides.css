@@ -1,0 +1,275 @@
+.maternity-guide {
+  width: 100%;
+  max-width: 600px;
+  min-height: 100vh;
+  min-height: 100svh;
+  margin: 0 auto;
+  padding-bottom: calc(var(--ri-bottom-nav-height) + env(safe-area-inset-bottom, 0px) + 24px);
+  color: var(--ri-ink);
+  background: var(--ri-paper);
+}
+
+.maternity-guide__skip:focus {
+  position: fixed;
+  z-index: 20;
+  top: 8px;
+  left: 8px;
+  padding: 12px 16px;
+  border-radius: var(--ri-radius-pill);
+  color: var(--ri-paper);
+  background: var(--ri-forest);
+}
+
+.maternity-guide__header {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  height: 68px;
+  grid-template-columns: 44px minmax(0, 1fr) 44px;
+  align-items: center;
+  padding: 0 var(--ri-page-gutter);
+  border-bottom: 1px solid rgba(235, 229, 221, .72);
+  color: var(--ri-ink);
+  background: var(--ri-ivory);
+  font-size: 15px;
+  font-weight: 650;
+  text-align: center;
+}
+
+.maternity-guide__header a {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  place-items: center;
+  border-radius: 50%;
+  color: inherit;
+  text-decoration: none;
+}
+
+.maternity-guide__header a:focus-visible,
+.maternity-guide a:focus-visible {
+  outline: 2px solid var(--ri-terra);
+  outline-offset: 3px;
+}
+
+.maternity-guide__hero {
+  position: relative;
+  display: flex;
+  min-height: 278px;
+  align-items: flex-end;
+  overflow: hidden;
+  margin: 0;
+  padding: 24px var(--ri-page-gutter) 22px;
+  background: var(--ri-peach);
+}
+
+.maternity-guide__hero > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.maternity-guide__hero--pregnancy > img { object-position: 69% 35%; }
+.maternity-guide__hero--birth > img { object-position: center 44%; }
+
+.maternity-guide__hero-wash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(248, 244, 238, .98) 0%, rgba(248, 244, 238, .84) 44%, rgba(248, 244, 238, .17) 100%), linear-gradient(0deg, rgba(248, 244, 238, .74) 0%, rgba(248, 244, 238, 0) 62%);
+}
+
+.maternity-guide__hero--birth .maternity-guide__hero-wash {
+  background: linear-gradient(90deg, rgba(248, 244, 238, .96) 0%, rgba(248, 244, 238, .7) 48%, rgba(248, 244, 238, .1) 100%), linear-gradient(0deg, rgba(248, 244, 238, .9) 0%, rgba(248, 244, 238, 0) 62%);
+}
+
+.maternity-guide__hero-copy {
+  position: relative;
+  z-index: 1;
+  width: min(88%, 355px);
+}
+
+.maternity-guide__eyebrow {
+  display: inline-flex;
+  min-height: 30px;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 5px 12px;
+  border-radius: var(--ri-radius-pill);
+  color: var(--ri-forest);
+  background: rgba(255, 251, 247, .9);
+  font-size: 12px;
+  font-weight: 650;
+}
+
+.maternity-guide__hero h1 {
+  max-width: 360px;
+  margin: 0;
+  color: var(--ri-terra);
+  font-family: var(--ri-font-display);
+  font-size: clamp(32px, 8.7vw, 38px);
+  font-weight: 470;
+  letter-spacing: -.04em;
+  line-height: 1.06;
+}
+
+.maternity-guide__content {
+  padding: 0 var(--ri-page-gutter) 36px;
+}
+
+.maternity-guide__lead {
+  max-width: 43ch;
+  margin: 20px 0 0;
+  color: var(--ri-ink);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.maternity-guide__safety-shortcut {
+  display: inline-flex;
+  min-height: 36px;
+  align-items: center;
+  margin-top: 4px;
+  color: var(--ri-forest);
+  font-size: 13px;
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+
+.maternity-guide__safety-shortcut:focus-visible {
+  outline: 2px solid var(--ri-terra);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.maternity-guide__section {
+  margin-top: 28px;
+  padding-top: 24px;
+  border-top: 1px solid var(--ri-border);
+}
+
+.maternity-guide__section h2 {
+  margin: 0 0 12px;
+  color: var(--ri-terra);
+  font-family: var(--ri-font-display);
+  font-size: 25px;
+  font-weight: 500;
+  letter-spacing: -.025em;
+  line-height: 1.2;
+}
+
+.maternity-guide__paragraph + .maternity-guide__paragraph { margin-top: 15px; }
+
+.maternity-guide__paragraph > p,
+.maternity-guide__safety-copy > p {
+  max-width: 44ch;
+  margin: 0;
+  color: var(--ri-ink);
+  font-size: 16px;
+  line-height: 1.62;
+}
+
+.maternity-guide__related-list {
+  display: grid;
+  gap: 8px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.maternity-guide__related-item {
+  padding: 8px 10px;
+  border-radius: 14px;
+  background: var(--ri-ivory);
+}
+
+.maternity-guide__related-link {
+  display: grid;
+  min-height: 62px;
+  grid-template-columns: 62px minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: 12px;
+  color: var(--ri-ink);
+  text-decoration: none;
+}
+
+.maternity-guide__related-link img {
+  display: block;
+  width: 62px;
+  height: 62px;
+  border-radius: 11px;
+  object-fit: cover;
+}
+
+.maternity-guide__related-copy { display: grid; gap: 4px; }
+.maternity-guide__related-copy strong { font-size: 15px; line-height: 1.3; }
+.maternity-guide__related-copy > span { color: var(--ri-muted); font-size: 13px; line-height: 1.4; }
+.maternity-guide__related-link > svg { color: var(--ri-ink); }
+
+.maternity-guide__audio-callout {
+  display: grid;
+  min-height: 68px;
+  grid-template-columns: 44px minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  color: var(--ri-ink);
+  background: var(--ri-peach);
+  text-decoration: none;
+}
+
+.maternity-guide__audio-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--ri-forest);
+  background: var(--ri-ivory);
+}
+
+.maternity-guide__audio-copy { display: grid; gap: 3px; }
+.maternity-guide__audio-copy strong { color: var(--ri-forest); font-size: 15px; }
+.maternity-guide__audio-copy > span { font-size: 13px; line-height: 1.4; }
+
+.maternity-guide__section--safety { border-top: 0; padding-top: 0; }
+
+.maternity-guide__safety {
+  padding: 17px 17px 16px;
+  border-left: 3px solid var(--ri-danger);
+  border-radius: 0 16px 16px 0;
+  color: var(--ri-danger);
+  background: var(--ri-danger-bg);
+}
+
+.maternity-guide__safety-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+.maternity-guide__safety-heading svg { flex: 0 0 auto; margin-top: 2px; }
+.maternity-guide__safety h2 { margin: 0 0 10px; color: var(--ri-danger); font-size: 23px; }
+.maternity-guide__safety-copy + .maternity-guide__safety-copy { margin-top: 12px; }
+.maternity-guide__safety-copy > p { color: var(--ri-ink); }
+.maternity-guide__safety ul { display: grid; gap: 10px; margin: 12px 0; padding-left: 20px; }
+.maternity-guide__safety li { padding-left: 2px; color: var(--ri-danger); }
+.maternity-guide__safety li > p { margin: 0; color: var(--ri-ink); font-size: 15px; line-height: 1.55; }
+.maternity-guide__sources { margin-top: 30px; }
+.maternity-guide__section[id] { scroll-margin-top: 18px; }
+
+@media (min-width: 430px) {
+  .maternity-guide__hero { min-height: 292px; padding-right: 24px; padding-left: 24px; }
+  .maternity-guide__content { padding-right: 24px; padding-left: 24px; }
+}
+
+@media (max-width: 380px) {
+  .maternity-guide__hero { min-height: 266px; }
+  .maternity-guide__hero h1 { font-size: 32px; }
+  .maternity-guide__related-link { grid-template-columns: 56px minmax(0, 1fr) 20px; gap: 10px; }
+  .maternity-guide__related-link img { width: 56px; height: 56px; }
+  .maternity-guide__related-sources { margin-left: 66px; }
+}

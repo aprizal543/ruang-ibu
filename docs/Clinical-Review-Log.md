@@ -88,3 +88,19 @@ Audio tracks contain no guided clinical speech. They are environmental/instrumen
 ### Phase 2.5 final MVP QA — 23 October 2026
 
 Audio playback QA covered explicit play/pause, keyboard operation, seek, volume range, changing tracks (the prior track pauses), no autoplay, load failure, and the offline recovery message. The browser test used a deliberately missing media URL to exercise the error state; a device-level offline transition was not simulated. The error tells readers to reconnect and retry. No guided health audio or new health claim was added. T01–T04 clinical review statuses are unchanged: T01/T02/T04 remain source-reviewed but clinically draft; T03 remains draft. All article content remains pending professional clinical review; none is presented as clinically approved.
+
+### Phase 3 — maternity guides (23 October 2026)
+
+Two new guides were added with internal clinical state `DRAFT`; this source mapping records bounded educational support and is not clinical approval.
+
+| Guide statement/context | Source mapping | Boundary retained |
+|---|---|---|
+| Writing down birth preferences, discussing place/support choices, and preparing essential items | NHS S17, “What to include in your birth plan”; NHS S18, “Hospital bag checklist” | A birth plan is a discussion aid and may change. Local facility requirements differ. |
+| Comfort during pregnancy and questions about individual circumstances | NHS S19, “Pregnancy symptoms you need to get help for” | No individualized treatment or physical exercise is prescribed. Readers are directed to their own midwife/doctor. |
+| Fetal movement changes and pregnancy warning symptoms | NHS S20, “Your baby's movements”; NHS S19, “Pregnancy symptoms you need to get help for” | Readers are told to contact their maternity care team promptly; NHS contact pathways are not presented as Indonesian pathways. |
+| General signs labor may have started and when to contact the maternity team | NHS S21, “Signs that labour has begun” | Signs vary; the page does not diagnose labor or estimate its timing. Local contact details differ. |
+| Labor comfort choices and companion support | WHO S1, NICE S2, HDFT S6, NHS S17 and S22 | Choices are optional and may not suit every person or circumstance. Touch requires the mother's permission; no massage procedure is taught. |
+| Optional audio link | Product behavior; links to existing ambient/instrumental recordings | No clinical effect is claimed; audio contains no health instructions. |
+| Link to T03 Relaksasi Tubuh | Existing S14 source context | Clearly limited; not described as a validated exercise or universally suitable pregnancy practice. |
+
+All warning content is general education based on UK NHS information. The pages note that local pathways differ and defer to the reader's own maternity team. No new diagnosis criteria, treatment instructions, or efficacy claims were added. Both guides remain `DRAFT / PENDING CLINICAL REVIEW`; practical guidance is limited to preparation and communication, not clinical procedures.

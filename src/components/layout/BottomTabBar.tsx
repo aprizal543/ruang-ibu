@@ -5,8 +5,8 @@ import PregnancyIcon from '../ui/PregnancyIcon'
 const tabs = [
   { label: 'Beranda', to: '/', Icon: HouseIcon },
   { label: 'Terapi', to: '/terapi', Icon: HandHeartIcon },
-  { label: 'Hamil', to: '/panduan/hamil', Icon: PregnancyIcon },
-  { label: 'Bersalin', to: '/panduan/bersalin', Icon: UsersThreeIcon },
+  { label: 'Hamil', to: '/hamil', Icon: PregnancyIcon },
+  { label: 'Bersalin', to: '/bersalin', Icon: UsersThreeIcon },
   { label: 'Relaksasi', to: '/relaksasi', Icon: HeadphonesIcon },
   { label: 'Evaluasi', to: '/evaluasi', Icon: ClipboardTextIcon },
 ]

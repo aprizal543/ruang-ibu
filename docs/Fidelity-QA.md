@@ -645,3 +645,47 @@ Final targeted changes: the Relaxation page now presents the source title, creat
 - `node qa/phase2_5-audio.browser.mjs` — PASS in Agent Browser/Chromium: three source files load and play; play/pause, keyboard seek and volume, track switching, no autoplay, and a missing-file error state passed. The failure copy includes offline recovery. Actual browser offline emulation and Safari/iOS playback were not available and remain untested.
 - `node qa/phase2_5-visual.browser.mjs` — PASS at 375 × 812, 390 × 844, and 430 × 932 for T01–T04 and `/relaksasi`, including horizontal overflow, source presence, footer clearance, and homepage/catalog regression. Updated evidence captures are in `docs/evidence/phase-2.5-review/`.
 - All audio is ambient/instrumental only. T01/T02/T04 retain `SOURCE_REVIEWED` source status and `DRAFT` clinical status; T03 remains `DRAFT`. No clinical review is claimed.
+
+## Phase 3 — maternity guides (23 October 2026)
+
+Implemented `/hamil` and `/bersalin` as source-linked editorial guides using the approved Fraunces/DM Sans, cream/ivory, terracotta, forest-green, and six-tab navigation system. Existing approved routes and shared visual components were not redesigned. `/panduan/hamil` and `/panduan/bersalin` remain working aliases.
+
+### Evidence
+
+Agent Browser captures at 390 × 844 are in [`docs/evidence/phase-3-guides/`](evidence/phase-3-guides/):
+
+- `hamil-first-390x844.png` and `hamil-full-390x844.png`.
+- `bersalin-first-390x844.png` and `bersalin-full-390x844.png`.
+- Approved-route smoke captures: `regression-homepage-390x844.png`, `regression-terapi-390x844.png`, `regression-terapi-teknik-pernapasan-390x844.png`, and `regression-relaksasi-390x844.png`.
+
+Visual inspection found the guide hierarchy readable and consistent with the approved editorial direction. The full-page capture stitches fixed navigation at viewport coordinates; browser QA separately scrolled to the final source entry and verified clearance from the fixed bottom navigation.
+
+### QA
+
+- `node qa/phase3-guides.browser.mjs` — passed at 375 × 812, 390 × 844, and 430 × 932: direct routes and aliases, active Hamil/Bersalin tab, loaded hero images, source links, therapy/audio links, safety-heading association, horizontal overflow, and footer clearance. Browser history and keyboard reachability of skip and back controls were also checked.
+- Approved-page smoke regression — Homepage, catalog, T01 detail, and Relaxation routes render at 390 px without horizontal overflow. Their layout and shared navigation were not modified; bottom-tab destinations for Hamil and Bersalin now point to the implemented routes.
+- `pnpm.cmd typecheck` — passed.
+- `pnpm.cmd build` — passed, including the existing PWA build.
+- `git diff --check` — run after final edits.
+
+### Content status and boundaries
+
+Birth-plan preparation is mapped to NHS S17/S18; labor signs to S21; fetal movement and pregnancy warning symptoms to S19/S20; companion support to S17/S22; labor comfort-choice links to existing WHO/NICE/HDFT sources. The NHS sources are from the UK; care pathways and contact details vary locally, so pages direct readers to their own midwife/facility and do not show UK emergency numbers. The pregnancy comfort section does not prescribe an individual action. T03 is linked with an explicit limitation and is not presented as a validated exercise.
+
+Both new guides carry internal `DRAFT` clinical-review metadata. No content is marked clinically approved. No new practice procedure, diagnostic advice, or clinical efficacy claim was added.
+
+## Phase 3 final presentation cleanup (23 October 2026)
+
+Presentation-only cleanup retained all claim/source IDs, article text, safety information, audio files, player behavior, and internal review metadata. In Detail Terapi, inline practice-source links and the top review banner were removed; one reusable, closed-by-default “Sumber Informasi” disclosure now lists deduplicated article references at the end. The existing “Sumber” anchor opens that disclosure. Maternity guides now use the same disclosure, have no inline source labels or top disclaimer, add a small safety-section shortcut, and omit the visible birth-photo caption. One short educational disclaimer remains at the end beside the source list.
+
+On Beranda, the outdated review status labels were removed, the four-topic copy was updated to describe the available material, and the existing audio CTA remains linked to /relaksasi. The two hero CTAs and hero layout were unchanged.
+
+The Relaxation page now presents a closed-by-default “Kredit dan lisensi audio” disclosure. It includes each original file name, creator, source link, license link/type, and format conversion. The rain audio credit states that ShareAlike terms are recorded for that audio file only, not the whole application. Audio files, player controls, and PWA caching were unchanged.
+
+Agent Browser QA at 375 × 812, 390 × 844, and 430 × 932 checked routes, fixed navigation, overflow, initial closed state, centralized deduplicated references, removed labels/captions, safety links, anchor navigation, keyboard disclosure operation, footer clearance with disclosures expanded, and existing audio play/pause. Seven key 390 × 844 captures are in docs/evidence/phase-3-final-cleanup/: Beranda, Detail Terapi, an open source disclosure, Hamil, Bersalin, Relaksasi, and an open audio credits disclosure. Regression captures include the Homepage, therapy catalog, detail therapy, and Relaxation page.
+
+- Phase 3 final cleanup Agent Browser script — PASS at all three requested viewports; includes footer clearance with source and audio disclosures open.
+- Typecheck — PASS. Production build — PASS, including the existing PWA build.
+- git diff --check — PASS; Git emitted only the repository's Windows LF-to-CRLF working-copy warnings.
+
+Internal content review statuses are unchanged: T01/T02/T04 SOURCE_REVIEWED, T03 DRAFT; no article is marked CLINICALLY_REVIEWED. Safety copy and T03 limitations remain in place.
