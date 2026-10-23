@@ -104,3 +104,17 @@ Two new guides were added with internal clinical state `DRAFT`; this source mapp
 | Link to T03 Relaksasi Tubuh | Existing S14 source context | Clearly limited; not described as a validated exercise or universally suitable pregnancy practice. |
 
 All warning content is general education based on UK NHS information. The pages note that local pathways differ and defer to the reader's own maternity team. No new diagnosis criteria, treatment instructions, or efficacy claims were added. Both guides remain `DRAFT / PENDING CLINICAL REVIEW`; practical guidance is limited to preparation and communication, not clinical procedures.
+
+### Release blocker remediation — safety-source and T03 scope (23 October 2026)
+
+This entry records a source-bounded copy update, not clinical approval.
+
+| Published wording/topic | Source mapping | Decision/status |
+|---|---|---|
+| Pregnancy warning signs: absent/reduced/changed fetal movement | NHS S20; Ministry of Health KIA 2024 S23 | Promptly contact the reader's maternity provider/facility; no home diagnosis is implied. |
+| Bleeding, severe abdominal pain, seizures, severe headache, sudden vision problems, sudden facial/hand swelling | NHS S19; WHO S24; Ministry of Health S23/S25 | These are described as signs requiring prompt health assessment. Emergency routes remain local; no UK telephone numbers are shown. |
+| Difficult breathing and high fever | NHS S19; WHO S24; Ministry of Health S23 | Urgent assessment wording retained; no diagnosis is assigned. |
+| Severe pain between contractions, bleeding, waters breaking, movement changes, labour before 37 weeks, or imminent birth | NHS S20/S21; Ministry of Health KIA 2024 S23 | Contact maternity team/facility promptly; seek local emergency assistance for imminent birth or life-threatening emergency. |
+| T03 grounding information | Healthier Together S14, source page indexed text checked 2026-10-23; direct page fetch returned 403 | Copy narrowed to grounding in specific distress/trauma contexts. `sourceReview` is recorded as `source_reviewed` for this bounded general information only; `clinicalReview` remains `draft`. No self-guided steps are published and the practice section is locked. It is not equated with PMR or a universal relaxation method. |
+
+Article runtime data no longer contains authoring-only evidence notes, editorial source labels, or revision-history prose. Historical review decisions remain in this log and the Phase 2.3 content research documents. T01/T02/T04 remain source-reviewed for their bounded educational copy; all four clinical review states remain `draft`. None is represented as clinically reviewed.

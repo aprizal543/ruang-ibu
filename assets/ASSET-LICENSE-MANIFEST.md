@@ -1,5 +1,11 @@
 # Ruang Ibu — Asset/license manifest
 
+## Release blocker remediation — PWA app icons (23 October 2026)
+
+| Asset ID | Type | Used in | Files | Source / license | Notes |
+|---|---|---|---|---|---|
+| RI-PWA-ICON-01 | PWA icons and favicon | App launcher, browser tab, iOS home screen | `public/pwa-icons/ruang-ibu.svg`; `ruang-ibu-192.png`; `ruang-ibu-512.png`; `ruang-ibu-maskable.svg`; `ruang-ibu-maskable-512.png`; `ruang-ibu-apple-touch.png` | Project asset based on the existing header `Flower2` glyph from `lucide-react` 0.468.0; [Lucide license](https://github.com/lucide-icons/lucide/blob/main/LICENSE) (ISC) | Geometry retains the current site's Flower2 mark; colors sampled from existing tokens (`#F8F4EE`, `#E8E4DB`, `#124D3D`). PNGs rasterized from local SVGs in Chromium at exact target dimensions. Maskable icon keeps the mark within the central safe region. No website logo or layout changed. |
+
 Status: **PARTIALLY POPULATED — the user-selected hero asset and its Pexels license record are documented. The individual model release has not been verified.**
 
 The file `reference/MASTER-mobile-approved.png` is an approved *visual specification*, not permission to extract media from the mockup for use as standalone photos. The reference image must not be served as webpage UI.

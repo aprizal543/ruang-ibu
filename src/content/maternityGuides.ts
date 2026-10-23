@@ -56,7 +56,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
     heroImageAlt: 'Ibu hamil duduk dengan tenang sambil memegang perutnya',
     clinicalReview: 'draft',
     sourceReviewedAt: '2026-10-23',
-    sourceIds: ['S17', 'S18', 'S19', 'S20', 'S2', 'S6', 'S14'],
+    sourceIds: ['S17', 'S18', 'S19', 'S20', 'S23', 'S24', 'S25', 'S2', 'S6', 'S14'],
     sections: [
       {
         id: 'persiapan',
@@ -134,27 +134,27 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
         heading: 'Kapan perlu meminta bantuan?',
         paragraphs: [
           {
-            text: 'Beberapa perubahan selama kehamilan perlu segera disampaikan kepada bidan atau fasilitas kesehatan. Jangan menunggu bila Ibu merasa ada yang tidak beres.',
-            sourceIds: ['S19', 'S20'],
+            text: 'Beberapa tanda selama kehamilan memerlukan bantuan kesehatan segera. Hubungi bidan atau fasilitas kesehatan yang merawat Ibu; jangan menunggu jadwal kontrol berikutnya.',
+            sourceIds: ['S19', 'S20', 'S23', 'S24', 'S25'],
           },
         ],
         safetyItems: [
           {
-            text: 'Gerakan bayi berkurang, berhenti, atau berubah dari pola biasanya.',
-            sourceIds: ['S20'],
+            text: 'Gerakan bayi tidak ada, berkurang, atau berubah dari pola biasanya.',
+            sourceIds: ['S20', 'S23'],
           },
           {
-            text: 'Perdarahan dari vagina; sakit kepala berat; gangguan penglihatan yang muncul tiba-tiba; atau pembengkakan mendadak pada wajah, tangan, kaki, atau tungkai.',
-            sourceIds: ['S19'],
+            text: 'Perdarahan, sakit perut hebat, kejang, sakit kepala berat, gangguan penglihatan yang muncul tiba-tiba, atau pembengkakan mendadak pada wajah maupun tangan.',
+            sourceIds: ['S19', 'S23', 'S24', 'S25'],
           },
           {
-            text: 'Sesak napas yang datang tiba-tiba, saat berbaring, atau disertai nyeri dada maupun pusing. Demam, merasa sangat panas, atau menggigil juga perlu diperiksa.',
-            sourceIds: ['S19'],
+            text: 'Sesak atau sulit bernapas, serta demam tinggi, perlu segera mendapat perhatian tenaga kesehatan.',
+            sourceIds: ['S19', 'S23', 'S24'],
           },
         ],
         safetyClosing: {
           text: 'Kontak dan jalur layanan berbeda di setiap daerah. Simpan nomor bidan dan fasilitas yang merawat Ibu. Jika terasa seperti keadaan darurat yang mengancam nyawa, cari bantuan gawat darurat setempat.',
-          sourceIds: ['S19'],
+          sourceIds: ['S19', 'S23', 'S24', 'S25'],
         },
       },
     ],
@@ -169,7 +169,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
     heroImageAlt: 'Foto ilustrasi sentuhan pada perut ibu, bukan demonstrasi teknik pemijatan',
     clinicalReview: 'draft',
     sourceReviewedAt: '2026-10-23',
-    sourceIds: ['S1', 'S2', 'S17', 'S21', 'S22', 'S6', 'S15', 'S20'],
+    sourceIds: ['S1', 'S2', 'S17', 'S21', 'S22', 'S6', 'S15', 'S20', 'S23'],
     sections: [
       {
         id: 'mengenal-persalinan',
@@ -258,7 +258,11 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
         safetyItems: [
           {
             text: 'Hubungi bidan atau fasilitas bersalin segera jika air ketuban pecah, ada perdarahan, atau gerakan bayi berkurang maupun berubah.',
-            sourceIds: ['S20', 'S21'],
+            sourceIds: ['S20', 'S21', 'S23'],
+          },
+          {
+            text: 'Nyeri perut hebat di antara kontraksi atau sakit kepala berat juga perlu segera disampaikan kepada tenaga kesehatan.',
+            sourceIds: ['S23'],
           },
           {
             text: 'Jika usia kehamilan belum 37 minggu dan Ibu merasa persalinan mungkin dimulai, hubungi tenaga kesehatan segera.',

@@ -57,7 +57,7 @@ function PracticeGuide({ article }: { article: TherapyArticle }) {
     )
   }
 
-  if (guide.status === 'source_based') {
+  if (guide.status === 'source_based' && article.sourceReview.status === 'source_reviewed') {
     return (
       <div className="therapy-detail__source-guide" data-source-guide>
         <p>{guide.note}</p>

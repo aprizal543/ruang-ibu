@@ -63,19 +63,6 @@ export interface TherapyArticle {
   practiceGuide: TherapyGuideAvailability
   audio: TherapyAudioAvailability
   referenceIds: string[]
-  internalEvidenceNotes?: Array<{
-    id: string
-    topic: string
-    certainty: 'high' | 'moderate' | 'low' | 'very_low' | 'low_to_very_low' | 'not_rated'
-    note: string
-    referenceIds: string[]
-  }>
   updatedAt: string
   approvalDate?: string
-  revisionHistory: Array<{
-    revision: string
-    date: string
-    note: string
-  }>
-  editorialSource: string
 }
