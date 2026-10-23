@@ -689,3 +689,79 @@ Agent Browser QA at 375 × 812, 390 × 844, and 430 × 932 checked routes, fixed
 - git diff --check — PASS; Git emitted only the repository's Windows LF-to-CRLF working-copy warnings.
 
 Internal content review statuses are unchanged: T01/T02/T04 SOURCE_REVIEWED, T03 DRAFT; no article is marked CLINICALLY_REVIEWED. Safety copy and T03 limitations remain in place.
+
+## Phase 4 — Evaluasi Kenyamanan Ibu (23 October 2026)
+
+Route `/evaluasi` is implemented as a mobile-first, in-memory reflection form. The user selects one of five activity-context options and rates current comfort on a clearly anchored 1–5 scale. A result summarizes the selected context and self-reported rating without interpreting it as a diagnosis, treatment success, or evidence that an activity caused a change. A second rating after an activity is optional and only compares the two self-reported notes descriptively. The page offers a reset action and a concise safety reminder.
+
+Answers live only in React state. There is no request or analytics event for an answer and no localStorage/sessionStorage persistence. A short notice tells users that answers disappear when the page is refreshed or closed. Required native radio groups provide validation; the activity and rating labels have at least 44px touch targets, and keyboard users can select them using native radio controls. Results move focus to the summary heading. The six-tab navigation is unchanged and Evaluasi is active on this route.
+
+Evidence: `docs/evidence/phase-4-evaluation/evaluation-first-390x844.png`, `evaluation-full-390x844.png`, and `evaluation-result-390x844.png`. The full-page browser capture places the fixed bottom navigation at its viewport coordinate; separate scroll-to-bottom checks verified that the final privacy notice remains above the navigation. The first viewport and result capture were inspected directly.
+
+Agent Browser QA (`node qa/phase4-evaluation.browser.mjs`) passed at 375×812, 390×844, and 430×932. It covered direct route and active tab, required-field validation, activity/rating selection, keyboard activation, submission, optional second rating, reset, no answer-related fetch/XHR/beacon, unchanged local/session storage counts, horizontal overflow, bottom-navigation clearance, and browser Back. Approved route smoke regression passed for Beranda, catalog, T01 detail, Relaksasi, Hamil, and Bersalin. Typecheck and production build passed; `git diff --check` passed.
+
+The approved Screen 07 reference depicts separate 0–10 comfort and anxiety sliders. This Phase 4 implementation follows the task's explicit 1–5 comfort scale and activity selection, and adds the PRD's optional same-session repeat for a subjective comfort note; it does not collect anxiety. This is a documented scope-specific difference for visual review, not a change to the PRD or approved Design System. No medical score interpretation, diagnostic behavior, persistence, or clinical claim was added.
+
+## Phase 4A — Evaluation experience refinement (23 October 2026)
+
+`/evaluasi` now uses three in-page React states: **Sebelum aktivitas**, **Setelah aktivitas**, and **Ringkasan**. The activity chooser is five compact selectable options. The initial and optional follow-up notes each use two native 0–10 sliders for comfort and anxiety; neither appears selected until the user interacts. Stage 2 supports opening `/relaksasi` for the music activity, completing an after note, or viewing the initial note only. The summary shows the chosen activity, each recorded value, and neutral numeric differences without inferring benefit, diagnosis, or causation. A new evaluation clears all in-memory answers.
+
+The evaluation context is mounted above the route tree so answers survive SPA navigation to Relaxation and back. Answers remain only in React memory: no browser storage, answer-bearing URL, network submission, or analytics was added. Refreshing the page clears them. Shared navigation, design tokens, and other approved pages were not changed.
+
+Agent Browser evidence at 390 × 844:
+
+- [Step 1 — before activity](evidence/phase-4a-evaluation/step-1-before-390x844.png)
+- [Step 1 — scales filled](evidence/phase-4a-evaluation/step-1-scales-filled-390x844.png)
+- [Step 2 — after activity](evidence/phase-4a-evaluation/step-2-after-activity-390x844.png)
+- [Step 3 — complete summary](evidence/phase-4a-evaluation/step-3-summary-390x844.png)
+
+`node qa/phase4a-evaluation.browser.mjs` passed at 375 × 812, 390 × 844, and 430 × 932. Coverage includes activity selection, unselected state and gentle validation, native slider keyboard Home/End at 0 and 10, initial-only summary, optional follow-up, increasing/decreasing/unchanged comparisons, reset, SPA navigation to Relaxation and back, loss of answers after reload, no answer-related network/storage activity, horizontal overflow, and bottom-navigation clearance. Approved route smoke checks passed for Homepage, therapy catalog, T01 detail, Relaxation, Hamil, and Bersalin.
+
+`pnpm.cmd typecheck`, `pnpm.cmd build` (including the existing PWA `injectManifest`), and `git diff --check` passed. Screenshot review confirmed the compact activity options and the beginning of the first scale are visible on the 390 × 844 initial view. Step 3 intentionally focuses the summary heading, so its capture begins at the summary section. This page is ready for user visual review; it is not marked approved, and no commit or deployment was made.
+
+## Phase 4B — final evaluation input refinement (23 October 2026)
+
+The `/evaluasi` three-stage flow and in-memory `EvaluationContext` remain in place. Step 1 now uses a single native activity selector and labels the scales “Seberapa nyaman Ibu sekarang?” and “Seberapa cemas Ibu sekarang?”. A reusable `EvaluationRatingControl` presents a large value, native 0–10 range input, 44px minus/plus controls, minimum/maximum labels, and an explicit unselected state. The score state remains `null` until an interaction; pressing minus from that state records 0, while plus records 1. Both endpoints are valid, and adjustment is clamped to the range.
+
+Step 2 now shows the compact initial note and both after-activity controls immediately. It offers “Lihat ringkasan”, “Lewati penilaian setelah aktivitas”, and, for the music activity, a link to `/relaksasi`. No activity re-selection or extra “open form” action is required. The summary continues to show before/after values and neutral differences, or the initial note alone when after-scoring is skipped.
+
+The Phase 4A privacy model is unchanged: answers live only in React memory, survive SPA navigation, and clear on reload or reset. Browser QA intercepted fetch, XHR, and beacon calls during the evaluation flow and confirmed no answer transmission or browser storage change. No shared component, approved page, design token, PWA behavior, or route outside Evaluasi was changed.
+
+Agent Browser screenshots at 390 × 844:
+
+- [Step 1 — empty](evidence/phase-4b-evaluation/step-1-empty-390x844.png)
+- [Step 1 — values filled](evidence/phase-4b-evaluation/step-1-filled-390x844.png)
+- [Step 2 — after-activity controls visible](evidence/phase-4b-evaluation/step-2-after-activity-390x844.png)
+- [Step 3 — comparison summary](evidence/phase-4b-evaluation/step-3-summary-390x844.png)
+
+`node qa/phase4b-evaluation.browser.mjs` passed at 375 × 812, 390 × 844, and 430 × 932. It covered empty and selected states, validation, native select keyboard operation, range pointer and keyboard operation, 0/10 boundaries, minus/plus behavior and clamping, immediate Step 2 form, skip and complete summaries, reset/reload, SPA navigation with state retention, no network/storage side effects, overflow, and bottom-navigation clearance. Smoke regression passed for Homepage, catalog, T01 detail, Relaxation, Hamil, and Bersalin. Typecheck, production build, and `git diff --check` passed. The revised Evaluasi screen is ready for user visual review; no approval, commit, or deployment is implied.
+
+## Final Evaluation alignment — one current-state assessment (23 October 2026)
+
+The user-directed final revision replaces the three-stage activity-related flow with a single general assessment at `/evaluasi`. The activity selector, progress indicator, before/after scores, comparison, deltas, and activity-specific audio link are removed. The hero now reads “Bagaimana Perasaan Ibu Hari Ini?” with the approved botanical treatment and the requested current-state description. Two 0–10 sliders record comfort and anxiety, followed by one “Lihat hasil penilaian” action. The result presents only the two chosen scores and a neutral note, with “Isi penilaian lagi” to reset.
+
+Each range starts with a `null` React value; its hidden native position at zero is not treated as a response. The visible state says “Belum dinilai” and no thumb is shown until interaction. A selected score appears inside a forest-green thumb, matching Screen 07; the native input keeps the accessible label, current `aria-valuetext`, 44px interaction height, keyboard and pointer support, and clear 0/10 anchors. An untouched keyboard slider explicitly records 0 from Left/Home and 10 from End; all submissions validate both values without interpreting them clinically.
+
+Evaluation state is now local to the page. Repository search showed no other consumer of the evaluation context, so the provider and context file were removed. Answers are not sent to a server or analytics and are not written to localStorage/sessionStorage; reload or reset clears them. No design tokens, shared navigation, PWA configuration, or other page styles were changed.
+
+The final evidence directory contains only the three requested 390 × 844 screenshots:
+
+- [Unevaluated state](evidence/phase-4-final-evaluation/evaluation-empty-390x844.png)
+- [Two selected values](evidence/phase-4-final-evaluation/evaluation-filled-390x844.png)
+- [Assessment result](evidence/phase-4-final-evaluation/evaluation-summary-390x844.png)
+
+The captures were reviewed against the approved Screen 07 composition: centered compact header, botanical editorial hero, two pale stacked measurement surfaces, terracotta slider track with a forest-green value thumb, full-width green CTA, and six-tab navigation. The updated required title/description and the bottom safety note are intentional content differences. The result view moves focus to its heading and therefore captures scrolled to the result section.
+
+Agent Browser QA (`node qa/phase4-final-evaluation.browser.mjs`) passed at 375 × 812, 390 × 844, and 430 × 932. It checked no initial rating, valid 0/10 values, pointer and keyboard selection, focus, validation, results and reset, absence of activity/pre-post UI, no answer network/storage side effects, horizontal overflow, and bottom-navigation clearance. Regression smoke checks passed for Homepage, therapy catalog, T01 detail, Relaxation, Hamil, and Bersalin, including fixed navigation and correct active tab. Typecheck, production build, and `git diff --check` passed. Visual review is ready; this is not an automatic approval, and no commit or deployment was made.
+
+## Final Evaluation slider fix and baseline checkpoint (23 October 2026)
+
+The score thumb was visually stuck at the left because `--evaluation-thumb-position` was set on the native range input, while the visible score thumb is a sibling `<span>`. CSS custom properties inherit to descendants, not siblings, so the sibling received no `left` value and stayed at its static position. Both slider position and progress variables now live on the shared slider wrapper. The existing native range, `null` initial state, keyboard and pointer behavior, and focus-visible outline remain in place.
+
+Removed the user-facing sentence that answers disappear on reload. Evaluation values remain in React state only; no server request, analytics or persistent browser storage was added. The safety reminder remains in place.
+
+Agent Browser QA checks rendered thumb geometry at 0, 5 and 10 for both sliders, within 1.5 CSS pixels of the expected center, and captures those states at 390 × 844 under ignored `tmp/fidelity/phase-4-slider-positions/`. The three main screenshots remain in `docs/evidence/phase-4-final-evaluation/`. QA also checks visible keyboard focus, pointer/keyboard changes, validation, result/reset, no network or storage, exact 375/390/430 CSS viewports, bottom-navigation clearance, and regression smoke routes. The answer-disappearance sentence has been removed from the UI; values remain only in React state.
+
+Final Agent Browser QA passed at 375 × 812, 390 × 844 and 430 × 932. At 390 × 844, both thumb centers matched the 0/5/10 positions at the minimum, midpoint and maximum. Focus-visible outlines remained present and did not change thumb geometry. Validation, pointer and keyboard input, summary, reset, reload privacy, no answer transmission/storage, horizontal overflow, nav clearance, and approved-route smoke checks passed. The production build and typecheck passed, and `git diff --check` passed.
+
+**Status: PHASE 4 — FINAL EVALUATION UI/UX APPROVED.** Evidence: [unevaluated](evidence/phase-4-final-evaluation/evaluation-empty-390x844.png), [values 0/10](evidence/phase-4-final-evaluation/evaluation-filled-390x844.png), and [summary](evidence/phase-4-final-evaluation/evaluation-summary-390x844.png). Intermediate 0/5/10 captures are ignored temporary QA evidence. No deployment was performed.

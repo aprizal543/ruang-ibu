@@ -7,6 +7,7 @@ import TherapyPage from './pages/TherapyPage'
 import RelaxationPage from './pages/RelaxationPage'
 import PregnancyGuidePage from './pages/PregnancyGuidePage'
 import BirthGuidePage from './pages/BirthGuidePage'
+import EvaluationPage from './pages/EvaluationPage'
 
 function NotBuiltYet() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
       <Route path="/relaksasi" element={<RelaxationPage />} />
       <Route path="/hamil" element={<PregnancyGuidePage />} />
       <Route path="/bersalin" element={<BirthGuidePage />} />
+      <Route path="/evaluasi" element={<EvaluationPage />} />
       <Route path="/panduan/hamil" element={<PregnancyGuidePage />} />
       <Route path="/panduan/bersalin" element={<BirthGuidePage />} />
       <Route
