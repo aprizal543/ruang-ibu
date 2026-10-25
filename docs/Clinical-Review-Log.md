@@ -118,3 +118,35 @@ This entry records a source-bounded copy update, not clinical approval.
 | T03 grounding information | Healthier Together S14, source page indexed text checked 2026-10-23; direct page fetch returned 403 | Copy narrowed to grounding in specific distress/trauma contexts. `sourceReview` is recorded as `source_reviewed` for this bounded general information only; `clinicalReview` remains `draft`. No self-guided steps are published and the practice section is locked. It is not equated with PMR or a universal relaxation method. |
 
 Article runtime data no longer contains authoring-only evidence notes, editorial source labels, or revision-history prose. Historical review decisions remain in this log and the Phase 2.3 content research documents. T01/T02/T04 remain source-reviewed for their bounded educational copy; all four clinical review states remain `draft`. None is represented as clinically reviewed.
+
+### Customer content revision 2026 (25 October 2026)
+
+This entry records source and copy work for the customer revision. It is not a clinical sign-off. Customer evidence was bibliographically checked against publisher pages and DOI records; source accuracy does not establish that each practical statement has been clinically approved.
+
+| Content | Sources | Current status and boundaries |
+|---|---|---|
+| A01 pregnancy back pain | C01–C04, S26 | Draft. Common pregnancy-related musculoskeletal discomfort is distinguished from other possible causes. Prompt-care symptoms are linked to NHS S26; no diagnosis is made. |
+| A02 pregnancy music; B02 labor music | C04–C08, S1/S2/S13 | Draft. Clinical protocols/populations are distinguished from Ruang Ibu playlists. C07 pain and anxiety findings are kept separate. |
+| A03/B03 breathing | S2/S3/S5/S6/S15 | Existing article retained and associated with both contexts. No forced holding or hyperventilation pattern is added; practice guidance says to stop or ask for support if uncomfortable. |
+| A04 pregnancy warm compress | C01–C03, S26/S29 | Draft. Case and one-group study results are not turned into a general procedure. No temperature, duration, or location instruction is published. Burn awareness and consultation are stated. |
+| A05 pregnancy massage | S27/S28 | Draft. Prenatal massage is separated from labor companion massage; consent and trained provider are emphasized. No pressure, position, or technique instruction is published. |
+| A06 pregnancy anxiety | C05/C06, S5/S17 | Draft. Feelings are not labeled as a diagnosis. C05's high-risk NST population and C06's combined literacy/music intervention are disclosed as limits. |
+| B01 labor pain | C07, S2/S8/S22 | Draft. Individual experience and pharmacologic/nonpharmacologic choices are described generally; clinical choices remain with the maternity team. |
+| B04 companion massage | S1/S2/S4 | Existing article retained. Consent, taught technique, and stop-on-request boundaries remain; no physical procedure is added. |
+| B05 warm compress during labor | S2/S29; C01–C03 used only for contrast | Draft. Perineal compress is framed as care by the attending professional when appropriate, never as a self-directed website procedure. |
+| B06 labor anxiety | C07/C08, S2/S22 | Draft. C07's nonsignificant pooled anxiety results are explicit; C08 is bounded to its single-site study. No guaranteed anxiety reduction is claimed. |
+
+Bibliographic changes and exact records are in `docs/content-research/CUSTOMER-CONTENT-REVISION-2026.md`. C02 is dated 2023 online although its issue is 2022; C03 uses the publisher-listed DOI and notes the title/activity date discrepancy; C06 distinguishes 2024 online-first from the 2026 print issue. All new/expanded pages stay `clinicalReview: draft`. A qualified midwife/obstetric clinician must still review the exact published copy before clinical endorsement.
+
+### Koreksi editorial customer - 25 Oktober 2026
+
+Koreksi bahasa dan penyusunan ulang copy dilakukan untuk membantu pembaca memahami isi, bukan sebagai persetujuan klinis. Seluruh `clinicalReview` tetap `draft` dan tidak diubah menjadi approved.
+
+| Materi | Sumber | Batas dan keputusan |
+|---|---|---|
+| Kompres hangat saat hamil | C01-C03, NHS S26, ACOG S30 | Copy dibatasi pada otot punggung yang pegal. Mengikuti ACOG: setelan bantalan pemanas terendah, handuk sebagai pelapis, batasi lama penggunaan, hentikan bila tidak nyaman, dan hubungi tenaga kesehatan untuk nyeri berat/menetap. Tidak ada suhu atau jumlah menit yang ditambahkan. Temuan studi kecil/kasus tetap dijelaskan sebagai bukti terbatas, bukan protokol universal. |
+| Kompres hangat dalam persalinan | NICE S02 | Kompres perineum hanya dijelaskan sebagai tindakan perawatan oleh tenaga kesehatan pada tahap kedua persalinan. Artikel tidak mengajarkan tindakan mandiri. |
+| Musik dan kecemasan/nyeri | C04-C08 | Copy disederhanakan. Hasil nyeri C07 tetap dipisahkan dari hasil kecemasan; program penelitian tidak disamakan dengan playlist Ruang Ibu. |
+| Panduan Hamil dan Bersalin serta artikel lain | Sumber setiap materi tetap terpetakan | Enam topik tiap panduan ditampilkan dengan urutan lebih mudah ditemukan. T03 tetap terbatas pada grounding dalam konteks yang disebut sumbernya dan tidak disebut relaksasi fisik tervalidasi umum. |
+
+ACOG S30: https://www.acog.org/womens-health/faqs/back-pain-during-pregnancy . Pemeriksaan copy tidak menggantikan pemeriksaan kebidanan. Penelaahan bidan/dokter atas naskah praktik tetap diperlukan sebelum endorsement klinis.

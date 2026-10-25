@@ -2,7 +2,6 @@ import { useEffect } from 'react'
 import {
   ArrowLeftIcon,
   HeadphonesIcon,
-  LockKeyIcon,
   WarningCircleIcon,
 } from '@phosphor-icons/react'
 import { Link } from 'react-router-dom'
@@ -72,14 +71,11 @@ function PracticeGuide({ article }: { article: TherapyArticle }) {
     )
   }
 
-  const lockedMessage = guide.status === 'locked_pending_review'
-    ? guide.message
-    : 'Panduan praktik ditahan sampai materi ditelaah dan disetujui secara klinis.'
-
   return (
-    <div className="therapy-detail__locked" data-locked-guide role="note">
-      <LockKeyIcon size={20} weight="regular" aria-hidden="true" />
-      <p>{lockedMessage}</p>
+    <div className="therapy-detail__source-guide" data-locked-guide role="note">
+      <p>{guide.status === 'locked_pending_review'
+        ? guide.message
+        : 'Untuk keamanan Ibu, bicarakan pilihan ini dengan bidan atau dokter yang mendampingi. Ibu tidak perlu mencoba bila ragu atau merasa tidak nyaman.'}</p>
     </div>
   )
 }
@@ -154,7 +150,7 @@ export default function TherapyDetailPage({ article, references }: TherapyDetail
               {article.categories.map((category) => <li key={category}>{category}</li>)}
             </ul>
             <section className="therapy-article__summary" aria-labelledby="summary-heading">
-              <h2 id="summary-heading">Mengenal {article.title}</h2>
+              <h2 id="summary-heading">{article.summaryHeading ?? `Mengenal ${article.title}`}</h2>
               <ArticleParagraph paragraph={article.introduction} />
             </section>
             <nav className="therapy-article__contents" aria-label="Navigasi artikel">

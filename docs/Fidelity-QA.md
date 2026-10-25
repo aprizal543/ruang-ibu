@@ -841,3 +841,52 @@ The approved Relaxation catalog, player, and eight-track collection were left un
 Final Agent Browser smoke QA passed for direct loading of all application routes, including the four utility pages and all eight active audio routes. The homepage menu and six-tab navigation passed at 375 × 812, 390 × 844, 430 × 932, 1280 × 720, and 1440 × 900. The menu's scroll container and Tanda Bahaya destination remain reachable at 1280 × 720. Evaluation QA passed for the current comfort/anxiety-only form, validation, summary/reset, and no answer network or persistent-storage use. Audio QA passed for eight listed tracks (six music, two nature), real play/pause, seek, volume, track navigation, no autoplay, single audio element, on-demand loading, credits, and exclusion from PWA precache. Typecheck, production build, and `git diff --check` passed. No deployment was performed.
 
 Items still requiring separate Final Release QA: real Safari/iOS playback; offline PWA behavior on a device; human listening of all eight tracks, including the measured *Avec Soin* (−16.6 LUFS) versus *Friday Morning* (−28.5 LUFS) loudness difference; source/content verification for the Tanda Bahaya page; final license/provenance checks for photographic assets (AI origin and model releases remain unverified where recorded); and a Cloudflare Pages deployment test. These have not been treated as passed or as approval for public release.
+
+### Customer content revision - 25 October 2026
+
+Integrated the customer's six trimester III education topics and six labor topics into `/hamil`, `/bersalin`, the existing `/terapi` catalog, and reusable therapy detail pages. The guide pages keep the approved editorial layout and safety content; no homepage, design token, six-tab navigation, audio, evaluation, or PWA configuration was intentionally changed. New practice-sensitive content remains draft pending clinical review, and the articles avoid unsourced procedural details.
+
+Automated content coverage passed for all 12 topic IDs and mandatory customer references C01-C08. `npm.cmd run typecheck`, `npm.cmd run build` (including PWA service-worker generation and 31 precache entries), and `git diff --check` passed. No lint script exists in `package.json`.
+
+Agent Browser QA used CSS viewports 375 x 812, 390 x 844, 430 x 932, and 1440 x 900. The guide pages, catalog, and a new detail route had no horizontal overflow. Direct detail-route loading and browser Back navigation worked. The Hamil/Bersalin catalog filters returned 6 items each; search for "kompres" returned the separate pregnancy and labor entries. The references disclosure started closed and opened with keyboard focus plus Enter. The source directory displayed C01-C08 with DOI links. Homepage and the six primary tabs remained present. The evaluation route loaded with its two existing sliders. The relaxation page retained all eight tracks; the first track responded to play and pause. Browser error output contained no page errors; console output contained Vite/React development notices only.
+
+390 x 844 evidence:
+
+- [Panduan Hamil](evidence/customer-revision-2026/panduan-hamil-390x844.png)
+- [Panduan Bersalin](evidence/customer-revision-2026/panduan-bersalin-390x844.png)
+- [Katalog Jenis Terapi](evidence/customer-revision-2026/katalog-terapi-390x844.png)
+- [Artikel kompres hangat saat hamil](evidence/customer-revision-2026/artikel-kompres-hamil-390x844.png)
+- [Sumber informasi terbuka](evidence/customer-revision-2026/sumber-terbuka-390x844.png)
+
+Bibliography metadata corrections and source limitations are recorded in [customer content revision notes](content-research/CUSTOMER-CONTENT-REVISION-2026.md). Revised education remains unapproved for clinical practice claims until appropriate clinical review. No commit, push, or deployment was made.
+
+### Koreksi editorial customer — 25 Oktober 2026
+
+Seluruh 12 pembahasan diperiksa, termasuk artikel yang digunakan ulang untuk dua konteks. Copy internal dihapus dari materi yang dirender; status clinical review dalam data tetap `draft`. Tabel sebelum/sesudah dan alasan tersedia di [audit editorial](content-research/CUSTOMER-CONTENT-EDITORIAL-AUDIT-2026.md).
+
+Agent Browser memuat setiap route detail untuk A01-A06 dan B01-B06, serta artikel T03. Pada `/hamil`, `/bersalin`, `/terapi`, dan artikel kompres hamil, CSS viewport 375 × 812, 390 × 844, serta 430 × 932 tidak menunjukkan horizontal overflow. Masing-masing panduan menampilkan enam tautan topik. Katalog menampilkan 11 artikel; filter Hamil/Bersalin/Relaksasi menghasilkan 6/6/5 artikel, dan pencarian “kompres” menampilkan dua konteks yang terpisah. Disclosure sumber pada artikel mulai tertutup dan terbuka lewat fokus keyboard + Enter. `/sumber` menampilkan 33 sumber, termasuk delapan jurnal customer dengan tautan DOI.
+
+Screenshot 390 × 844:
+
+- [Katalog Terapi](evidence/customer-revision-2026/katalog-terapi-390x844.png)
+- [Panduan Hamil](evidence/customer-revision-2026/panduan-hamil-390x844.png)
+- [Panduan Bersalin](evidence/customer-revision-2026/panduan-bersalin-390x844.png)
+- [Kompres Hangat — tampilan awal](evidence/customer-revision-2026/artikel-kompres-hamil-390x844.png)
+- [Kompres Hangat — panduan praktik](evidence/customer-revision-2026/kompres-hamil-panduan-390x844.png)
+- [Disclosure sumber terbuka](evidence/customer-revision-2026/sumber-terbuka-390x844.png)
+
+`npm.cmd run test:content` memeriksa semua ID topik dan C01-C08, tautan ACOG, panduan kompres, status klinis internal, serta frasa internal yang dilarang pada copy production-facing. Typecheck, production build, `git diff --check`, dan pemeriksaan runtime browser dicatat setelah selesai. Tidak ada commit, push, atau deployment.
+
+### Final editorial polish dan gambar konten (25 Oktober 2026)
+
+Panduan kompres A04 kini memakai pengantar dan lima langkah bernomor sesuai redaksi customer; pemeriksaan mobile memastikan marker angka terlihat. Intro Panduan Hamil dan Bersalin serta deskripsi katalog dipersingkat, tanpa mengubah hero atau struktur visual. Deskripsi kartu tidak lagi dipotong dengan line clamp.
+
+Tujuh artikel baru menampilkan gambar editorial setelah pengantar: A01, A04, A05, A06, B01, B05, dan B06. Gambar musik/pernapasan pada artikel existing tetap menggunakan komposisi yang disetujui. Thumbnail katalog membedakan punggung, pijat prenatal, dukungan selama kehamilan/persalinan, dan kompres; musik dan pernapasan tetap memakai gambar artikel bersama. Sumber/kreator, lisensi, derivatif WebP, dan hal yang belum terverifikasi dicatat dalam [manifest lisensi aset](../assets/ASSET-LICENSE-MANIFEST.md).
+
+`npm.cmd run test:content`, `npm.cmd run typecheck`, `npm.cmd run build` (termasuk service worker PWA, 49 aset precache), dan `git diff --check` lulus. Agent Browser memeriksa katalog pada 375, 390, 430, dan 1440 px; tidak ditemukan horizontal overflow. Tujuh gambar konten dimuat pada route masing-masing. Filter katalog menghasilkan 6/6/5 untuk Hamil/Bersalin/Relaksasi; pencarian kompres menemukan dua artikel sesuai konteks. Direct route, browser Back, disclosure sumber dengan Enter, Beranda, Relaksasi (delapan audio), dan Evaluasi diperiksa; tidak ada runtime error browser.
+
+Evidence akhir 390 x 844 (katalog desktop 1440 x 900): [folder screenshot](evidence/customer-revision-final-polish/). Status clinical review konten tetap draft. Tidak ada commit, push, atau deployment.
+
+### Koreksi layout detail terapi (25 Oktober 2026)
+
+Atas keputusan desain final, gambar editorial besar dan field `contentImage` dihapus dari artikel detail. Jalur detail kembali text-first: navigasi anchor langsung diikuti section “Apa itu?”. Tujuh WebP 1200 × 800 yang tidak lagi dipakai dihapus setelah pencarian repository; foto sumber, ilustrasi SVG sumber, dan seluruh thumbnail WebP katalog tetap tersedia. `npm.cmd run test:content`, typecheck, production build PWA, dan `git diff --check` lulus. Agent Browser memeriksa 375, 390, dan 430 px; detail A01/A04 tidak memiliki gambar, section pertama mengikuti blok pengantar/navigasi, katalog tetap menampilkan 11 thumbnail, filter Hamil/Bersalin/Relaksasi menghasilkan 6/6/5 item, dan pencarian “kompres” menampilkan dua konteks. Tidak ada horizontal overflow atau runtime error. Screenshot baru tersedia di folder `evidence/customer-revision-detail-text-first/`.

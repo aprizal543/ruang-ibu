@@ -1,16 +1,18 @@
 import type { TherapyArticle } from './therapyContent.types'
+import { customerRevisionArticles } from './customerRevisionArticles'
 
 export const therapyArticles: Record<string, TherapyArticle> = {
+  ...customerRevisionArticles,
   'musik-relaksasi': {
     id: 'T02',
     slug: 'musik-relaksasi',
     title: 'Musik untuk Relaksasi',
-    categories: ['Saat persalinan'],
+    categories: ['Hamil', 'Saat persalinan'],
     sourceReview: { status: 'source_reviewed', reviewedAt: '2026-10-23' },
     clinicalReview: { status: 'draft' },
     introduction: {
-      text: 'Musik pilihan Ibu dapat menemani suasana saat persalinan. Musik tidak menjamin nyeri atau rasa cemas berkurang, dan belum tentu terasa nyaman bagi setiap Ibu.',
-      referenceIds: ['S1', 'S2', 'S3'],
+      text: 'Musik yang Ibu sukai dapat menjadi teman saat ingin beristirahat atau merasa lebih tenang selama hamil dan persalinan. Jika terasa mengganggu, Ibu dapat mengganti pilihan atau berhenti mendengarkan.',
+      referenceIds: ['S1', 'S2', 'S3', 'C04', 'C05', 'C06', 'C07', 'C08'],
     },
     sections: [
       {
@@ -18,8 +20,8 @@ export const therapyArticles: Record<string, TherapyArticle> = {
         heading: 'Apa itu musik untuk relaksasi?',
         paragraphs: [
           {
-            text: 'Di halaman ini, musik untuk relaksasi berarti mendengarkan musik yang Ibu pilih sendiri. Ini berbeda dari terapi musik klinis yang diberikan oleh tenaga profesional dengan tujuan dan pendekatan tertentu.',
-            referenceIds: ['S13'],
+            text: 'Musik yang Ibu pilih sendiri dapat menjadi teman saat beristirahat. Dalam beberapa penelitian, terapi musik merupakan bagian dari program yang dirancang khusus. Hasil program tersebut belum tentu sama dengan mendengarkan playlist biasa.',
+            referenceIds: ['S13', 'C05', 'C06', 'C07', 'C08'],
           },
         ],
       },
@@ -28,8 +30,16 @@ export const therapyArticles: Record<string, TherapyArticle> = {
         heading: 'Apa tujuannya?',
         paragraphs: [
           {
-            text: 'Musik dapat menjadi pilihan untuk menemani suasana yang Ibu inginkan. Mendengarkannya tidak menjamin nyeri atau kecemasan berkurang.',
-            referenceIds: ['S1', 'S2', 'S3'],
+            text: 'Dalam rangkuman pilihan tanpa obat untuk nyeri punggung saat hamil, musik dibahas bersama relaksasi. Hasilnya tidak menilai playlist Ruang Ibu secara khusus.',
+            referenceIds: ['C04'],
+          },
+          {
+            text: 'Satu studi menggunakan musik saat pemeriksaan denyut jantung bayi pada kehamilan berisiko tinggi. Studi lain menggabungkan musik dan edukasi kesehatan untuk ibu yang baru pertama kali hamil. Keduanya merupakan program khusus, bukan playlist biasa.',
+            referenceIds: ['C05', 'C06'],
+          },
+          {
+            text: 'Rangkuman bukti musik saat persalinan menunjukkan nyeri mungkin lebih ringan pada sebagian tahap, tetapi perubahan rasa cemas belum terlihat jelas. Satu studi pada ibu hamil cukup bulan melaporkan rasa cemas yang lebih rendah setelah mendengarkan musik. Hasil tersebut belum tentu sama bagi setiap Ibu atau berlaku pada playlist biasa.',
+            referenceIds: ['C07', 'C08'],
           },
         ],
       },
@@ -38,21 +48,21 @@ export const therapyArticles: Record<string, TherapyArticle> = {
         heading: 'Kapan dapat dipertimbangkan?',
         paragraphs: [
           {
-            text: 'Pilihan ini dapat dibicarakan saat merencanakan persalinan. Ibu bebas memilih musik, tidak mendengarkannya, atau mengubah pilihan kapan saja.',
-            referenceIds: ['S1', 'S2', 'S3'],
+            text: 'Ibu dapat mencoba audio pilihan sendiri pada masa hamil atau persalinan, mengubah pilihan, atau tidak mendengarkan. Pada persalinan, pastikan musik tidak menghalangi komunikasi dengan pendamping dan tenaga kesehatan.',
+            referenceIds: ['S1', 'S2'],
           },
         ],
       },
     ],
     safetyNotice: {
-      text: 'Hentikan musik jika terasa tidak nyaman atau mengganggu komunikasi dengan pendamping maupun tenaga kesehatan. Ibu bebas memilih untuk tidak mendengarkan. Informasi ini tidak menggantikan pemeriksaan maupun arahan bidan dan dokter.',
-      referenceIds: ['S1', 'S2'],
+      text: 'Hentikan musik jika terasa tidak nyaman atau mengganggu komunikasi dengan pendamping maupun tenaga kesehatan. Ibu bebas memilih untuk tidak mendengarkan. Delapan audio Ruang Ibu adalah pilihan dengar, bukan program terapi musik seperti yang digunakan dalam penelitian.',
+      referenceIds: ['S1', 'S2', 'C04', 'C05', 'C06', 'C07', 'C08'],
     },
     practiceGuide: {
       status: 'source_based',
-      note: 'Ini panduan penggunaan audio di Ruang Ibu, bukan terapi musik klinis atau saran medis.',
+      note: 'Audio ini dapat menemani suasana, tetapi tidak menjanjikan perubahan nyeri atau rasa cemas.',
       instructions: [
-        { text: 'Pilih musik yang Ibu sukai, atau lewati jika tidak ingin mendengarkan.', referenceIds: ['S2'] },
+        { text: 'Pilih audio yang Ibu sukai selama hamil atau bersalin, atau lewati jika tidak ingin mendengarkan.', referenceIds: ['S2'] },
         { text: 'Atur volume hingga terasa nyaman dan tetap memungkinkan Ibu mendengar orang di sekitar.', referenceIds: [] },
         { text: 'Tekan putar untuk memulai. Ibu dapat menjeda atau menghentikan audio kapan saja.', referenceIds: [] },
         { text: 'Beri tahu pendamping atau bidan jika musik mengganggu atau Ibu ingin mengganti pilihan.', referenceIds: ['S2'] },
@@ -62,7 +72,7 @@ export const therapyArticles: Record<string, TherapyArticle> = {
       status: 'available',
       trackId: 'ambient',
     },
-    referenceIds: ['S1', 'S2', 'S3', 'S13'],
+    referenceIds: ['S1', 'S2', 'S3', 'S13', 'C04', 'C05', 'C06', 'C07', 'C08'],
     updatedAt: '2026-10-23',
   },
   'relaksasi-otot-ringan': {
@@ -73,7 +83,7 @@ export const therapyArticles: Record<string, TherapyArticle> = {
     sourceReview: { status: 'source_reviewed', reviewedAt: '2026-10-23' },
     clinicalReview: { status: 'draft' },
     introduction: {
-      text: 'Satu sumber untuk pasien membahas grounding saat pengalaman terkait kehamilan atau persalinan terasa berat. Sumber tersebut berfokus pada situasi distress atau trauma, bukan pada metode relaksasi tubuh umum yang sesuai untuk semua Ibu.',
+      text: 'Satu panduan kesehatan membahas grounding—mengalihkan perhatian kembali ke keadaan sekitar saat ini—ketika pengalaman kehamilan atau persalinan terasa berat. Panduan tersebut berfokus pada rasa kewalahan atau panik, bukan latihan relaksasi umum untuk semua Ibu.',
       referenceIds: ['S14'],
     },
     sections: [
@@ -82,7 +92,7 @@ export const therapyArticles: Record<string, TherapyArticle> = {
         heading: 'Apa itu relaksasi tubuh?',
         paragraphs: [
           {
-            text: 'Grounding berarti mengarahkan perhatian kembali ke keadaan saat ini. Healthier Together menyebutnya sebagai salah satu pilihan ketika seseorang merasa kewalahan, panik, atau terputus dari keadaan sekitar.',
+            text: 'Grounding berarti mengarahkan perhatian pada keadaan saat ini. Panduan Healthier Together menyebutnya sebagai salah satu pilihan saat seseorang merasa kewalahan, panik, atau seolah terputus dari keadaan sekitar.',
             referenceIds: ['S14'],
           },
         ],
@@ -92,7 +102,7 @@ export const therapyArticles: Record<string, TherapyArticle> = {
         heading: 'Apa tujuannya?',
         paragraphs: [
           {
-            text: 'Sumber tersebut memuat beberapa pilihan grounding untuk menghadapi situasi emosional yang terasa berat. Pengalaman dan respons tiap orang dapat berbeda; halaman ini tidak menjanjikan hasil tertentu.',
+            text: 'Panduan tersebut memuat pilihan grounding untuk situasi emosional yang terasa berat. Pengalaman setiap orang berbeda, dan cara ini tidak menjanjikan hasil tertentu.',
             referenceIds: ['S14'],
           },
         ],
@@ -102,7 +112,7 @@ export const therapyArticles: Record<string, TherapyArticle> = {
         heading: 'Kapan dapat dipertimbangkan?',
         paragraphs: [
           {
-            text: 'Informasi ini terbatas pada konteks distress atau trauma terkait kehamilan dan persalinan yang dibahas oleh sumber. Ini bukan rekomendasi relaksasi umum untuk semua Ibu.',
+            text: 'Informasi ini hanya membahas grounding dalam situasi berat yang dijelaskan sumber. Materi ini bukan panduan relaksasi tubuh umum untuk semua Ibu.',
             referenceIds: ['S14'],
           },
         ],
@@ -114,7 +124,7 @@ export const therapyArticles: Record<string, TherapyArticle> = {
     },
     practiceGuide: {
       status: 'locked_pending_review',
-      message: 'Bagian ini tidak memberikan langkah praktik. Sumber yang tersedia membahas grounding dalam konteks tertentu; bicarakan kecocokannya dengan tenaga kesehatan yang mendampingi.',
+      message: 'Informasi ini tidak memandu latihan. Jika Ibu ingin membicarakan pilihan saat merasa kewalahan atau panik, mintalah dukungan bidan atau tenaga kesehatan yang mendampingi.',
     },
     audio: {
       status: 'not_applicable',
@@ -159,7 +169,7 @@ export const therapyArticles: Record<string, TherapyArticle> = {
         heading: 'Kapan dapat dipertimbangkan?',
         paragraphs: [
           {
-            text: 'Saat persalinan, pijat dapat menjadi salah satu pilihan bagi ibu hamil sehat yang menginginkan dukungan untuk menghadapi nyeri. Jika Ibu memilihnya, pendamping perlu lebih dahulu diajari teknik yang akan digunakan. Bicarakan pilihan ini dengan bidan yang mendampingi.',
+            text: 'Saat persalinan, pijat dapat menjadi salah satu pilihan bagi Ibu yang ingin mendapat dukungan saat nyeri. Jika Ibu memilihnya, pendamping perlu lebih dahulu mempelajari teknik yang akan digunakan dan membicarakannya dengan bidan.',
             referenceIds: ['S1', 'S2', 'S4'],
           },
         ],
@@ -190,11 +200,11 @@ export const therapyArticles: Record<string, TherapyArticle> = {
     id: 'T01',
     slug: 'teknik-pernapasan',
     title: 'Teknik Pernapasan',
-    categories: ['Kehamilan', 'Saat persalinan'],
+    categories: ['Hamil', 'Saat persalinan'],
     sourceReview: { status: 'source_reviewed', reviewedAt: '2026-10-23' },
     clinicalReview: { status: 'draft' },
     introduction: {
-      text: 'Saat hamil, Ibu dapat mencari tahu pilihan pernapasan untuk persiapan persalinan bersama bidan. Saat persalinan, napas perlahan dan berirama dapat dicoba jika terasa nyaman. Cara ini tidak selalu membantu semua Ibu.',
+      text: 'Saat hamil, Ibu dapat membicarakan pilihan pernapasan untuk persiapan persalinan dengan bidan. Saat persalinan, Ibu boleh mencoba bernapas perlahan dan berirama jika terasa nyaman. Pengalaman setiap Ibu berbeda.',
       referenceIds: ['S1', 'S2', 'S3', 'S5', 'S6', 'S15'],
     },
     sections: [
@@ -234,14 +244,14 @@ export const therapyArticles: Record<string, TherapyArticle> = {
       },
     ],
     safetyNotice: {
-      text: 'Penjelasan ini bukan latihan mengejan atau menahan napas. Jangan memaksakan cara bernapas yang terasa tidak nyaman. Website ini tidak dapat menilai kondisi pribadi Ibu dan tidak menggantikan arahan bidan atau dokter.',
+      text: 'Pilihan bernapas ini bukan latihan mengejan atau menahan napas. Jangan memaksakan cara yang terasa tidak nyaman. Tanyakan kepada bidan atau dokter bila Ibu memiliki pertanyaan atau membutuhkan bantuan.',
       referenceIds: ['S1', 'S2', 'S6', 'S15'],
     },
     practiceGuide: {
       status: 'source_based',
-      note: 'Langkah berikut merangkum pilihan dalam panduan pasien. Gunakan hanya jika terasa nyaman; bidan dapat memberi dukungan.',
+      note: 'Pilihan ini dapat dicoba jika terasa nyaman. Bidan dapat membantu Ibu membicarakan cara yang sesuai.',
       instructions: [
-        { text: 'Saat hamil, bicarakan pilihan latihan pernapasan untuk persiapan persalinan dengan bidan. Panduan pasien menyarankan mencari cara yang terasa sesuai bagi Ibu.', referenceIds: ['S6'] },
+        { text: 'Saat hamil, bicarakan dengan bidan cara bernapas yang terasa sesuai untuk persiapan persalinan.', referenceIds: ['S6'] },
         { text: 'Saat persalinan, ketika kontraksi mulai terasa meningkat, hembuskan napas. Lanjutkan bernapas perlahan dan berirama selama kontraksi.', referenceIds: ['S6'] },
         { text: 'Usahakan bahu tetap rileks. Ibu dapat bernapas melalui hidung atau mulut, pilih yang terasa lebih nyaman.', referenceIds: ['S6'] },
         { text: 'Ibu dapat meminta saran dan dukungan bidan kapan saja, serta mengubah pilihan bila diperlukan.', referenceIds: ['S6', 'S15'] },

@@ -32,7 +32,7 @@ function AudioCallout() {
       <span className="maternity-guide__audio-icon" aria-hidden="true"><HeadphonesIcon size={22} weight="regular" /></span>
       <span className="maternity-guide__audio-copy">
         <strong>Buka pilihan audio</strong>
-        <span>Suara alam dan musik instrumental. Tidak diputar otomatis dan bukan panduan klinis.</span>
+        <span>Suara alam dan musik instrumental. Audio tidak diputar otomatis dan bukan panduan kesehatan.</span>
       </span>
       <ArrowRightIcon size={19} weight="regular" aria-hidden="true" />
     </Link>

@@ -182,8 +182,10 @@
   color: var(--ri-ink);
   font-size: 15px;
   line-height: 1.6;
+  list-style: decimal outside;
 }
 .therapy-detail__source-guide-list li { padding-left: 3px; }
+.therapy-detail__source-guide-list li::marker { color: var(--ri-forest); font-weight: 700; }
 .therapy-detail__audio-link { color: var(--ri-forest); font-size: 12px; font-weight: 650; text-underline-offset: 2px; }
 .therapy-detail__audio-link { display: inline-flex; min-height: 44px; align-items: center; margin-top: 6px; }
 

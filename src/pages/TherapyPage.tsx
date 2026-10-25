@@ -23,32 +23,81 @@ type Filter = (typeof categories)[number]
 
 const therapies: Therapy[] = [
   {
+    title: 'Nyeri Punggung saat Kehamilan',
+    description: 'Penyebab dan pilihan untuk merasa nyaman.',
+    href: '/terapi/nyeri-punggung-kehamilan',
+    categories: ['Hamil'],
+    image: 'back-comfort-thumb.webp',
+  },
+  {
+    title: 'Musik untuk Relaksasi',
+    description: 'Musik pilihan Ibu untuk waktu tenang.',
+    href: '/terapi/terapi-musik',
+    categories: ['Hamil', 'Bersalin', 'Relaksasi'],
+    image: 'music.webp',
+  },
+  {
     title: 'Teknik Pernapasan',
-    description: 'Mengenal perhatian pada napas dan relaksasi.',
+    description: 'Pilihan bernapas untuk persiapan persalinan.',
     href: '/terapi/teknik-pernapasan',
     categories: ['Hamil', 'Bersalin', 'Relaksasi'],
     image: 'breathing.webp',
   },
   {
-    title: 'Musik untuk Relaksasi',
-    description: 'Mengenal musik dan suara yang terasa menenangkan.',
-    href: '/terapi/terapi-musik',
-    categories: ['Bersalin', 'Relaksasi'],
-    image: 'music.webp',
+    title: 'Kompres Hangat Saat Hamil',
+    description: 'Pilihan hangat untuk otot punggung yang pegal.',
+    href: '/terapi/kompres-hangat-kehamilan',
+    categories: ['Hamil'],
+    image: 'warm-compress-pregnancy-thumb.webp',
   },
   {
-    title: 'Relaksasi Tubuh',
-    description: 'Mengenal perhatian lembut pada rasa nyaman tubuh.',
-    href: '/terapi/relaksasi-otot-ringan',
-    categories: ['Relaksasi'],
-    image: 'relaxation.webp',
+    title: 'Pijat untuk Ibu Hamil',
+    description: 'Hal penting sebelum memilih pijat kehamilan.',
+    href: '/terapi/pijat-kehamilan',
+    categories: ['Hamil'],
+    image: 'prenatal-massage-thumb.webp',
+  },
+  {
+    title: 'Kekhawatiran Menjelang Persalinan',
+    description: 'Dukungan saat khawatir menjelang persalinan.',
+    href: '/terapi/kecemasan-menjelang-persalinan',
+    categories: ['Hamil', 'Relaksasi'],
+    image: 'pregnancy-support-thumb.webp',
+  },
+  {
+    title: 'Nyeri Persalinan',
+    description: 'Kenali pilihan dukungan dan pereda nyeri.',
+    href: '/terapi/nyeri-persalinan',
+    categories: ['Bersalin'],
+    image: 'labor-support-thumb.webp',
+  },
+  {
+    title: 'Kompres Hangat Saat Persalinan',
+    description: 'Perawatan hangat oleh tenaga kesehatan.',
+    href: '/terapi/kompres-hangat-persalinan',
+    categories: ['Bersalin'],
+    image: 'warm-compress-labor-thumb.webp',
+  },
+  {
+    title: 'Kekhawatiran Selama Persalinan',
+    description: 'Dukungan dan komunikasi selama persalinan.',
+    href: '/terapi/kecemasan-persalinan',
+    categories: ['Bersalin', 'Relaksasi'],
+    image: 'labor-companion-thumb.webp',
   },
   {
     title: 'Pijat Pendamping',
-    description: 'Mengenal sentuhan dengan persetujuan dan kenyamanan ibu.',
+    description: 'Sentuhan pendamping sesuai pilihan Ibu.',
     href: '/terapi/pijat-pendamping',
     categories: ['Bersalin'],
-    image: 'partner-massage.webp',
+    image: 'labor-touch-thumb.svg',
+  },
+  {
+    title: 'Relaksasi Tubuh',
+    description: 'Mengenal grounding saat Ibu merasa kewalahan.',
+    href: '/terapi/relaksasi-otot-ringan',
+    categories: ['Relaksasi'],
+    image: 'relaxation.webp',
   },
 ]
 
@@ -108,6 +157,10 @@ export default function TherapyPage() {
   const searchRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
+    document.title = 'Jenis Terapi · Ruang Ibu'
+  }, [])
+
+  useEffect(() => {
     if (searchOpen) searchRef.current?.focus()
   }, [searchOpen])
 
@@ -135,8 +188,8 @@ export default function TherapyPage() {
         <section className="therapy-intro" aria-labelledby="therapy-heading">
           <img className="therapy-intro__botanical" src="/therapy-botanical.svg" alt="" aria-hidden="true" />
           <div className="therapy-intro__content">
-            <h2 id="therapy-heading">Kenali Berbagai Terapi Komplementer</h2>
-            <p>Kenali pilihan edukasi dan sumber informasinya. Materi ini tidak menggantikan arahan bidan atau dokter.</p>
+            <h2 id="therapy-heading">Kenali Pilihan untuk Ibu</h2>
+            <p>Pilih materi sesuai kebutuhan Ibu. Setiap artikel menyertakan sumber informasi dan pilihan yang dapat dibicarakan dengan bidan atau dokter.</p>
           </div>
         </section>
 
@@ -174,7 +227,7 @@ export default function TherapyPage() {
           ))}
         </div>
 
-        <p className="therapy-category-note">Kategori menandai konteks informasi, bukan rekomendasi klinis atau penilaian keamanan.</p>
+        <p className="therapy-category-note">Pilih kategori sesuai kebutuhan Ibu untuk melihat materi yang berkaitan dengan kehamilan atau persalinan.</p>
 
         <section className="therapy-results" aria-label="Daftar terapi" aria-live="polite">
           {visibleTherapies.length > 0 ? (

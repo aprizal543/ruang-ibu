@@ -27,6 +27,12 @@ export interface TherapyReference {
   sourceDateLabel?: string
   url: string
   accessedAt: string
+  authors?: string[]
+  doi?: string
+  studyDesign?: string
+  population?: string
+  evidenceLimitations?: string[]
+  mappedTopics?: string[]
 }
 
 export interface TherapyParagraph {
@@ -54,6 +60,7 @@ export interface TherapyArticle {
   id: string
   slug: string
   title: string
+  summaryHeading?: string
   categories: string[]
   sourceReview: TherapySourceReview
   clinicalReview: TherapyClinicalReview
