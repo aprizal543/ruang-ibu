@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useParams } from 'react-router-dom'
 import TherapyDetailPage from './components/therapy/TherapyDetailPage'
 import { therapyArticles } from './content/therapyArticles'
 import { therapyReferences } from './content/therapyReferences'
@@ -13,6 +13,13 @@ import BirthGuidePage from './pages/BirthGuidePage'
 import EvaluationPage from './pages/EvaluationPage'
 import { AboutPage, FaqPage, NotFoundPage, SafetyPage, SourcesPage } from './pages/InformationPages'
 import SiteMenu from './components/layout/SiteMenu'
+
+function TherapyArticleRoute() {
+  const { slug } = useParams()
+  const article = slug ? therapyArticles[slug] : undefined
+  if (!article) return <NotFoundPage />
+  return <TherapyDetailPage article={article} references={therapyReferences} />
+}
 
 export default function App() {
   const [menuOpen, setMenuOpen] = useState(false)
@@ -55,6 +62,7 @@ export default function App() {
           path="/terapi/pijat-pendamping"
           element={<TherapyDetailPage article={therapyArticles['pijat-pendamping-persalinan']} references={therapyReferences} />}
         />
+        <Route path="/terapi/:slug" element={<TherapyArticleRoute />} />
         <Route path="/tentang" element={<AboutPage />} />
         <Route path="/sumber" element={<SourcesPage />} />
         <Route path="/faq" element={<FaqPage />} />

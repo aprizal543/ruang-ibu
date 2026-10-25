@@ -302,6 +302,30 @@
   line-height: 1.45;
 }
 
+.information-source-details {
+  margin: 9px 0 3px;
+  color: var(--ri-ink);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.information-source-details summary {
+  min-height: 40px;
+  align-content: center;
+  color: var(--ri-forest);
+  font-weight: 600;
+  cursor: pointer;
+  text-underline-offset: 3px;
+}
+
+.information-source-details summary:focus-visible {
+  outline: 2px solid var(--ri-terra);
+  outline-offset: 2px;
+}
+
+.information-source-details p { margin: 7px 0 !important; }
+.information-source-details ul { margin: 5px 0 8px; padding-left: 20px; color: var(--ri-muted); }
+
 .information-source-list a {
   display: inline-flex;
   min-height: 36px;

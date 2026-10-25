@@ -105,7 +105,7 @@ export function SourcesPage() {
       headerTitle="Sumber Informasi"
       eyebrow="RUJUKAN MATERI"
       title="Sumber yang digunakan dalam materi Ruang Ibu."
-      intro="Daftar ini memuat tautan sumber yang tercatat pada artikel dan panduan. Buka halaman materi terkait untuk melihat sumber yang berhubungan dengan bagian tertentu."
+      intro="Di sini Ibu dapat menemukan sumber yang digunakan dalam artikel dan panduan. Setiap halaman materi juga menampilkan rujukan yang berkaitan dengan isinya."
     >
       <EditorialSection title="Daftar sumber">
         <ol className="information-source-list">
@@ -113,13 +113,27 @@ export function SourcesPage() {
             <li key={source.id}>
               <h3>{source.displayTitle ?? source.title}</h3>
               <p>{source.publisher}{source.publicationYear ? ` · ${source.publicationYear}` : ''}{source.sourceDateLabel ? ` · ${source.sourceDateLabel}` : ''}</p>
+              {source.authors?.length ? <p>Penulis: {source.authors.join(', ')}</p> : null}
+              {source.studyDesign || source.population || source.evidenceLimitations?.length ? (
+                <details className="information-source-details">
+                  <summary>Ringkasan sumber</summary>
+                  {source.studyDesign ? <p>Cara penelitian dilakukan: {source.studyDesign}</p> : null}
+                  {source.population ? <p>Siapa yang ikut: {source.population}</p> : null}
+                  {source.evidenceLimitations?.length ? (
+                    <>
+                      <p>Yang perlu diingat:</p>
+                      <ul>{source.evidenceLimitations.map((limitation) => <li key={limitation}>{limitation}</li>)}</ul>
+                    </>
+                  ) : null}
+                </details>
+              ) : null}
               <a href={source.url} target="_blank" rel="noreferrer">
-                Buka sumber <ArrowUpRightIcon size={16} aria-hidden="true" />
+                {source.doi ? `DOI ${source.doi}` : 'Buka sumber'} <ArrowUpRightIcon size={16} aria-hidden="true" />
               </a>
             </li>
           ))}
         </ol>
-        <p className="information-page__note">Tautan sumber membantu Ibu menelusuri asal informasi. Pencantuman sumber tidak berarti setiap materi telah mendapat persetujuan klinis.</p>
+        <p className="information-page__note">Sumber membantu Ibu menelusuri informasi. Setiap penelitian memiliki peserta dan cara yang berbeda, sehingga hasilnya mungkin tidak sama dengan pengalaman Ibu.</p>
       </EditorialSection>
     </InformationLayout>
   )
