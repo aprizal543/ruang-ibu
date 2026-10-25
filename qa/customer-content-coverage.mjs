@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { access, readFile } from 'node:fs/promises'
 
-const [references, articles, guides, routes, therapyPage, therapyDetails, therapyContent, informationPages, therapyStyles] = await Promise.all([
+const [references, articles, guides, routes, therapyPage, therapyDetails, therapyContent, informationPages, therapyStyles, sourceDisclosure] = await Promise.all([
   readFile(new URL('../src/content/therapyReferences.ts', import.meta.url), 'utf8'),
   readFile(new URL('../src/content/customerRevisionArticles.ts', import.meta.url), 'utf8'),
   readFile(new URL('../src/content/maternityGuides.ts', import.meta.url), 'utf8'),
@@ -11,6 +11,7 @@ const [references, articles, guides, routes, therapyPage, therapyDetails, therap
   readFile(new URL('../src/content/therapyArticles.ts', import.meta.url), 'utf8'),
   readFile(new URL('../src/pages/InformationPages.tsx', import.meta.url), 'utf8'),
   readFile(new URL('../src/styles/therapy-detail.css', import.meta.url), 'utf8'),
+  readFile(new URL('../src/components/ui/SourceDisclosure.tsx', import.meta.url), 'utf8'),
 ])
 
 const requiredReferenceIds = Array.from({ length: 8 }, (_, index) => `C0${index + 1}`)
@@ -22,6 +23,35 @@ const requiredTopicIds = [
 for (const id of requiredReferenceIds) {
   assert.match(references, new RegExp(`\\b${id}:`), `Missing required customer reference ${id}`)
 }
+
+const customerReferenceLinks = {
+  C01: { url: 'https://jptam.org/index.php/jptam/article/view/31581', domain: 'jptam.org', doi: '10.31004/jptam.v9i2.31581' },
+  C02: { url: 'https://jom.htp.ac.id/index.php/jkt/article/view/1032', domain: 'jom.htp.ac.id', doi: '10.25311/jkt/Vol2.Iss2.1032' },
+  C03: { url: 'https://jom.htp.ac.id/index.php/jkt/article/view/1117', domain: 'jom.htp.ac.id', doi: '10.25311/jkt/Vol1.Iss1.1117' },
+  C04: { url: 'https://pubmed.ncbi.nlm.nih.gov/40859559/', domain: 'pubmed.ncbi.nlm.nih.gov', doi: '10.1097/MD.0000000000043969' },
+  C05: { url: 'https://pubmed.ncbi.nlm.nih.gov/39031663/', domain: 'pubmed.ncbi.nlm.nih.gov', doi: '10.1111/ijn.13281' },
+  C06: { url: 'https://journals.sagepub.com/doi/10.1177/03057356241258958', domain: 'journals.sagepub.com', doi: '10.1177/03057356241258958' },
+  C07: { url: 'https://link.springer.com/article/10.1186/s12978-025-02023-z', domain: 'link.springer.com', doi: '10.1186/s12978-025-02023-z' },
+  C08: { url: 'https://www.frontiersin.org/journals/psychiatry/articles/10.3389/fpsyt.2024.1429999/full', domain: 'www.frontiersin.org', doi: '10.3389/fpsyt.2024.1429999' },
+}
+
+for (const [id, expected] of Object.entries(customerReferenceLinks)) {
+  const block = references.match(new RegExp(`\\b${id}:\\s*\\{([^}]+)\\}`))?.[1]
+  assert.ok(block, `Customer reference ${id} must be present`)
+  const url = block.match(/\burl:\s*'([^']+)'/)?.[1]
+  const doi = block.match(/\bdoi:\s*'([^']+)'/)?.[1]
+  assert.equal(url, expected.url, `${id} must use the requested direct source URL`)
+  assert.equal(doi, expected.doi, `${id} DOI must remain unchanged`)
+  assert.ok(url, `${id} source URL must not be empty`)
+  const parsedUrl = new URL(url)
+  assert.equal(parsedUrl.protocol, 'https:', `${id} source must use HTTPS`)
+  assert.equal(parsedUrl.hostname, expected.domain, `${id} source domain is unexpected`)
+  assert.equal(parsedUrl.search, '', `${id} source URL must not include tracking parameters`)
+  assert.doesNotMatch(url, /placeholder|localhost|127\.0\.0\.1/i, `${id} source URL must be a real public source`)
+}
+
+assert.match(sourceDisclosure, /<a href={source\.url} target="_blank" rel="noreferrer">/, 'Article and guide source links must use the centralized URL and open accessibly')
+assert.match(informationPages, /<a href={source\.url} target="_blank" rel="noreferrer">[\s\S]*?Buka sumber asli/, 'Sources page must offer an explicit link to each original source')
 
 for (const id of requiredTopicIds) {
   assert.match(guides, new RegExp(`topicId: '${id}'`), `Topic ${id} is not linked from its audience guide`)
