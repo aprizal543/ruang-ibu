@@ -128,7 +128,7 @@ export function SourcesPage() {
                 </details>
               ) : null}
               <a href={source.url} target="_blank" rel="noreferrer">
-                {source.doi ? `DOI ${source.doi}` : 'Buka sumber'} <ArrowUpRightIcon size={16} aria-hidden="true" />
+                {source.doi ? `Buka sumber asli · DOI ${source.doi}` : 'Buka sumber'} <ArrowUpRightIcon size={16} aria-hidden="true" />
               </a>
             </li>
           ))}
