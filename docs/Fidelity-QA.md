@@ -890,3 +890,34 @@ Evidence akhir 390 x 844 (katalog desktop 1440 x 900): [folder screenshot](evide
 ### Koreksi layout detail terapi (25 Oktober 2026)
 
 Atas keputusan desain final, gambar editorial besar dan field `contentImage` dihapus dari artikel detail. Jalur detail kembali text-first: navigasi anchor langsung diikuti section “Apa itu?”. Tujuh WebP 1200 × 800 yang tidak lagi dipakai dihapus setelah pencarian repository; foto sumber, ilustrasi SVG sumber, dan seluruh thumbnail WebP katalog tetap tersedia. `npm.cmd run test:content`, typecheck, production build PWA, dan `git diff --check` lulus. Agent Browser memeriksa 375, 390, dan 430 px; detail A01/A04 tidak memiliki gambar, section pertama mengikuti blok pengantar/navigasi, katalog tetap menampilkan 11 thumbnail, filter Hamil/Bersalin/Relaksasi menghasilkan 6/6/5 item, dan pencarian “kompres” menampilkan dua konteks. Tidak ada horizontal overflow atau runtime error. Screenshot baru tersedia di folder `evidence/customer-revision-detail-text-first/`.
+
+### Milestone 1 — UX foundation and navigation fix (26 October 2026)
+
+**Baseline and branch:** fetched `origin`; latest `origin/main` was `814462bc0e68f947ee7ac95b6011af7cc0e89110`, which includes customer source-link commit `32ca033`. The M1 branch `feat/ruang-ibu-revision-2026-m1-ux` was created from that baseline. Working tree was clean before the branch change.
+
+**Scroll root cause:** the app used `BrowserRouter` and ordinary `<Routes>` without route-level scroll management. A React Router PUSH left the prior global `window.scrollY` in place as the new detail route rendered, so a detail article could begin below its title. The article scroll-margin rule also targeted a wrapper for Sources while the fragment ID belongs to the nested disclosure section.
+
+**Implementation:** a global route scroll manager uses React Router location, `location.key`, pathname, hash, and navigation type. New route PUSH/REPLACE navigation starts at the top; POP restores the outgoing history entry's saved x/y from bounded `sessionStorage`; initial direct visits start at the top unless a hash is present. The five article anchors use React Router Links so hash PUSH/POP/Forward navigation is managed with route state; hash targets are revealed and Sources disclosures open when appropriate. Position capture happens only on route transitions, with no persistent scroll listener. Catalog category and search state use replace-only URL parameters and do not reset scroll. Article links mark their catalog origin so the header Back control performs history Back and restores its prior catalog entry. Existing article names, content, source URLs, images, and category metadata were not edited.
+
+`node qa/route-scroll.browser.mjs` (also available as `npm.cmd run test:browser:route-scroll`) passed in Agent Browser/Chromium. It covered:
+
+| Case | Result | Evidence |
+|---|---|---|
+| TC01 — lower catalog card opens its article with the title visible from the top | PASS | Article 8 opened at `scrollY: 0`; title remained below the 68 px header. |
+| TC02 — browser Back restores the previous catalog position | PASS | Restored within 3 px of the saved lower-list position. |
+| TC03 — Hamil filter and search survive detail → Back | PASS | URL, selected filter, query value, and one matching article restored. |
+| TC04 — direct article URL starts at the top | PASS | Verified all 11 card destinations and matching H1s. |
+| TC05 — article anchors and Sources disclosure | PASS | All five fragments resolve; direct Sources hash also opens the disclosure. |
+| TC06 — Forward after Back returns to the same detail and position | PASS | Article route and its saved top position restored. |
+| TC07 — six primary tabs remain navigable | PASS | Beranda, Terapi, Hamil, Bersalin, Relaksasi, Evaluasi each loaded with one active tab. |
+| TC08 — keyboard navigation | PASS | Skip link, article anchor, and article Back link activated by keyboard. |
+| TC09 — reduced motion | PASS | Emulated `prefers-reduced-motion: reduce`; computed document scroll behavior was `auto`. |
+| TC10 — responsive layout and fixed-tab clearance | PASS | No horizontal overflow at 360×800, 375×812, 390×844, 430×932, or 1440×900; last article link cleared the bottom tab. |
+
+Additional checks passed: filter counts were 6/6/5/11 for Hamil/Bersalin/Relaksasi/Semua; changing a filter or typing a query preserved a 100 px scroll position; every article had unique IDs; source links remained intact; no browser page errors occurred. Direct route smoke also passed for `/panduan/hamil`, `/panduan/bersalin`, `/tentang`, `/sumber`, `/faq`, `/tanda-bahaya`, and `/relaksasi/rain`. A selected relaxation track continued playing and its time advanced across browser Back and Forward. Evaluation values stayed in transient React state: the privacy browser check found no `localStorage`/`sessionStorage` change and no fetch, XHR, or beacon request after rating and submission. The generated service worker contains no audio MP3 precache entry (42 precache entries total).
+
+Contrast calculations on the existing token colors passed for the inspected pairs: terra article heading on paper **7.32:1**, muted text on paper **4.99:1**, catalog text on ivory **5.59:1**, white on forest **9.75:1**, and danger text on its pale surface **4.72:1**. The rendered catalog and article keep the approved botanical header, stacked cards, Fraunces/DM Sans, six-tab navigation, and text-first reading layout; no material visual deviation was found in the inspected 390×844 screenshots.
+
+**Screenshots after the change (390×844):** [catalog top](evidence/m1-ux/catalog-top-390x844.png), [catalog restored at the lower list](evidence/m1-ux/catalog-return-390x844.png), [article first viewport](evidence/m1-ux/article-top-390x844.png), and [article Sources disclosure](evidence/m1-ux/article-source-anchor-390x844.png). A before screenshot was not captured. Browser viewport emulation was used; no physical iPhone or Android device was tested.
+
+**Regression checks:** `npm.cmd run test:content` passed (12 topics and C01–C08); `npm.cmd run typecheck` passed; `npm.cmd run build` passed (including PWA injectManifest); `git diff --check` passed. `package.json` has no lint script. No Cloudflare/D1 configuration or content, references, or service-worker rules changed. The clinical review log remains pending; no clinical approval is claimed. No commit, push, merge, or deployment was made.

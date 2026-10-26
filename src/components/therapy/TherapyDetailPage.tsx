@@ -4,7 +4,7 @@ import {
   HeadphonesIcon,
   WarningCircleIcon,
 } from '@phosphor-icons/react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import BottomTabBar from '../layout/BottomTabBar'
 import AudioPlayer from '../audio/AudioPlayer'
 import { getAudioTrack } from '../../content/audioTracks'
@@ -127,6 +127,9 @@ function ReferenceList({
 }
 
 export default function TherapyDetailPage({ article, references }: TherapyDetailPageProps) {
+  const location = useLocation()
+  const navigate = useNavigate()
+
   useEffect(() => {
     document.title = `${article.title} · Ruang Ibu`
   }, [article.title])
@@ -135,7 +138,17 @@ export default function TherapyDetailPage({ article, references }: TherapyDetail
     <div className="therapy-detail-page">
       <a className="skip-link sr-only focus:not-sr-only" href="#therapy-detail-main">Lewati ke konten</a>
       <header className="therapy-detail-header">
-        <Link className="therapy-detail-header__back" to="/terapi" aria-label="Kembali ke katalog terapi">
+        <Link
+          className="therapy-detail-header__back"
+          to="/terapi"
+          aria-label="Kembali ke katalog terapi"
+          onClick={(event) => {
+            if (location.state && typeof location.state === 'object' && 'returnToCatalog' in location.state && location.state.returnToCatalog === true) {
+              event.preventDefault()
+              navigate(-1)
+            }
+          }}
+        >
           <ArrowLeftIcon size={22} weight="regular" aria-hidden="true" />
         </Link>
         <span>Detail Terapi</span>
@@ -154,17 +167,17 @@ export default function TherapyDetailPage({ article, references }: TherapyDetail
               <ArticleParagraph paragraph={article.introduction} />
             </section>
             <nav className="therapy-article__contents" aria-label="Navigasi artikel">
-              <a href="#section-pengertian">Apa itu?</a>
-              <a href="#section-tujuan">Apa tujuannya?</a>
-              <a href="#section-kapan-dipertimbangkan">Kapan dipertimbangkan?</a>
-              <a href="#section-keselamatan">Perhatian</a>
-              <a
-                href="#section-referensi"
+              <Link to={{ hash: '#section-pengertian' }}>Apa itu?</Link>
+              <Link to={{ hash: '#section-tujuan' }}>Apa tujuannya?</Link>
+              <Link to={{ hash: '#section-kapan-dipertimbangkan' }}>Kapan dipertimbangkan?</Link>
+              <Link to={{ hash: '#section-keselamatan' }}>Perhatian</Link>
+              <Link
+                to={{ hash: '#section-referensi' }}
                 onClick={() => {
                   const disclosure = document.querySelector<HTMLDetailsElement>('#section-referensi details')
                   if (disclosure) disclosure.open = true
                 }}
-              >Sumber</a>
+              >Sumber</Link>
             </nav>
           </header>
 

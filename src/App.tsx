@@ -13,6 +13,7 @@ import BirthGuidePage from './pages/BirthGuidePage'
 import EvaluationPage from './pages/EvaluationPage'
 import { AboutPage, FaqPage, NotFoundPage, SafetyPage, SourcesPage } from './pages/InformationPages'
 import SiteMenu from './components/layout/SiteMenu'
+import RouteScrollManager from './components/navigation/RouteScrollManager'
 
 function TherapyArticleRoute() {
   const { slug } = useParams()
@@ -34,6 +35,7 @@ export default function App() {
 
   return (
     <>
+      <RouteScrollManager />
       <Routes>
         <Route path="/" element={<HomePage menuOpen={menuOpen} onOpenMenu={openMenu} />} />
         <Route path="/terapi" element={<TherapyPage />} />

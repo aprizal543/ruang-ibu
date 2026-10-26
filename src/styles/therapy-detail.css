@@ -120,10 +120,8 @@
   outline-offset: 1px;
 }
 
-.therapy-detail__section [id^='section-'],
-.therapy-detail__safety [id^='section-'],
-.therapy-detail__sources[id^='section-'] {
-  scroll-margin-top: 18px;
+.therapy-detail-main [id^='section-'] {
+  scroll-margin-top: 20px;
 }
 
 .therapy-article__updated {
@@ -295,6 +293,16 @@
 .therapy-detail__catalog-link:focus-visible,
 .therapy-article__contents a:focus-visible {
   outline-offset: 3px;
+}
+
+.therapy-article__contents a {
+  min-width: 44px;
+  padding-inline: 4px;
+}
+
+.therapy-detail__section p,
+.therapy-detail__safety p {
+  text-wrap: pretty;
 }
 
 @media (max-width: 380px) {

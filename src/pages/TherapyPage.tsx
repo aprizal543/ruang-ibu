@@ -5,7 +5,7 @@ import {
   MagnifyingGlassIcon,
   XIcon,
 } from '@phosphor-icons/react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import BottomTabBar from '../components/layout/BottomTabBar'
 import '../styles/therapy-page.css'
 
@@ -131,7 +131,7 @@ function TherapyHeader({ onSearch, searchOpen }: { onSearch: () => void; searchO
 
 function TherapyRow({ therapy }: { therapy: Therapy }) {
   return (
-    <Link className="therapy-row" to={therapy.href}>
+    <Link className="therapy-row" to={therapy.href} state={{ returnToCatalog: true }}>
       <img
         className="therapy-row__thumbnail"
         src={`/images/therapy/${therapy.image}`}
@@ -151,9 +151,11 @@ function TherapyRow({ therapy }: { therapy: Therapy }) {
 }
 
 export default function TherapyPage() {
-  const [activeFilter, setActiveFilter] = useState<Filter>('Semua')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const filterParam = searchParams.get('kategori')
+  const activeFilter = categories.find((category) => category.toLocaleLowerCase('id') === filterParam) ?? 'Semua'
+  const query = searchParams.get('q') ?? ''
   const [searchOpen, setSearchOpen] = useState(false)
-  const [query, setQuery] = useState('')
   const searchRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -161,8 +163,28 @@ export default function TherapyPage() {
   }, [])
 
   useEffect(() => {
+    if (query) setSearchOpen(true)
+  }, [query])
+
+  useEffect(() => {
     if (searchOpen) searchRef.current?.focus()
   }, [searchOpen])
+
+  function updateCatalogParams(updates: { category?: Filter; query?: string }) {
+    const nextParams = new URLSearchParams(searchParams)
+
+    if (updates.category !== undefined) {
+      if (updates.category === 'Semua') nextParams.delete('kategori')
+      else nextParams.set('kategori', updates.category.toLocaleLowerCase('id'))
+    }
+
+    if (updates.query !== undefined) {
+      if (updates.query) nextParams.set('q', updates.query)
+      else nextParams.delete('q')
+    }
+
+    setSearchParams(nextParams, { replace: true })
+  }
 
   const visibleTherapies = useMemo(() => {
     const normalizedQuery = query.trim().toLocaleLowerCase('id')
@@ -175,7 +197,7 @@ export default function TherapyPage() {
 
   function handleSearchKeyDown(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === 'Escape') {
-      setQuery('')
+      updateCatalogParams({ query: '' })
       setSearchOpen(false)
     }
   }
@@ -200,13 +222,13 @@ export default function TherapyPage() {
               ref={searchRef}
               type="search"
               value={query}
-              onChange={(event) => setQuery(event.target.value)}
+              onChange={(event) => updateCatalogParams({ query: event.target.value })}
               onKeyDown={handleSearchKeyDown}
               placeholder="Cari nama atau topik terapi"
               aria-label="Cari berdasarkan nama atau deskripsi terapi"
             />
             {query && (
-              <button className="therapy-search__clear" type="button" onClick={() => setQuery('')} aria-label="Hapus kata pencarian">
+              <button className="therapy-search__clear" type="button" onClick={() => updateCatalogParams({ query: '' })} aria-label="Hapus kata pencarian">
                 <XIcon size={18} weight="regular" aria-hidden="true" />
               </button>
             )}
@@ -220,7 +242,7 @@ export default function TherapyPage() {
               key={category}
               type="button"
               aria-pressed={activeFilter === category}
-              onClick={() => setActiveFilter(category)}
+              onClick={() => updateCatalogParams({ category })}
             >
               {category}
             </button>
