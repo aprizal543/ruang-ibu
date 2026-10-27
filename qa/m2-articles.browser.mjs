@@ -151,10 +151,9 @@ for (const [width, height] of viewportSizes) {
         caption: image?.closest('figure')?.querySelector('figcaption')?.textContent.trim(),
         guide: document.querySelector('#practice-heading')?.textContent.trim(),
         guideSteps: document.querySelectorAll('[data-source-guide] li').length,
-        refs: [...document.querySelectorAll('.therapy-detail__step-sources a')].every((a) => {
-          const targetId = decodeURIComponent(new URL(a.href, location.href).hash.slice(1))
-          return Boolean(targetId && document.getElementById(targetId))
-        }),
+        photographerCredit: /Foto oleh|Pexels/.test(image?.closest('figure')?.querySelector('figcaption')?.textContent ?? ''),
+        stepSourceLabel: [...document.querySelectorAll('[data-source-guide] li')].some((step) => /Sumber\s*:/i.test(step.textContent ?? '')),
+        stepReferenceLinks: document.querySelectorAll('[data-source-guide] li a').length,
         overflow: document.documentElement.scrollWidth > document.documentElement.clientWidth,
         duplicateIds: ids.filter((id, index) => ids.indexOf(id) !== index),
         bottomClearance: document.querySelector('.therapy-detail__catalog-link')?.getBoundingClientRect().bottom <= document.querySelector('.therapy-article').getBoundingClientRect().bottom,
@@ -165,9 +164,11 @@ for (const [width, height] of viewportSizes) {
     assert.ok(state.scrollY <= 1, `${route} direct visit starts at the top`)
     assert.ok(state.imageComplete && state.imageWidth > 0 && state.imageHeight > 0 && state.renderedImageWidth > 0, `${route} figure loads and renders at ${width}px (${JSON.stringify(state)})`)
     assert.ok(state.caption, `${route} figure includes a caption`)
+    assert.equal(state.photographerCredit, false, `${route} caption omits photographer credit and provider branding`)
     assert.equal(state.guide, 'Yang Bisa Ibu Lakukan', `${route} shows practical guidance`)
     assert.ok(state.guideSteps >= 3, `${route} has at least three source-based steps`)
-    assert.equal(state.refs, true, `${route} step source IDs point to source entries`)
+    assert.equal(state.stepSourceLabel, false, `${route} practical steps omit the repeated source label`)
+    assert.equal(state.stepReferenceLinks, 0, `${route} practical steps do not display reference-code links`)
     assert.equal(state.overflow, false, `${route} has no horizontal overflow at ${width}px`)
     assert.deepEqual(state.duplicateIds, [], `${route} has unique IDs`)
     await evaluate('window.scrollTo(0, document.documentElement.scrollHeight)')
@@ -216,26 +217,17 @@ assert.equal(sectionSourcesOpen, true, 'The section Sources anchor opens its dis
 assert.ok((await evaluate('location.hash')) === '#section-referensi', 'The section Sources anchor changes the fragment')
 
 await open(`${origin}/terapi/nyeri-punggung-kehamilan`)
-const keyboardState = await evaluate(`(() => {
-  const link = document.querySelector('.therapy-detail__step-sources a')
-  link?.focus()
-  return { focused: document.activeElement === link, tabIndex: link?.tabIndex, href: link?.href }
+const sourceSectionState = await evaluate(`(() => {
+  const disclosure = document.querySelector('#section-referensi details')
+  return {
+    open: disclosure?.open ?? false,
+    summary: disclosure?.querySelector('summary')?.textContent.trim() ?? '',
+    referenceRows: disclosure?.querySelectorAll('.content-disclosure__sources > li').length ?? 0,
+  }
 })()`)
-assert.equal(keyboardState.focused, true, 'Source links accept keyboard focus')
-assert.ok(keyboardState.tabIndex >= 0 && keyboardState.href.includes('#section-referensi-S26'), 'Source links remain in the natural tab order and expose their anchor destination')
-await evaluate(`document.querySelector('.therapy-detail__step-sources a').click()`)
-const clickedSource = await waitForSourceVisible('S26')
-assert.equal(await evaluate('location.hash'), '#section-referensi-S26', 'Activating an individual source opens its exact anchor')
-assert.ok(clickedSource.visible && clickedSource.open, 'The individual source is visible and its disclosure is open')
-const sourceHistory = await cdp('Page.getNavigationHistory')
-const sourceEntry = sourceHistory.entries[sourceHistory.currentIndex]
-assert.ok(sourceHistory.currentIndex > 0, 'The individual source link creates navigable browser history')
-await cdp('Page.navigateToHistoryEntry', { entryId: sourceHistory.entries[sourceHistory.currentIndex - 1].id })
-await sleep(150)
-assert.equal(await evaluate('location.hash'), '', 'Browser Back returns from the individual source anchor')
-await cdp('Page.navigateToHistoryEntry', { entryId: sourceEntry.id })
-const restoredSource = await waitForSourceVisible('S26')
-assert.ok(restoredSource.visible, 'Browser Forward returns to the visible individual source anchor')
+assert.equal(sourceSectionState.open, false, 'The Sources disclosure remains independently collapsible')
+assert.ok(sourceSectionState.summary, 'The Sources disclosure keeps its summary')
+assert.ok(sourceSectionState.referenceRows > 0, 'The Sources disclosure retains the mapped article references')
 
 await open(`${origin}/terapi`)
 await evaluate(`window.scrollTo(0, document.documentElement.scrollHeight)`)

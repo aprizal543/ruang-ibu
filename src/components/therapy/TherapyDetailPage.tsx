@@ -65,11 +65,7 @@ function PracticeGuide({ article }: { article: TherapyArticle }) {
         <ol className="therapy-detail__source-guide-list">
           {guide.instructions.map((instruction, index) => (
             <li key={`${article.id}-guide-${index}`}>
-              <span>{instruction.text}{' '}
-                <span className="therapy-detail__step-sources">Sumber: {instruction.referenceIds.map((id, refIndex) => (
-                  <span key={id}>{refIndex > 0 ? ', ' : ''}<Link to={{ hash: `#section-referensi-${id}` }}>{id}</Link></span>
-                ))}</span>
-              </span>
+              {instruction.text}
             </li>
           ))}
         </ol>

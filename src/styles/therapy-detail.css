@@ -323,11 +323,6 @@
   line-height: 1.55;
 }
 
-.therapy-article-figure__attribution a {
-  color: var(--ri-forest, #124d3d);
-  text-underline-offset: 2px;
-}
-
 .therapy-detail__review-status {
   margin: 0 0 14px;
   color: var(--ri-muted);
@@ -335,20 +330,11 @@
   line-height: 1.55;
 }
 
-.therapy-detail__step-sources {
-  display: inline-block;
-  margin-left: 3px;
-  color: var(--ri-muted);
-  font-size: 13px;
-}
-
-.therapy-detail__step-sources a,
 .content-disclosure__source-id {
   color: var(--ri-forest);
   font-weight: 650;
 }
 
-.therapy-detail__step-sources a:focus-visible,
 .content-disclosure__sources a:focus-visible {
   outline: 2px solid var(--ri-terracotta);
   outline-offset: 3px;
