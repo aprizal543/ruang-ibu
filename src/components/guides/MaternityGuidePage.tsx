@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import BottomTabBar from '../layout/BottomTabBar'
 import SourceDisclosure from '../ui/SourceDisclosure'
 import { therapyReferences } from '../../content/therapyReferences'
+import { getTherapySourceTypeLabel } from '../../content/therapySourceLabels'
 import type { GuideLinkItem, MaternityGuideContent, MaternityGuideSection } from '../../content/maternityGuides'
 import '../../styles/maternity-guides.css'
 
@@ -133,6 +134,7 @@ export default function MaternityGuidePage({ guide }: { guide: MaternityGuideCon
               publisher: source.publisher,
               url: source.url,
               metadata: source.sourceDateLabel ?? (source.publicationYear ? String(source.publicationYear) : undefined),
+              category: getTherapySourceTypeLabel(source.sourceType),
             }))}
             note="Informasi ini bersifat edukasi dan tidak menggantikan arahan bidan atau dokter. Sebagian sumber berasal dari NHS Inggris; jalur layanan dapat berbeda di Indonesia."
           />

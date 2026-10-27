@@ -1,7 +1,8 @@
-import type { TherapyArticle } from './therapyContent.types'
+import type { TherapyArticle, TherapyArticleDefinition } from './therapyContent.types'
 import { customerRevisionArticles } from './customerRevisionArticles'
+import { therapyArticleFigures } from './therapyArticleFigures'
 
-export const therapyArticles: Record<string, TherapyArticle> = {
+const articleDefinitions: Record<string, TherapyArticleDefinition> = {
   ...customerRevisionArticles,
   'musik-relaksasi': {
     id: 'T02',
@@ -12,7 +13,7 @@ export const therapyArticles: Record<string, TherapyArticle> = {
     clinicalReview: { status: 'draft' },
     introduction: {
       text: 'Musik yang Ibu sukai dapat menjadi teman saat ingin beristirahat atau merasa lebih tenang selama hamil dan persalinan. Jika terasa mengganggu, Ibu dapat mengganti pilihan atau berhenti mendengarkan.',
-      referenceIds: ['S1', 'S2', 'S3', 'C04', 'C05', 'C06', 'C07', 'C08'],
+      referenceIds: ['S1', 'S2', 'S40', 'C04', 'C05', 'C06', 'C07', 'C08'],
     },
     sections: [
       {
@@ -63,8 +64,8 @@ export const therapyArticles: Record<string, TherapyArticle> = {
       note: 'Audio ini dapat menemani suasana, tetapi tidak menjanjikan perubahan nyeri atau rasa cemas.',
       instructions: [
         { text: 'Pilih audio yang Ibu sukai selama hamil atau bersalin, atau lewati jika tidak ingin mendengarkan.', referenceIds: ['S2'] },
-        { text: 'Atur volume hingga terasa nyaman dan tetap memungkinkan Ibu mendengar orang di sekitar.', referenceIds: [] },
-        { text: 'Tekan putar untuk memulai. Ibu dapat menjeda atau menghentikan audio kapan saja.', referenceIds: [] },
+        { text: 'Atur volume pada tingkat yang nyaman dan tetap memungkinkan Ibu mendengar orang di sekitar.', referenceIds: ['S1', 'S2'] },
+        { text: 'Ibu dapat menjeda atau menghentikan audio kapan saja bila tidak nyaman atau ingin berkomunikasi.', referenceIds: ['S1', 'S2'] },
         { text: 'Beri tahu pendamping atau bidan jika musik mengganggu atau Ibu ingin mengganti pilihan.', referenceIds: ['S2'] },
       ],
     },
@@ -72,7 +73,7 @@ export const therapyArticles: Record<string, TherapyArticle> = {
       status: 'available',
       trackId: 'ambient',
     },
-    referenceIds: ['S1', 'S2', 'S3', 'S13', 'C04', 'C05', 'C06', 'C07', 'C08'],
+    referenceIds: ['S1', 'S2', 'S13', 'S40', 'C04', 'C05', 'C06', 'C07', 'C08'],
     updatedAt: '2026-10-23',
   },
   'relaksasi-otot-ringan': {
@@ -123,13 +124,19 @@ export const therapyArticles: Record<string, TherapyArticle> = {
       referenceIds: ['S14'],
     },
     practiceGuide: {
-      status: 'locked_pending_review',
-      message: 'Informasi ini tidak memandu latihan. Jika Ibu ingin membicarakan pilihan saat merasa kewalahan atau panik, mintalah dukungan bidan atau tenaga kesehatan yang mendampingi.',
+      status: 'source_based',
+      note: 'Pilihan berikut berfokus pada meminta dukungan dan menjaga kendali Ibu; materi ini tidak mengajarkan latihan grounding atau menjanjikan efek tertentu.',
+      instructions: [
+        { text: 'Jika merasa kewalahan, beri tahu pendamping atau tenaga kesehatan bahwa Ibu membutuhkan dukungan.', referenceIds: ['S14', 'S22'] },
+        { text: 'Minta penjelasan atau jeda bila ada hal yang belum dipahami atau terasa tidak nyaman.', referenceIds: ['S22'] },
+        { text: 'Ibu tidak perlu mencoba latihan atau pilihan apa pun yang tidak diinginkan.', referenceIds: ['S14', 'S22'] },
+        { text: 'Bicarakan dengan bidan atau dokter bila rasa kewalahan berlanjut atau mengganggu kegiatan sehari-hari.', referenceIds: ['S14'] },
+      ],
     },
     audio: {
       status: 'not_applicable',
     },
-    referenceIds: ['S14'],
+    referenceIds: ['S14', 'S22'],
     updatedAt: '2026-10-23',
   },
   'pijat-pendamping-persalinan': {
@@ -141,7 +148,7 @@ export const therapyArticles: Record<string, TherapyArticle> = {
     clinicalReview: { status: 'draft' },
     introduction: {
       text: 'Pijat pendamping dapat menjadi salah satu pilihan sentuhan saat persalinan, jika Ibu menginginkannya. Manfaatnya belum dapat dipastikan dan bisa berbeda pada setiap Ibu.',
-      referenceIds: ['S1', 'S2', 'S4', 'S8'],
+      referenceIds: ['S1', 'S2', 'S8', 'S33', 'S34'],
     },
     sections: [
       {
@@ -159,8 +166,8 @@ export const therapyArticles: Record<string, TherapyArticle> = {
         heading: 'Apa tujuannya?',
         paragraphs: [
           {
-            text: 'Pijat dibahas sebagai salah satu pilihan pendamping kenyamanan saat persalinan. Pijat tidak menggantikan pemeriksaan bidan atau dokter maupun pilihan pereda nyeri lainnya.',
-            referenceIds: ['S1', 'S2', 'S4', 'S8'],
+            text: 'Tinjauan pijat sakral dan uji shiatsu oleh bidan terlatih meneliti teknik tertentu saat persalinan. Temuan itu tidak membuktikan manfaat pijat umum oleh pendamping; persetujuan Ibu dan komunikasi dengan bidan tetap utama.',
+            referenceIds: ['S33', 'S34'],
           },
         ],
       },
@@ -170,14 +177,14 @@ export const therapyArticles: Record<string, TherapyArticle> = {
         paragraphs: [
           {
             text: 'Saat persalinan, pijat dapat menjadi salah satu pilihan bagi Ibu yang ingin mendapat dukungan saat nyeri. Jika Ibu memilihnya, pendamping perlu lebih dahulu mempelajari teknik yang akan digunakan dan membicarakannya dengan bidan.',
-            referenceIds: ['S1', 'S2', 'S4'],
+            referenceIds: ['S1', 'S2', 'S33', 'S34'],
           },
         ],
       },
     ],
     safetyNotice: {
       text: 'Persetujuan dan kenyamanan Ibu harus dihormati. Ibu dapat memilih tidak dipijat atau meminta sentuhan dihentikan kapan saja. Halaman ini tidak memberi arahan tentang lokasi, tekanan, durasi, atau teknik pijat, dan tidak dapat memastikan bentuk pijat yang sesuai untuk kondisi Ibu. Informasi ini tidak menggantikan arahan bidan atau dokter.',
-      referenceIds: ['S1', 'S2', 'S4'],
+      referenceIds: ['S1', 'S2', 'S33', 'S34'],
     },
     practiceGuide: {
       status: 'source_based',
@@ -193,7 +200,7 @@ export const therapyArticles: Record<string, TherapyArticle> = {
     audio: {
       status: 'not_applicable',
     },
-    referenceIds: ['S1', 'S2', 'S4', 'S8'],
+    referenceIds: ['S1', 'S2', 'S8', 'S33', 'S34'],
     updatedAt: '2026-10-23',
   },
   'teknik-pernapasan': {
@@ -205,7 +212,7 @@ export const therapyArticles: Record<string, TherapyArticle> = {
     clinicalReview: { status: 'draft' },
     introduction: {
       text: 'Saat hamil, Ibu dapat membicarakan pilihan pernapasan untuk persiapan persalinan dengan bidan. Saat persalinan, Ibu boleh mencoba bernapas perlahan dan berirama jika terasa nyaman. Pengalaman setiap Ibu berbeda.',
-      referenceIds: ['S1', 'S2', 'S3', 'S5', 'S6', 'S15'],
+      referenceIds: ['S1', 'S2', 'S5', 'S6', 'S15', 'S32', 'S39'],
     },
     sections: [
       {
@@ -224,7 +231,7 @@ export const therapyArticles: Record<string, TherapyArticle> = {
         paragraphs: [
           {
             text: 'Sebagian Ibu memilih memperhatikan napas untuk membantu menghadapi persalinan. Pengalaman setiap Ibu berbeda, dan cara ini tidak menjamin nyeri berkurang.',
-            referenceIds: ['S1', 'S2', 'S3'],
+            referenceIds: ['S1', 'S2', 'S32'],
           },
         ],
       },
@@ -238,14 +245,14 @@ export const therapyArticles: Record<string, TherapyArticle> = {
           },
           {
             text: 'Saat persalinan, sumber pasien menjelaskan napas perlahan dan berirama ketika kontraksi terasa meningkat. Ibu dapat memilih cara bernapas yang terasa lebih nyaman dan meminta dukungan bidan kapan saja.',
-            referenceIds: ['S1', 'S2', 'S3', 'S6', 'S15'],
+            referenceIds: ['S1', 'S2', 'S6', 'S15', 'S32'],
           },
         ],
       },
     ],
     safetyNotice: {
       text: 'Pilihan bernapas ini bukan latihan mengejan atau menahan napas. Jangan memaksakan cara yang terasa tidak nyaman. Tanyakan kepada bidan atau dokter bila Ibu memiliki pertanyaan atau membutuhkan bantuan.',
-      referenceIds: ['S1', 'S2', 'S6', 'S15'],
+    referenceIds: ['S1', 'S2', 'S6', 'S15', 'S32', 'S39'],
     },
     practiceGuide: {
       status: 'source_based',
@@ -261,7 +268,15 @@ export const therapyArticles: Record<string, TherapyArticle> = {
       status: 'available',
       trackId: 'rain',
     },
-    referenceIds: ['S1', 'S2', 'S3', 'S5', 'S6', 'S15'],
+    referenceIds: ['S1', 'S2', 'S5', 'S6', 'S15', 'S32', 'S39'],
     updatedAt: '2026-10-23',
   },
 }
+
+export const therapyArticles: Record<string, TherapyArticle> = Object.fromEntries(
+  Object.entries(articleDefinitions).map(([slug, article]) => {
+    const figure = therapyArticleFigures[article.id]
+    if (!figure) throw new Error(`Missing article figure for ${article.id}`)
+    return [slug, { ...article, figure }]
+  }),
+)

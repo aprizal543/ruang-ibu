@@ -6,6 +6,7 @@ export interface SourceDisclosureItem {
   publisher: string
   url: string
   metadata?: string
+  category?: string
 }
 
 interface SourceDisclosureProps {
@@ -24,7 +25,9 @@ export default function SourceDisclosure({ id, sources, note, className = '' }: 
         <ul className="content-disclosure__sources">
           {uniqueSources.map((source) => (
             <li id={`${id}-${source.id}`} key={source.id}>
+              <span className="content-disclosure__source-id">{source.id}</span>
               <a href={source.url} target="_blank" rel="noreferrer">{source.title}</a>
+              {source.category ? <span className="content-disclosure__source-category">{source.category}</span> : null}
               <span>{source.publisher}{source.metadata ? ` · ${source.metadata}` : ''}</span>
             </li>
           ))}

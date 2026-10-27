@@ -4,12 +4,14 @@ import {
   HeadphonesIcon,
   WarningCircleIcon,
 } from '@phosphor-icons/react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import BottomTabBar from '../layout/BottomTabBar'
 import AudioPlayer from '../audio/AudioPlayer'
 import { getAudioTrack } from '../../content/audioTracks'
 import type { TherapyArticle, TherapyParagraph, TherapyReference } from '../../content/therapyContent.types'
 import SourceDisclosure from '../ui/SourceDisclosure'
+import TherapyArticleFigure from './TherapyArticleFigure'
+import { getTherapySourceTypeLabel } from '../../content/therapySourceLabels'
 import '../../styles/therapy-detail.css'
 
 interface TherapyDetailPageProps {
@@ -63,7 +65,7 @@ function PracticeGuide({ article }: { article: TherapyArticle }) {
         <ol className="therapy-detail__source-guide-list">
           {guide.instructions.map((instruction, index) => (
             <li key={`${article.id}-guide-${index}`}>
-              <span>{instruction.text}</span>
+              {instruction.text}
             </li>
           ))}
         </ol>
@@ -120,6 +122,7 @@ function ReferenceList({
         publisher: reference.publisher,
         url: reference.url,
         metadata: reference.publicationYear ? String(reference.publicationYear) : reference.sourceDateLabel,
+        category: getTherapySourceTypeLabel(reference.sourceType),
       }))}
       note="Informasi ini bersifat edukasi dan tidak menggantikan arahan bidan atau dokter."
     />
@@ -127,6 +130,9 @@ function ReferenceList({
 }
 
 export default function TherapyDetailPage({ article, references }: TherapyDetailPageProps) {
+  const location = useLocation()
+  const navigate = useNavigate()
+
   useEffect(() => {
     document.title = `${article.title} · Ruang Ibu`
   }, [article.title])
@@ -135,7 +141,17 @@ export default function TherapyDetailPage({ article, references }: TherapyDetail
     <div className="therapy-detail-page">
       <a className="skip-link sr-only focus:not-sr-only" href="#therapy-detail-main">Lewati ke konten</a>
       <header className="therapy-detail-header">
-        <Link className="therapy-detail-header__back" to="/terapi" aria-label="Kembali ke katalog terapi">
+        <Link
+          className="therapy-detail-header__back"
+          to="/terapi"
+          aria-label="Kembali ke katalog terapi"
+          onClick={(event) => {
+            if (location.state && typeof location.state === 'object' && 'returnToCatalog' in location.state && location.state.returnToCatalog === true) {
+              event.preventDefault()
+              navigate(-1)
+            }
+          }}
+        >
           <ArrowLeftIcon size={22} weight="regular" aria-hidden="true" />
         </Link>
         <span>Detail Terapi</span>
@@ -153,18 +169,15 @@ export default function TherapyDetailPage({ article, references }: TherapyDetail
               <h2 id="summary-heading">{article.summaryHeading ?? `Mengenal ${article.title}`}</h2>
               <ArticleParagraph paragraph={article.introduction} />
             </section>
+            <TherapyArticleFigure figure={article.figure} />
             <nav className="therapy-article__contents" aria-label="Navigasi artikel">
-              <a href="#section-pengertian">Apa itu?</a>
-              <a href="#section-tujuan">Apa tujuannya?</a>
-              <a href="#section-kapan-dipertimbangkan">Kapan dipertimbangkan?</a>
-              <a href="#section-keselamatan">Perhatian</a>
-              <a
-                href="#section-referensi"
-                onClick={() => {
-                  const disclosure = document.querySelector<HTMLDetailsElement>('#section-referensi details')
-                  if (disclosure) disclosure.open = true
-                }}
-              >Sumber</a>
+              <Link to={{ hash: '#section-pengertian' }}>Apa itu?</Link>
+              <Link to={{ hash: '#section-tujuan' }}>Apa tujuannya?</Link>
+              <Link to={{ hash: '#section-kapan-dipertimbangkan' }}>Kapan dipertimbangkan?</Link>
+              <Link to={{ hash: '#section-keselamatan' }}>Perhatian</Link>
+              <Link
+                to={{ hash: '#section-referensi' }}
+              >Sumber</Link>
             </nav>
           </header>
 
@@ -173,7 +186,8 @@ export default function TherapyDetailPage({ article, references }: TherapyDetail
           <SafetyNotice paragraph={article.safetyNotice} />
 
           <section className="therapy-detail__section" aria-labelledby="practice-heading">
-            <h2 id="practice-heading">Panduan untuk Ibu</h2>
+            <h2 id="practice-heading">Yang Bisa Ibu Lakukan</h2>
+            <p className="therapy-detail__review-status">Informasi ini bersifat edukasi dan tidak menggantikan penilaian bidan atau dokter.</p>
             <PracticeGuide article={article} />
           </section>
 

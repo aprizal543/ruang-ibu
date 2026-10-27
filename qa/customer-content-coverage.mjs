@@ -61,9 +61,13 @@ const guideTopicIds = [...guides.matchAll(/topicId: '([^']+)'/g)].map(([, id]) =
 assert.equal(new Set(guideTopicIds).size, 12, 'Audience guides must expose exactly 12 unique customer topics')
 assert.match(routes, /path="\/terapi\/:slug"/, 'Generic article route is missing')
 assert.match(articles, /customerRevisionArticles/, 'Customer article data is not integrated into therapy content')
-assert.doesNotMatch(therapyDetails, /contentImage|therapy-article__image/, 'Therapy detail pages must remain text-first')
-assert.doesNotMatch(therapyDetails, /<figure/, 'Therapy detail pages must not render editorial figures')
-assert.ok(therapyDetails.indexOf('className="therapy-article__contents"') < therapyDetails.indexOf('article.sections.map'), 'Article sections must follow the anchor navigation directly')
+assert.doesNotMatch(therapyDetails, /contentImage|therapy-article__image/, 'Catalog thumbnails must not be promoted to article figures')
+assert.match(therapyDetails, /TherapyArticleFigure/, 'Therapy detail pages must render the reusable article figure')
+assert.ok(
+  therapyDetails.indexOf('className="therapy-article__summary"') < therapyDetails.indexOf('<TherapyArticleFigure')
+    && therapyDetails.indexOf('<TherapyArticleFigure') < therapyDetails.indexOf('className="therapy-article__contents"'),
+  'The article figure must follow the introduction and precede anchor navigation',
+)
 assert.doesNotMatch(therapyPage, /contentImage/, 'Catalog thumbnails must remain separate from article content images')
 
 const productionCopy = [articles, guides, therapyPage, therapyDetails, therapyContent, informationPages, references].join('\n')
@@ -108,7 +112,7 @@ const requiredCatalogImages = [
   'warm-compress-pregnancy-thumb.webp', 'prenatal-massage-thumb.webp',
   'pregnancy-support-thumb.webp', 'labor-support-thumb.webp',
   'warm-compress-labor-thumb.webp', 'labor-companion-thumb.webp',
-  'labor-touch-thumb.svg', 'relaxation.webp',
+  'labor-touch-thumb.webp', 'relaxation.webp',
 ]
 for (const file of requiredCatalogImages) {
   assert.ok(therapyPage.includes(`'${file}'`), `Catalog image mapping is missing: ${file}`)

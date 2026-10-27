@@ -14,7 +14,8 @@ export default function Disclosure({ id, title, children, className = '' }: Disc
 
   useEffect(() => {
     const syncHash = () => {
-      if (window.location.hash === `#${id}` && detailsRef.current) {
+      const hash = window.location.hash.slice(1)
+      if ((hash === id || hash.startsWith(`${id}-`)) && detailsRef.current) {
         detailsRef.current.open = true
       }
     }

@@ -26,3 +26,10 @@ Copy untuk Ibu telah ditinjau di seluruh panduan, katalog, artikel, panduan prak
 ACOG S30 ditambahkan dari [Back Pain During Pregnancy](https://www.acog.org/womens-health/faqs/back-pain-during-pregnancy). Panduannya menyebut bantalan pemanas pada setelan terendah, handuk sebagai lapisan, membatasi lama penggunaan, serta menghubungi tenaga kesehatan untuk nyeri berat atau menetap. Tidak ada angka suhu atau menit yang ditambahkan. Untuk persalinan, NICE S02 tetap memosisikan kompres perineum pada tahap kedua sebagai bagian perawatan yang ditawarkan tenaga kesehatan.
 
 Pemeriksaan `qa/customer-content-coverage.mjs` kini memeriksa cakupan 12 topik dan C01–C08, rujukan ACOG, langkah aman kompres, status `clinicalReview: draft`, serta frasa internal yang dilarang pada copy production-facing. Riwayat dan metadata ilmiah tetap berada di dokumentasi dan metadata sumber.
+## M2 editorial integration — 27 October 2026
+
+The 11 article pages now use the approved “Yang Bisa Ibu Lakukan” label and the existing `practiceGuide` model. All 11 currently expose source-based guidance, with individual source IDs linked to the corresponding source-list item. These steps are not clinically approved and remain subject to clinician review; no diagnosis or treatment protocol was added. Massage and warm-compress guidance is limited to communication and care-team discussion where direct self-care evidence or safety instructions are insufficient.
+
+Each article now has one original abstract SVG figure and caption, centrally mapped by stable article ID in `src/content/therapyArticleFigures.ts`. These are not anatomical diagrams, procedures, efficacy claims, or third-party imagery. Provenance and usage are in `assets/ASSET-LICENSE-MANIFEST.md`. The catalogue thumbnails and homepage were not changed.
+
+The detailed research mapping, population distinctions, source classifications, and editorial status are maintained in [`THERAPY-CLAIM-SOURCE-MATRIX.md`](THERAPY-CLAIM-SOURCE-MATRIX.md). All clinical review statuses remain `draft`.

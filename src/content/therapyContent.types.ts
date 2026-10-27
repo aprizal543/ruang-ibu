@@ -20,6 +20,7 @@ export type TherapySourceReview =
 
 export interface TherapyReference {
   id: string
+  sourceType?: 'original_research' | 'systematic_review' | 'overview_of_reviews' | 'clinical_guideline' | 'official_health_information' | 'historical_source'
   title: string
   displayTitle?: string
   publisher: string
@@ -33,6 +34,19 @@ export interface TherapyReference {
   population?: string
   evidenceLimitations?: string[]
   mappedTopics?: string[]
+}
+
+export interface TherapyArticleFigure {
+  src: string
+  alt: string
+  caption: string
+  width: number
+  height: number
+  referenceIds: string[]
+  attribution?: {
+    label: string
+    href: string
+  }
 }
 
 export interface TherapyParagraph {
@@ -56,7 +70,7 @@ export type TherapyGuideAvailability =
   | { status: 'source_based'; note: string; instructions: Array<{ text: string; referenceIds: string[] }> }
   | { status: 'approved'; instructions: string[]; approvedAt: string }
 
-export interface TherapyArticle {
+export interface TherapyArticleDefinition {
   id: string
   slug: string
   title: string
@@ -72,4 +86,8 @@ export interface TherapyArticle {
   referenceIds: string[]
   updatedAt: string
   approvalDate?: string
+}
+
+export interface TherapyArticle extends TherapyArticleDefinition {
+  figure: TherapyArticleFigure
 }
