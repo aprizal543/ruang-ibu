@@ -5,6 +5,7 @@ import BottomTabBar from '../components/layout/BottomTabBar'
 import SourceDisclosure from '../components/ui/SourceDisclosure'
 import { maternityGuides } from '../content/maternityGuides'
 import { therapyReferences } from '../content/therapyReferences'
+import { getTherapySourceTypeLabel } from '../content/therapySourceLabels'
 import type { MaternityGuideSection } from '../content/maternityGuides'
 
 interface InformationLayoutProps {
@@ -98,7 +99,7 @@ export function AboutPage() {
 }
 
 export function SourcesPage() {
-  const sources = Object.values(therapyReferences)
+  const sources = Object.values(therapyReferences).filter((source) => source.sourceType !== 'historical_source')
 
   return (
     <InformationLayout
@@ -112,6 +113,7 @@ export function SourcesPage() {
           {sources.map((source) => (
             <li key={source.id}>
               <h3>{source.displayTitle ?? source.title}</h3>
+              <p className="information-source__category">{getTherapySourceTypeLabel(source.sourceType)}</p>
               <p>{source.publisher}{source.publicationYear ? ` · ${source.publicationYear}` : ''}{source.sourceDateLabel ? ` · ${source.sourceDateLabel}` : ''}</p>
               {source.authors?.length ? <p>Penulis: {source.authors.join(', ')}</p> : null}
               {source.studyDesign || source.population || source.evidenceLimitations?.length ? (

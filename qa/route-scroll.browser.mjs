@@ -173,9 +173,12 @@ assert.equal(evaluate('location.hash'), '#section-tujuan')
 browser('open', `${origin}/terapi/teknik-pernapasan`)
 browser('press', 'Tab')
 assert.ok(evaluate('document.activeElement.classList.contains("skip-link")'), 'Keyboard reaches the skip link first')
-browser('press', 'Tab')
-browser('press', 'Tab')
-assert.ok(evaluate('document.activeElement.matches(".therapy-article__contents a")'), 'Keyboard reaches the first article anchor')
+let firstArticleAnchorFocused = false
+for (let tab = 0; tab < 6 && !firstArticleAnchorFocused; tab += 1) {
+  browser('press', 'Tab')
+  firstArticleAnchorFocused = evaluate('document.activeElement.matches(".therapy-article__contents a")')
+}
+assert.ok(firstArticleAnchorFocused, 'Keyboard reaches the first article anchor after preceding focusable links')
 browser('press', 'Enter')
 assert.equal(evaluate('location.hash'), '#section-pengertian', 'Keyboard activates an article anchor')
 browser('open', `${origin}/terapi/teknik-pernapasan`)

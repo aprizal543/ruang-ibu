@@ -31,3 +31,7 @@
 - Separate rights review for copied text, diagrams, video, voice, music and audio recordings.
 
 Therefore **no practice guide is cleared for activation in Phase 2.3**. This is a governance recommendation only; implementation and PWA publication/caching rules remain unchanged.
+
+## M2 source-based reader guidance — 26 October 2026
+
+M2 reuses the existing `practiceGuide` field and presents it as **Yang Bisa Ibu Lakukan**. The 11 guides are `source_based`, not `approved`; each step has reference IDs rendered as links to the matching source entry. Every article displays that its content remains under clinical review. The guides are bounded to choices/communication, not diagnosis, dosing, massage locations/pressure, thermal temperature or duration, or self-performed clinical care. B05 expressly directs perineal warm compress questions to the attending care team. A05 and T04 do not translate study massage protocols into companion/self-massage instructions. Audio guidance says the playlist is not a studied music-therapy program. These are editorial safeguards pending qualified clinical review; they do not imply clinical approval.

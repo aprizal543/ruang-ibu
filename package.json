@@ -7,8 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty",
-    "test:content": "node qa/customer-content-coverage.mjs",
+    "test:content": "node qa/customer-content-coverage.mjs && node qa/m2-content-regression.mjs",
     "test:browser:route-scroll": "node qa/route-scroll.browser.mjs",
+    "test:browser:m2": "node qa/m2-articles.browser.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

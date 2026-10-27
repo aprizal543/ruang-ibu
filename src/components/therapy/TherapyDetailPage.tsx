@@ -10,6 +10,8 @@ import AudioPlayer from '../audio/AudioPlayer'
 import { getAudioTrack } from '../../content/audioTracks'
 import type { TherapyArticle, TherapyParagraph, TherapyReference } from '../../content/therapyContent.types'
 import SourceDisclosure from '../ui/SourceDisclosure'
+import TherapyArticleFigure from './TherapyArticleFigure'
+import { getTherapySourceTypeLabel } from '../../content/therapySourceLabels'
 import '../../styles/therapy-detail.css'
 
 interface TherapyDetailPageProps {
@@ -63,7 +65,11 @@ function PracticeGuide({ article }: { article: TherapyArticle }) {
         <ol className="therapy-detail__source-guide-list">
           {guide.instructions.map((instruction, index) => (
             <li key={`${article.id}-guide-${index}`}>
-              <span>{instruction.text}</span>
+              <span>{instruction.text}{' '}
+                <span className="therapy-detail__step-sources">Sumber: {instruction.referenceIds.map((id, refIndex) => (
+                  <span key={id}>{refIndex > 0 ? ', ' : ''}<Link to={{ hash: `#section-referensi-${id}` }}>{id}</Link></span>
+                ))}</span>
+              </span>
             </li>
           ))}
         </ol>
@@ -120,6 +126,7 @@ function ReferenceList({
         publisher: reference.publisher,
         url: reference.url,
         metadata: reference.publicationYear ? String(reference.publicationYear) : reference.sourceDateLabel,
+        category: getTherapySourceTypeLabel(reference.sourceType),
       }))}
       note="Informasi ini bersifat edukasi dan tidak menggantikan arahan bidan atau dokter."
     />
@@ -166,6 +173,7 @@ export default function TherapyDetailPage({ article, references }: TherapyDetail
               <h2 id="summary-heading">{article.summaryHeading ?? `Mengenal ${article.title}`}</h2>
               <ArticleParagraph paragraph={article.introduction} />
             </section>
+            <TherapyArticleFigure figure={article.figure} />
             <nav className="therapy-article__contents" aria-label="Navigasi artikel">
               <Link to={{ hash: '#section-pengertian' }}>Apa itu?</Link>
               <Link to={{ hash: '#section-tujuan' }}>Apa tujuannya?</Link>
@@ -173,10 +181,6 @@ export default function TherapyDetailPage({ article, references }: TherapyDetail
               <Link to={{ hash: '#section-keselamatan' }}>Perhatian</Link>
               <Link
                 to={{ hash: '#section-referensi' }}
-                onClick={() => {
-                  const disclosure = document.querySelector<HTMLDetailsElement>('#section-referensi details')
-                  if (disclosure) disclosure.open = true
-                }}
               >Sumber</Link>
             </nav>
           </header>
@@ -186,7 +190,8 @@ export default function TherapyDetailPage({ article, references }: TherapyDetail
           <SafetyNotice paragraph={article.safetyNotice} />
 
           <section className="therapy-detail__section" aria-labelledby="practice-heading">
-            <h2 id="practice-heading">Panduan untuk Ibu</h2>
+            <h2 id="practice-heading">Yang Bisa Ibu Lakukan</h2>
+            <p className="therapy-detail__review-status">Informasi ini bersifat edukasi dan tidak menggantikan penilaian bidan atau dokter.</p>
             <PracticeGuide article={article} />
           </section>
 

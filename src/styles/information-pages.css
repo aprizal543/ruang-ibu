@@ -302,6 +302,18 @@
   line-height: 1.45;
 }
 
+.information-source-list .information-source__category {
+  display: inline-block;
+  margin: 0 0 5px;
+  padding: 4px 9px;
+  border-radius: var(--ri-radius-pill);
+  color: var(--ri-forest);
+  background: #e5eadf;
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.35;
+}
+
 .information-source-details {
   margin: 9px 0 3px;
   color: var(--ri-ink);

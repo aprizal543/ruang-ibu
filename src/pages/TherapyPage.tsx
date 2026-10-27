@@ -90,7 +90,7 @@ const therapies: Therapy[] = [
     description: 'Sentuhan pendamping sesuai pilihan Ibu.',
     href: '/terapi/pijat-pendamping',
     categories: ['Bersalin'],
-    image: 'labor-touch-thumb.svg',
+    image: 'labor-touch-thumb.webp',
   },
   {
     title: 'Relaksasi Tubuh',

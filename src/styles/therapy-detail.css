@@ -300,6 +300,67 @@
   padding-inline: 4px;
 }
 
+.therapy-article-figure {
+  width: 100%;
+  margin: 18px 0 8px;
+}
+
+.therapy-article-figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: auto;
+  border-radius: var(--ri-radius-lg, 20px);
+  object-fit: contain;
+  background: var(--ri-paper, #f8f4ee);
+}
+
+.therapy-article-figure figcaption {
+  max-width: 68ch;
+  margin: 10px auto 0;
+  color: var(--ri-muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.therapy-article-figure__attribution a {
+  color: var(--ri-forest, #124d3d);
+  text-underline-offset: 2px;
+}
+
+.therapy-detail__review-status {
+  margin: 0 0 14px;
+  color: var(--ri-muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.therapy-detail__step-sources {
+  display: inline-block;
+  margin-left: 3px;
+  color: var(--ri-muted);
+  font-size: 13px;
+}
+
+.therapy-detail__step-sources a,
+.content-disclosure__source-id {
+  color: var(--ri-forest);
+  font-weight: 650;
+}
+
+.therapy-detail__step-sources a:focus-visible,
+.content-disclosure__sources a:focus-visible {
+  outline: 2px solid var(--ri-terracotta);
+  outline-offset: 3px;
+}
+
+.content-disclosure__source-id {
+  display: inline-block;
+  min-width: 38px;
+  margin-right: 6px;
+  font-size: 12px;
+}
+
 .therapy-detail__section p,
 .therapy-detail__safety p {
   text-wrap: pretty;

@@ -48,3 +48,24 @@ Checked via official/source-hosted page or document where indicated; access date
 ## Sources
 
 The direct links in the table are the source inventory. The claim-to-source and practice conclusions are separated in [`THERAPY-CLAIM-SOURCE-MATRIX.md`](THERAPY-CLAIM-SOURCE-MATRIX.md), [`THERAPY-PRACTICE-RISK-MATRIX.md`](THERAPY-PRACTICE-RISK-MATRIX.md), and [`THERAPY-CONTENT-COMPLETION.md`](THERAPY-CONTENT-COMPLETION.md).
+## M2 follow-up research audit — 26 October 2026
+
+This update extends the existing source audit and does not change clinical approval status. Ten sources S31–S40 are recorded in `src/content/therapyReferences.ts` with bibliographic metadata, study design, population, limitations, topic mapping, and DOI/PMID where available. The evidence-to-claim matrix in `THERAPY-CLAIM-SOURCE-MATRIX.md` tracks public claims and decisions article by article.
+
+Key distinctions verified:
+
+- Delgado et al. 2024 (S32) is about breathing interventions during first-stage labor. Eight-study pain analysis had extreme heterogeneity (I² 99%) and very-low certainty; publisher full text was not available in this audit. It does not validate third-trimester breathing exercises.
+- Sun et al. 2024 (S35) and the broader Cochrane review by Dwan et al. 2024 (S36) concern warm perineal techniques in second-stage labor. They do not support warm back compresses during pregnancy. Cochrane outcomes vary in certainty; practice stays with the care team.
+- Makvandi et al. (S33) studies sacral massage in labor; Norhapifah et al. (S34) is a small RCT of protocolized shiatsu by certified midwives. Neither supports generic massage by a birth companion.
+- Fogarty et al. 2023 (S31) is a small crossover feasibility study of remedial massage for pelvic girdle pain in pregnancy, not a general prenatal relaxation-massage efficacy trial. No direct newer evidence for general prenatal massage efficacy was identified in this search; no claim of such evidence is made.
+- Abera et al. 2024 (S37) pools diverse relaxation interventions with high heterogeneity. Gökbulut et al. 2024 (S38) tests structured programs, not Ruang Ibu grounding or a personal playlist.
+- Küçük et al. 2026 (S39) starts breathing-awareness intervention in early trimester II and measures third-trimester comfort; this is not a protocol newly started in trimester III or a labor-pain study.
+- Mary et al. 2026 (S40) is an overview of reviews across maternal periods. Its concerns about bias, heterogeneity, and imprecision prevent extrapolation to the Ruang Ibu playlist.
+
+S1 WHO 2018 remains as an official guideline, not new research. S3/S4 Cochrane 2018 remain for historical traceability and are not current article evidence. S27 ACOG 2020 remains official health information, not research. S28 (2021 review) stays historical in the registry but was removed from the public article reference list as current evidence. C01–C08 were retained without changing customer DOI/URLs. Where full text was inaccessible, the audit used publisher previews or indexed abstracts and records that limitation; it does not claim full-text review.
+
+## M2.1 public source presentation — 27 October 2026
+
+The source registry retains S3 and S4 as historical Cochrane records (2018) and S28 as a historical systematic review (2021). These IDs are not mapped to current article or guide claims and are filtered from `/sumber`. They remain available in this audit trail; no bibliographic record was rewritten to imply a newer publication date. S1 WHO 2018 remains public as a clinical guideline, and S27 ACOG 2020 as official health information. Both are labeled by source type in `/sumber`, article disclosures, and maternity-guide disclosures. C01–C08 remain intact with their M1 DOI and URL values.
+
+Current visible primary research/reviews are limited by source registry checks to publication years 2022–2026. This is a classification and presentation audit, not an endorsement of every claim: the evidence matrix records population, intervention, outcome, limitations, and editorial boundaries. Clinical review remains pending in `docs/Clinical-Review-Log.md`.

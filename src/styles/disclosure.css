@@ -59,6 +59,7 @@
   display: grid;
   gap: 3px;
   min-width: 0;
+  scroll-margin-top: 24px;
 }
 
 .content-disclosure__sources a {
@@ -77,6 +78,12 @@
   color: var(--ri-muted);
   font-size: 12px;
   line-height: 1.45;
+}
+
+.content-disclosure__sources .content-disclosure__source-category {
+  color: var(--ri-forest);
+  font-size: 11px;
+  font-weight: 650;
 }
 
 .content-disclosure__note {

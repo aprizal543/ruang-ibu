@@ -1,4 +1,4 @@
-import type { TherapyArticle } from './therapyContent.types'
+import type { TherapyArticle, TherapyArticleDefinition } from './therapyContent.types'
 
 function customerArticle(
   id: string,
@@ -15,7 +15,7 @@ function customerArticle(
     status: 'locked_pending_review',
     message: 'Untuk keamanan Ibu, bicarakan pilihan ini dengan bidan atau dokter yang mendampingi. Ibu tidak perlu mencoba bila ragu atau merasa tidak nyaman.',
   },
-): TherapyArticle {
+): TherapyArticleDefinition {
   return {
     id,
     slug,
@@ -33,7 +33,7 @@ function customerArticle(
   }
 }
 
-export const customerRevisionArticles: Record<string, TherapyArticle> = {
+export const customerRevisionArticles: Record<string, TherapyArticleDefinition> = {
   'nyeri-punggung-kehamilan': customerArticle(
     'A01', 'nyeri-punggung-kehamilan', 'Nyeri Punggung saat Kehamilan', ['Hamil'],
     'Nyeri punggung dapat muncul selama kehamilan, termasuk trimester III. Keluhan ini tidak selalu memiliki penyebab yang sama, jadi nyeri yang berat atau disertai gejala lain perlu dibicarakan dengan tenaga kesehatan.',
@@ -96,23 +96,30 @@ export const customerRevisionArticles: Record<string, TherapyArticle> = {
   'pijat-kehamilan': customerArticle(
     'A05', 'pijat-kehamilan', 'Pijat untuk Ibu Hamil', ['Hamil', 'Relaksasi'],
     'Pijat kehamilan adalah pijat yang disesuaikan untuk seseorang yang sedang hamil. Pijat dapat dipertimbangkan sebagai pilihan kenyamanan, tetapi jenis pijat dan kecocokannya perlu dibicarakan dengan tenaga yang memahami kebutuhan kehamilan.',
-    ['S27', 'S28'],
+    ['S27', 'S31'],
     [
       { id: 'pengertian', heading: 'Apa itu pijat kehamilan?', paragraphs: [
-        { text: 'Pijat kehamilan dilakukan oleh terapis yang memiliki pelatihan untuk bekerja dengan ibu hamil. Ini berbeda dari pijat pendamping selama persalinan, yang membahas sentuhan pilihan Ibu pada saat kontraksi.', referenceIds: ['S27', 'S28'] },
+        { text: 'Pijat kehamilan dilakukan oleh terapis yang memiliki pelatihan untuk bekerja dengan ibu hamil. Ini berbeda dari pijat pendamping selama persalinan, yang membahas sentuhan pilihan Ibu pada saat kontraksi.', referenceIds: ['S27'] },
       ] },
       { id: 'tujuan', heading: 'Apa tujuannya?', paragraphs: [
-        { text: 'Sebagian orang memilih pijat agar merasa lebih rileks atau nyaman. Bukti tentang manfaat pijat saat hamil masih beragam, sehingga hasilnya belum dapat dipastikan untuk setiap Ibu.', referenceIds: ['S28'] },
-        { text: 'Pilih penyedia yang terlatih menangani pijat kehamilan dan sampaikan bahwa Ibu sedang hamil. Ibu berhak menyetujui, menolak, atau meminta pijat dihentikan kapan saja.', referenceIds: ['S27', 'S28'] },
+        { text: 'Sebagian orang memilih pijat agar merasa lebih rileks atau nyaman. Bukti langsung masih terbatas; sebuah studi kelayakan kecil meneliti pijat remedial pada nyeri gelang panggul, bukan manfaat pijat umum untuk relaksasi atau semua ibu hamil.', referenceIds: ['S31'] },
+        { text: 'Pilih penyedia yang terlatih menangani pijat kehamilan dan sampaikan bahwa Ibu sedang hamil. Ibu berhak menyetujui, menolak, atau meminta pijat dihentikan kapan saja.', referenceIds: ['S27'] },
       ] },
       { id: 'kapan-dipertimbangkan', heading: 'Kapan berkonsultasi lebih dahulu?', paragraphs: [
-        { text: 'Jika kehamilan Ibu memiliki komplikasi atau dinilai berisiko tinggi, tanyakan kepada bidan atau dokter apakah pijat sesuai untuk kondisi Ibu. Sampaikan riwayat kehamilan sebelum membuat janji.', referenceIds: ['S27', 'S28'] },
-        { text: 'Bicarakan pilihan pijat dengan terapis yang terlatih menangani kehamilan. Hentikan dan beri tahu terapis bila sentuhan terasa nyeri atau tidak nyaman.', referenceIds: ['S27', 'S28'] },
+        { text: 'Jika kehamilan Ibu memiliki komplikasi atau dinilai berisiko tinggi, tanyakan kepada bidan atau dokter apakah pijat sesuai untuk kondisi Ibu. Sampaikan riwayat kehamilan sebelum membuat janji.', referenceIds: ['S27'] },
+        { text: 'Bicarakan pilihan pijat dengan terapis yang terlatih menangani kehamilan. Hentikan dan beri tahu terapis bila sentuhan terasa nyeri atau tidak nyaman.', referenceIds: ['S27'] },
       ] },
     ],
     'Jangan menerima pijat yang tidak diinginkan atau terasa menyakitkan. Jika Ibu ragu tentang kondisi kehamilan, mintalah saran bidan atau dokter terlebih dahulu.',
-    ['S27', 'S28'],
-    ['S27', 'S28'],
+    ['S27', 'S31'],
+    ['S27', 'S31'],
+    { status: 'source_based', note: 'Bukti langsung untuk pijat umum saat hamil terbatas. Panduan ini berfokus pada komunikasi dan pemilihan layanan, bukan teknik pijat.', instructions: [
+      { text: 'Tanyakan kepada bidan atau dokter apakah pijat sesuai dengan keadaan kehamilan Ibu.', referenceIds: ['S27'] },
+      { text: 'Sebelum membuat janji, tanyakan pengalaman dan pelatihan terapis dalam menangani klien hamil.', referenceIds: ['S27'] },
+      { text: 'Sampaikan bahwa Ibu sedang hamil dan ceritakan hal yang perlu diketahui terapis tentang kenyamanan Ibu.', referenceIds: ['S27'] },
+      { text: 'Ibu boleh menolak, mengubah pilihan, atau meminta sesi dihentikan bila terasa tidak nyaman.', referenceIds: ['S27'] },
+      { text: 'Studi pijat untuk nyeri gelang panggul adalah studi kelayakan kecil dan bukan bukti manfaat pijat umum; tanyakan tenaga kesehatan jika masih ragu.', referenceIds: ['S31'] },
+    ] },
   ),
 
   'kecemasan-menjelang-persalinan': customerArticle(
@@ -162,19 +169,25 @@ export const customerRevisionArticles: Record<string, TherapyArticle> = {
     'Jangan menunda menghubungi tenaga kesehatan untuk mencoba cara kenyamanan. Halaman ini tidak dapat menilai kondisi persalinan Ibu; tetap ikuti arahan bidan atau dokter.',
     ['S2', 'S8', 'C07'],
     ['S2', 'S8', 'S22', 'C07'],
+    { status: 'source_based', note: 'Pilihan dukungan bergantung pada keadaan persalinan dan keinginan Ibu. Diskusikan pilihan dengan tim yang mendampingi.', instructions: [
+      { text: 'Sampaikan kepada bidan atau dokter bagaimana nyeri terasa dan dukungan apa yang Ibu inginkan.', referenceIds: ['S2', 'S8'] },
+      { text: 'Tanyakan pilihan pereda nyeri yang tersedia, termasuk manfaat dan hal yang perlu dipertimbangkan.', referenceIds: ['S2', 'S8'] },
+      { text: 'Pilih dukungan nonmedis hanya jika terasa nyaman; Ibu boleh mengubah pilihan atau meminta berhenti.', referenceIds: ['S2', 'S22'] },
+      { text: 'Beri tahu tim kesehatan bila nyeri berubah, Ibu merasa tidak nyaman, atau ingin bantuan lain.', referenceIds: ['S2', 'S8'] },
+    ] },
   ),
 
   'kompres-hangat-persalinan': customerArticle(
     'B05', 'kompres-hangat-persalinan', 'Kompres Hangat Saat Persalinan', ['Bersalin'],
     'Kompres hangat saat persalinan merupakan bagian dari perawatan yang berbeda dari kompres pada punggung saat hamil. Pilihan dan waktu penggunaannya perlu dibicarakan dengan tenaga kesehatan yang mendampingi.',
-    ['S2', 'S29', 'C01', 'C02', 'C03'],
+    ['S2', 'S29', 'C01', 'C02', 'C03', 'S35', 'S36'],
     [
       { id: 'pengertian', heading: 'Apa itu kompres hangat saat persalinan?', paragraphs: [
         { text: 'Kompres hangat dapat menjadi salah satu pilihan perawatan selama persalinan. Pada tahap kedua, bidan dapat menawarkan kompres pada area perineum, yaitu bagian di antara vagina dan anus, sesuai kondisi dan pilihan Ibu.', referenceIds: ['S2'] },
         { text: 'Laporan kompres pada nyeri punggung membahas masa kehamilan, bukan perawatan saat proses persalinan. Karena itu, temuan tersebut tidak menjadi petunjuk untuk tindakan kompres selama persalinan.', referenceIds: ['C01', 'C02', 'C03'] },
       ] },
       { id: 'tujuan', heading: 'Apa tujuannya?', paragraphs: [
-        { text: 'Pada tahap kedua persalinan, bidan dapat menawarkan kompres hangat pada area perineum sebagai bagian dari perawatan. Tindakan ini dilakukan oleh tim kesehatan sesuai kondisi dan pilihan Ibu.', referenceIds: ['S2'] },
+        { text: 'Tinjauan terbaru menilai kompres perineum hangat pada kala II persalinan. Bukti tersebut membahas perawatan oleh tim kesehatan dan tidak berlaku untuk kompres punggung saat hamil.', referenceIds: ['S35', 'S36'] },
         { text: 'Kompres saat persalinan bukan cara yang sama dengan kompres pada punggung saat hamil. Tanyakan kepada bidan bila Ibu ingin memahami pilihan perawatan yang tersedia.', referenceIds: ['S2', 'C01', 'C02', 'C03'] },
       ] },
       { id: 'kapan-dipertimbangkan', heading: 'Kapan dipertimbangkan?', paragraphs: [
@@ -184,11 +197,11 @@ export const customerRevisionArticles: Record<string, TherapyArticle> = {
     ],
     'Jangan melakukan kompres perineum atau tindakan kompres persalinan secara mandiri dari petunjuk website. Ikuti penjelasan dan arahan tenaga kesehatan yang sedang merawat Ibu.',
     ['S2'],
-    ['S2', 'C01', 'C02', 'C03'],
+    ['S2', 'C01', 'C02', 'C03', 'S35', 'S36'],
     { status: 'source_based', note: 'Kompres hangat pada tahap kedua persalinan merupakan pilihan perawatan yang dilakukan oleh tenaga kesehatan, bukan tindakan mandiri.', instructions: [
       { text: 'Tanyakan kepada bidan apakah kompres hangat termasuk pilihan perawatan yang sesuai bagi Ibu.', referenceIds: ['S2'] },
-      { text: 'Jika tim kesehatan menawarkan kompres, sampaikan apakah suhunya terasa nyaman. Ibu boleh meminta penjelasan atau meminta tindakan dihentikan.', referenceIds: ['S2'] },
-      { text: 'Jangan melakukan kompres perineum sendiri berdasarkan petunjuk website. Ikuti arahan tim yang merawat Ibu.', referenceIds: ['S2'] },
+      { text: 'Jika tim kesehatan menawarkan kompres perineum pada kala II, sampaikan apakah terasa nyaman. Ibu boleh meminta penjelasan atau meminta tindakan dihentikan.', referenceIds: ['S2', 'S36'] },
+      { text: 'Jangan melakukan kompres perineum sendiri berdasarkan petunjuk website. Ikuti arahan tim yang merawat Ibu.', referenceIds: ['S2', 'S36'] },
     ] },
   ),
 

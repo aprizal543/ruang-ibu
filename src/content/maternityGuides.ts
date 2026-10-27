@@ -65,7 +65,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
     heroImageAlt: 'Ibu hamil duduk dengan tenang sambil memegang perutnya',
     clinicalReview: 'draft',
     sourceReviewedAt: '2026-10-23',
-    sourceIds: ['S17', 'S18', 'S19', 'S20', 'S23', 'S24', 'S25', 'S2', 'S6', 'S14', 'S26', 'S27', 'S28', 'S29', 'S30', 'C01', 'C02', 'C03', 'C04', 'C05', 'C06'],
+    sourceIds: ['S17', 'S18', 'S19', 'S20', 'S23', 'S24', 'S25', 'S2', 'S6', 'S14', 'S26', 'S27', 'S29', 'S30', 'S31', 'C01', 'C02', 'C03', 'C04', 'C05', 'C06'],
     sections: [
       {
         id: 'persiapan',
@@ -153,7 +153,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
             href: '/terapi/pijat-kehamilan',
             image: therapyImages.prenatalMassage,
             imageAlt: 'Suasana pijat profesional untuk ibu hamil; bukan demonstrasi teknik',
-            sourceIds: ['S27', 'S28'],
+            sourceIds: ['S27', 'S31'],
           },
         ],
       },
