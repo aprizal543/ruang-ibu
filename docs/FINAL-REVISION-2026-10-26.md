@@ -1,7 +1,7 @@
 # Ruang Ibu — Final Revision 2026
 
 **Baseline:** `origin/main` at `814462bc0e68f947ee7ac95b6011af7cc0e89110`
-**Current implementation:** Milestone 1 (UX foundation and navigation fixes) only.
+**Implementation status (2026-10-27):** M1 and M2 are completed checkpoints. M3 Cloudflare Pages Functions/D1 Q&A backend foundation is in local implementation on `feat/ruang-ibu-revision-2026-m3-backend`; no remote Cloudflare resources are provisioned, and M3 is not a live or clinically approved feature.
 
 This document records the ten customer-approved revision areas for future planning. It is a scope reference; it does not authorize implementation of all milestones at once.
 
@@ -20,10 +20,11 @@ This document records the ten customer-approved revision areas for future planni
 
 ## Delivery and content constraints
 
-- Only Milestone 1 is being implemented in the current revision. Milestones 2–6 are not complete and must not be reported as complete.
+- M1 and M2 are completed checkpoints. M3 is local backend foundation work and must not be represented as a live Cloudflare integration. M4 admin dashboard, M5 public Q&A UI, and M6 visual enhancements remain unimplemented.
 - Audit older research by source status and source type. Keep distinctions between peer-reviewed research, guidelines, government or health-service information, and other material.
 - Do not remove customer-approved content, including the eight mandatory journals. Corrections must preserve traceability and explain their basis.
 - Email notifications are not required for the first MVP.
 - Do not describe material as clinically approved, clinically validated, or clinically reviewed without documented approval by a qualified reviewer.
 - Article content, imagery, source claims, and practical options remain subject to their applicable licensing, evidence, and clinical review gates.
-- No Cloudflare, D1, authentication, admin, or production configuration changes are part of Milestone 1.
+- No Production Cloudflare resource or database has been provisioned by M3. Do not claim deployment or change Production without a separate approved release.
+- Q&A retention values in the local M3 implementation are provisional defaults only (pending 90 days, rejected/hidden 30 days, approved/answered 365 days). Customer approval is pending; no scheduled purge is configured.

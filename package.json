@@ -8,6 +8,7 @@
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty",
     "test:content": "node qa/customer-content-coverage.mjs && node qa/m2-content-regression.mjs",
+    "test:backend": "node --import tsx --test qa/backend/*.test.ts",
     "test:browser:route-scroll": "node qa/route-scroll.browser.mjs",
     "test:browser:m2": "node qa/m2-articles.browser.mjs",
     "preview": "vite preview"
@@ -16,6 +17,7 @@
     "@fontsource-variable/dm-sans": "^5.2.6",
     "@fontsource-variable/fraunces": "^5.2.6",
     "@phosphor-icons/react": "^2.1.10",
+    "jose": "^6.2.13",
     "lucide-react": "^0.468.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -29,8 +31,10 @@
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.23.15",
     "typescript": "~5.9.2",
     "vite": "^7.1.5",
-    "vite-plugin-pwa": "^1.0.3"
+    "vite-plugin-pwa": "^1.0.3",
+    "wrangler": "^4.153.0"
   }
 }
