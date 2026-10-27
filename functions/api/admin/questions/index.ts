@@ -13,7 +13,8 @@ export async function onRequestGet(context: PagesContext): Promise<Response> {
   const params = new URL(context.request.url).searchParams
   for (const key of ['status', 'articleSlug', 'expiresBefore', 'limit', 'cursor']) if (params.getAll(key).length > 1) return apiError(400, 'invalid_filter', 'Filter tidak valid.')
   const status = params.get('status')
-  if (status && !STATUSES.has(status)) return apiError(400, 'invalid_filter', 'Status tidak dikenal.')
+  const statusValues = status ? status.split(',') : []
+  if (statusValues.some((value) => !STATUSES.has(value)) || new Set(statusValues).size !== statusValues.length) return apiError(400, 'invalid_filter', 'Status tidak dikenal.')
   const articleParam = params.get('articleSlug')
   const article = articleParam ? resolveQuestionArticleSlug(articleParam) : null
   if (articleParam && !article) return apiError(400, 'invalid_filter', 'Materi tidak dikenal.')
@@ -36,7 +37,8 @@ export async function onRequestGet(context: PagesContext): Promise<Response> {
   }
   const clauses: string[] = []
   const values: (string | number)[] = []
-  if (status) { clauses.push('q.moderation_status = ?'); values.push(status) }
+  if (statusValues.length === 1) { clauses.push('q.moderation_status = ?'); values.push(statusValues[0]) }
+  else if (statusValues.length > 1) { clauses.push(`q.moderation_status IN (${statusValues.map(() => '?').join(', ')})`); values.push(...statusValues) }
   if (article) { clauses.push('q.article_slug = ?'); values.push(article.slug) }
   if (expiresBeforeMs !== null) { clauses.push('q.expires_at <= ?'); values.push(new Date(expiresBeforeMs).toISOString()) }
   if (cursor) { clauses.push('(q.created_at < ? OR (q.created_at = ? AND q.id < ?))'); values.push(cursor.createdAt, cursor.createdAt, cursor.id) }

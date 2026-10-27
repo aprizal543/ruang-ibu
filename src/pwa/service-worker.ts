@@ -15,6 +15,6 @@ precacheAndRoute(self.__WB_MANIFEST)
 const appShellHandler = createHandlerBoundToURL('/index.html')
 registerRoute(
   new NavigationRoute(appShellHandler, {
-    denylist: [/^\/api\//, /^\/audio\//, /^\/images\//, /^\/pwa-icons\//],
+    denylist: [/^\/api\//, /^\/admin(?:\/|$)/, /^\/audio\//, /^\/images\//, /^\/pwa-icons\//],
   }),
 )

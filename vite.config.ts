@@ -43,6 +43,7 @@ export default defineConfig({
       },
       injectManifest: {
         globPatterns: ['**/*.{html,js,css,svg,png,webp,woff2}'],
+        globIgnores: ['**/AdminLayout-*.js', '**/AdminLayout-*.css', '**/AdminPages-*.js'],
         maximumFileSizeToCacheInBytes: 3 * 1024 * 1024,
       },
     }),

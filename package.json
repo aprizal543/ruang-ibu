@@ -9,8 +9,12 @@
     "typecheck": "tsc -b --pretty",
     "test:content": "node qa/customer-content-coverage.mjs && node qa/m2-content-regression.mjs",
     "test:backend": "node --import tsx --test qa/backend/*.test.ts",
-    "test:browser:route-scroll": "node qa/route-scroll.browser.mjs",
-    "test:browser:m2": "node qa/m2-articles.browser.mjs",
+    "test:browser:route-scroll": "node qa/public-regression.browser.mjs",
+    "test:browser:route-scroll:legacy": "node qa/route-scroll.browser.mjs",
+    "test:browser:m2": "node qa/public-regression.browser.mjs",
+    "test:browser:m2:legacy": "node qa/m2-articles.browser.mjs",
+    "test:browser:public-regression": "node qa/public-regression.browser.mjs",
+    "test:browser:admin": "node qa/admin-dashboard.browser.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

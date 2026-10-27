@@ -20,7 +20,7 @@ Every `/api/admin/*` request passes Pages Functions middleware that verifies the
 | Method and route | Request | Success response | Notes |
 |---|---|---|---|
 | `GET /api/admin/summary` | none | `200 { data: { total, pending, approved, answered, rejected, hidden } }` | Counts from D1. |
-| `GET /api/admin/questions?status=&articleSlug=&expiresBefore=&limit=20&cursor=` | optional allowlisted filters; `expiresBefore` is an ISO timestamp; limit 1–50 | `200 { data: { questions, nextCursor } }` | Bounded, newest first; includes original fields and `expiresAt` needed for moderation/retention review; private. |
+| `GET /api/admin/questions?status=&articleSlug=&expiresBefore=&limit=20&cursor=` | optional allowlisted filters; `status` accepts one status or a comma-separated set of distinct statuses (used by M4 history); `expiresBefore` is an ISO timestamp; limit 1–50 | `200 { data: { questions, nextCursor } }` | Bounded, newest first; includes original fields and `expiresAt` needed for moderation/retention review; private. |
 | `GET /api/admin/questions/:id` | none | `200 { data: question and optional answer }` | 404 if absent. |
 | `DELETE /api/admin/questions/:id` | empty body | `200 { data: { id, deleted: true } }` | Deletes question/answer and adds an audit tombstone without question text or email. |
 | `POST /api/admin/questions/:id/moderation` | `{ action: "approve", publicDisplayName, publicQuestionText }`, or `{ action: "reject" }` / `{ action: "hide" }` | `200 { data: { id, status } }` | Approve requires moderator-edited public fields. Reject applies only to pending; hide applies to approved/answered. Invalid transitions return 409. |

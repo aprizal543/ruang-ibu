@@ -71,6 +71,21 @@ test('admin inbox filters by status and article and never returns an unbounded p
   database.close()
 })
 
+test('admin inbox supports a validated group of handled statuses for history', async () => {
+  assert.ok(listModule, 'admin question inbox endpoint exists')
+  const database = new SqliteD1Database()
+  for (const [id, status] of [['p', 'pending'], ['a', 'approved'], ['ans', 'answered'], ['r', 'rejected'], ['h', 'hidden']]) await insertQuestion(database, { id, status })
+  const response = await listModule.onRequestGet(adminContext(database, '/api/admin/questions?status=approved%2Canswered%2Crejected%2Chidden&limit=20'))
+  const payload = await response.json()
+  const invalid = await listModule.onRequestGet(adminContext(database, '/api/admin/questions?status=approved%2Cunknown'))
+
+  assert.equal(response.status, 200)
+  assert.deepEqual(new Set(payload.data.questions.map((question: { status: string }) => question.status)), new Set(['approved', 'answered', 'rejected', 'hidden']))
+  assert.equal(payload.data.questions.length, 4)
+  assert.equal(invalid.status, 400)
+  database.close()
+})
+
 test('admin inbox can list records whose retention deadline is due before manual purge', async () => {
   assert.ok(listModule, 'admin question inbox endpoint exists')
   const database = new SqliteD1Database()
