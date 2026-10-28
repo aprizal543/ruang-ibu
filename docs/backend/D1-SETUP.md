@@ -1,6 +1,17 @@
 # Local D1 and Google OIDC Setup (Windows 11)
 
-M4.6C revises `migrations/0002_admin_auth.sql` to bind admin sessions to Google OIDC `sub`. It does not edit `0001_questions.sql`. Automated tests apply both migrations to disposable in-memory SQLite. At the pre-provision M4.6G checkpoint, staging metadata, migration status, schema, and account counts were checked read-only with synthetic `EXPLAIN`; no remote data mutation or admin provisioning had yet been run at that point. The checked-in `wrangler.toml` has binding `DB` scoped to Preview staging only; Production remains without a D1 binding.
+M4.6C revises `migrations/0002_admin_auth.sql` to bind admin sessions to Google OIDC `sub`. It does not edit `0001_questions.sql`. Automated tests apply both migrations to disposable in-memory SQLite. Production D1 was created separately on 2026-10-28; both migrations were applied on 2026-10-28 under the specific M6.2 authorization recorded below. `wrangler.toml` binds `DB` to `ruang-ibu-production` under Production and keeps Preview bound only to `ruang-ibu-staging`.
+
+## Production D1 isolation (2026-10-28)
+
+- Production database: `ruang-ibu-production`.
+- UUID: `2b9c3de9-eafb-4842-a613-27eab7ae7174`.
+- Wrangler `d1 info` reported zero application tables immediately after creation. After M6.2, it reports 10 tables; read-only `sqlite_schema` lists those 10 application/migration tables plus Cloudflare's internal `_cf_KV` table.
+- Preview database remains `ruang-ibu-staging` (`125bcaa1-014f-43ad-8600-05e1c4341c76`). The two UUIDs are distinct.
+- M6.2 applied only `0001_questions.sql` and `0002_admin_auth.sql`, in that order, through Wrangler's migration runner with `--remote --env production`. No account provisioning, data copy, or Pages deployment was performed.
+- Production binding is `DB`, with `migrations_dir = "migrations"`. Preview continues to use the same binding name but its separate staging UUID.
+
+**M6.2 verification (2026-10-28):** Wrangler applied `0001_questions.sql` and then `0002_admin_auth.sql` against `ruang-ibu-production` UUID `2b9c3de9-eafb-4842-a613-27eab7ae7174`; each reported success. `wrangler d1 migrations list` now reports `No migrations to apply`. Read-only schema checks confirmed the expected tables, columns, and indexes. Aggregate queries returned 0 owners, 0 moderators, 0 questions, and 0 auth events. Query metadata reported `changed_db = false` and `rows_written = 0`. Staging remains on its original UUID and its migration list also reports `No migrations to apply`. No migration is to be rerun. Future schema changes require a separate review, target/account preflight, backup/recovery plan, and explicit authorization.
 
 ## Local D1 and Pages Functions
 
@@ -45,7 +56,7 @@ The migration uses `IF NOT EXISTS` and has passed local SQLite idempotency/const
 
 ## Private operator provisioning
 
-There is no public admin registration. A login from an unrecognized Google account is denied; it does not create a user. Before provisioning, an authorized owner must independently verify the person and Google `sub` through a trusted Google sign-in/token inspection procedure, verify the email, and confirm the target D1 environment. Email alone is not the login binding; `sub` is.
+There is no public admin registration or self-selected role. An unrecognized Google identity is denied unless an active Owner-created Moderator preauthorization exists for the exact verified Gmail. On first login, the application verifies the Google token and one-use login nonce, creates a fixed `moderator` row bound to the verified `sub`, consumes the authorization, and writes audit events atomically. Owner provisioning remains a separate private operator procedure. Email alone is not the permanent login binding; `sub` is.
 
 For private subject verification, use `npm.cmd run admin:verify-google-sub` on a trusted operator computer. The local-only tool asks for the public staging Web Client ID, binds an HTTP server to loopback port 5173 (the already authorized local JavaScript origin), obtains a one-use nonce, and renders the official GIS button. The ID token is POSTed to the local process and passed to the same production `verifyGoogleCredential` helper, which validates Google JWKS signature, RS256, issuer, audience, expiry/age, verified email, and nonce before printing only the verified `sub`. It never prints or persists the ID token. Keep the terminal private; the `sub` is an identity identifier. Stop the process after verification. This tool establishes the Google identity claim, not the person's authorization to be an admin; the owner must separately confirm authorization.
 
@@ -90,12 +101,12 @@ Cloudflare's D1 Audit Logs document configuration events including database crea
 
 | Name | Type | Purpose |
 |---|---|---|
-| `DB` | D1 binding | Session/admin/Q&A storage. Preview only in checked-in Wrangler config. |
-| `GOOGLE_OAUTH_CLIENT_ID` | Non-secret Pages variable | Google GIS Web Client ID used as JWT `audience`. Must match the exact Preview OAuth client. |
+| `DB` | D1 binding | Session/admin/Q&A storage. Production binds only to `ruang-ibu-production`; Preview binds only to `ruang-ibu-staging` in `wrangler.toml`. |
+| `GOOGLE_OAUTH_CLIENT_ID` | Non-secret Pages variable | Google GIS Web Client ID used as JWT `audience`. Use the environment-specific client: Production in `[env.production.vars]`; Preview/QA in its isolated configuration. |
 | `ADMIN_AUTH_HMAC_KEY` | Pages secret | HMAC of challenge/login rate-limit keys; minimum 32 bytes; no static fallback. |
 | `TURNSTILE_SECRET_KEY` | Pages encrypted secret | Visitor question POST verification. Never expose to Vite or browser. |
-| `TURNSTILE_SITE_KEY` | Pages runtime variable (public) | Served by `GET /api/questions/config` for the official browser widget. Configure for the exact QA hostname. |
-| `TURNSTILE_ALLOWED_HOSTNAMES` | Pages runtime variable | Exact hostname allowlist for Turnstile Siteverify. Configure the QA alias only for QA. |
+| `TURNSTILE_SITE_KEY` | Pages runtime variable (public) | Served by `GET /api/questions/config` for the official browser widget. Use the Site Key paired with that environment's widget. |
+| `TURNSTILE_ALLOWED_HOSTNAMES` | Pages runtime variable | Exact hostname allowlist for Turnstile Siteverify. Keep Preview/QA and Production hostnames separated. |
 | `RATE_LIMIT_HMAC_KEY` | Pages secret | Visitor question submission throttling. |
 
 Cloudflare Access issuer/AUD/admin email vars are not consumed by the application authentication path. An owner may separately choose an edge policy, but it is neither a login requirement nor configured by this milestone. Never create a custom password or share credentials.
@@ -112,4 +123,18 @@ npm.cmd run build
 
 `test:auth:workerd` starts a separate local-only Wrangler/Workerd harness with no D1/KV/R2 binding, route, trigger, or secret. It imports the production `jose` verification helper and uses synthetic RSA key/token data. It proves local runtime WebCrypto/JWT compatibility, not Cloudflare hosted Free CPU suitability or real Google connectivity. Hosted verification remains a separate release gate and requires explicit owner authorization.
 
+## M6.5 Moderator preauthorization schema
+
+`migrations/0003_moderator_pre_authorization.sql` adds Owner-created, single-use Gmail preauthorizations constrained to the `moderator` role, plus minimal create/revoke/activate audit events. It is exercised by local SQLite/D1-compatible tests together with migrations `0001` and `0002`. Under separate authorization it was applied to QA/staging (`ruang-ibu-staging`) in M6.5B and Production (`ruang-ibu-production`) in M6.6. Both migration ledgers were verified afterward. Do not assume a different environment has this schema. It does not copy users or questions from another database.
+
+The authorization expires after 30 days and can be revoked by an Owner before use. On first sign-in, the standard server-side Google OIDC verifier validates the token and one-use nonce; activation binds the verified `sub`, consumes the matching verified-email authorization, creates the fixed Moderator role, and writes audit events in one D1 batch. No password, OTP, email invitation, Google account access, or customer credential is requested.
+
 `public/_routes.json` routes only `/api/*` through Pages Functions. Workbox excludes `/admin`, `/api/*`, and admin chunks from offline fallback/precache. Auth/admin APIs are no-store and not precached. Evaluation remains client-only and ephemeral; MP3 is not in the precache allowlist.
+
+## M6.4 Production first-Owner provisioning (2026-10-28)
+
+The previous CLI/D1 REST-query bootstrap path is superseded. The reviewed local-only runner is `scripts/admin/provision-production-owner.mjs`; its dedicated config pins only the verified Production account and D1 database. It uses Wrangler's local authenticated identity, read-only `whoami` and `d1 info` metadata preflight, then a local `getPlatformProxy()` D1 binding. It does not deploy a Worker or expose a bootstrap endpoint. The runner's default and `--dry-run` modes perform aggregate reads only; `--execute` is a separate, explicit, confirmation-gated write and was not run.
+
+The private identity challenge uses Google GIS with the QA Web Client configured to allow `http://localhost:5173`; it does not alter Production OAuth origins. The application verifier checks Google JWKS signature, RS256, issuer, QA audience, expiry/token age, nonce and verified email. The operator-entered approved Gmail must match the verified claim; the database key is the verified Google `sub`. This establishes control of the Google identity using the QA OAuth audience, not a Production-audience sign-in. Token, email, and subject remain in process memory and are not logged or written to disk. No hardcoded identity is used.
+
+The insert assigns the literal `owner` role and writes its minimal `user_created` audit event in one D1 `batch()` using bound parameters. Readiness requires no existing admin and no prior `user_created` event; any such state fails closed. Dry-run returns aggregate counts only. After any separately authorized write, verify one admin, one Owner, one user-created event, and one linked Owner event with read-only aggregate SQL; never retry an ambiguous write before reconciliation. M6.4 did not access D1, provision an account, or perform any Cloudflare operation. See `DEPLOYMENT-RUNBOOK.md` for the operator gates.

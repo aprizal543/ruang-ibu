@@ -154,6 +154,45 @@ test('a valid Google token bound to an unconsumed nonce creates only an opaque D
   database.close()
 })
 
+test('verified first Google login activates only the preauthorized Moderator and cannot elevate role from token claims', async () => {
+  const database = new SqliteD1Database()
+  await seedUser(database, { id: 'owner-for-moderator', email: 'owner@example.test', sub: 'owner-google-sub', role: 'owner' })
+  await database.prepare(`INSERT INTO admin_moderator_pre_authorizations
+    (id, email, role, status, created_by, created_at, expires_at)
+    VALUES (?, ?, 'moderator', 'active', ?, ?, ?)`)
+    .bind('customer-auth-1', 'customer@gmail.com', 'owner-for-moderator', Date.now(), Date.now() + 30 * 86_400_000).run()
+  const challenge = await (await issueChallenge(database)).json()
+  const credential = await makeToken(challenge.data.nonce,
+    { email: 'customer@gmail.com', email_verified: true, role: 'owner' },
+    { subject: 'customer-google-sub' })
+  const response = await googleLogin(database, challenge.data.nonce, credential)
+  const payload = await response.json()
+  assert.equal(response.status, 200)
+  assert.equal(payload.data.user.role, 'moderator')
+  assert.equal(payload.data.user.email, 'customer@gmail.com')
+  assert.equal((await database.prepare('SELECT COUNT(*) AS count FROM admin_users').first<{ count: number }>())?.count, 2)
+  assert.equal((await database.prepare("SELECT COUNT(*) AS count FROM admin_auth_events WHERE action='user_created'").first<{ count: number }>())?.count, 1)
+  assert.equal((await database.prepare("SELECT COUNT(*) AS count FROM admin_moderator_pre_authorization_events WHERE action='activated'").first<{ count: number }>())?.count, 1)
+  assert.equal((await database.prepare('SELECT status FROM admin_moderator_pre_authorizations WHERE id = ?').bind('customer-auth-1').first<{ status: string }>())?.status, 'consumed')
+  assert.ok(response.headers.get('Set-Cookie'))
+  database.close()
+})
+
+test('valid Google identity without an owner preauthorization remains denied and cannot self-register', async () => {
+  const database = new SqliteD1Database()
+  await seedUser(database)
+  const challenge = await (await issueChallenge(database)).json()
+  const credential = await makeToken(challenge.data.nonce,
+    { email: 'unapproved@gmail.com', email_verified: true },
+    { subject: 'unapproved-google-sub' })
+  const response = await googleLogin(database, challenge.data.nonce, credential)
+  assert.equal(response.status, 401)
+  assert.equal(response.headers.get('Set-Cookie'), null)
+  assert.equal((await database.prepare('SELECT COUNT(*) AS count FROM admin_users').first<{ count: number }>())?.count, 1)
+  assert.equal((await database.prepare('SELECT COUNT(*) AS count FROM admin_moderator_pre_authorizations').first<{ count: number }>())?.count, 0)
+  database.close()
+})
+
 test('invalid signature, forged compact token, wrong audience, wrong issuer and expired credentials are rejected', async () => {
   const variants: Array<{ label: string; token: (nonce: string) => Promise<string> }> = [
     { label: 'forged token', token: async () => 'eyJhbGciOiJub25lIn0.eyJzdWIiOiJhdHRhY2tlciJ9.' },
@@ -314,6 +353,8 @@ test('session middleware keeps the D1 role, fail-closed configuration, owner-onl
     return Response.json({ ok: true })
   }
   assert.equal((await middleware(validContext)).status, 200)
+  assert.equal((await middleware(context(request('/api/admin/moderator-preauthorizations', 'POST', { email: 'customer@gmail.com' }, cookie), env(database)))).status, 200)
+  assert.equal((await middleware(context(request('/api/admin/moderator-preauthorizations/auth-1', 'DELETE', undefined, cookie), env(database)))).status, 200)
   assert.equal((await middleware(context(request('/api/admin/summary'), env(database)))).status, 401)
   assert.equal((await middleware(context(request('/api/admin/summary'), { DB: database }))).status, 503)
   for (const [path, method] of [['/api/admin/summary', 'GET'], ['/api/admin/questions/q1/moderation', 'POST'], ['/api/admin/questions/q1/answer', 'PUT'], ['/api/admin/questions/q1', 'DELETE']] as const) {
@@ -323,6 +364,24 @@ test('session middleware keeps the D1 role, fail-closed configuration, owner-onl
   }
   const legacyAccess = await middleware(context(new Request('https://ruang-ibu.test/api/admin/summary', { headers: { 'Cf-Access-Jwt-Assertion': 'forged' } }), env(database)))
   assert.equal(legacyAccess.status, 401)
+  database.close()
+})
+
+test('Moderator session can reach Q&A actions but cannot access Owner-only preauthorization or deletion routes', async () => {
+  const database = new SqliteD1Database()
+  await seedUser(database)
+  await seedUser(database, { id: 'admin-moderator-1', email: 'customer@gmail.com', sub: 'customer-google-sub', role: 'moderator' })
+  const challenge = await (await issueChallenge(database)).json()
+  const credential = await makeToken(challenge.data.nonce,
+    { email: 'customer@gmail.com', email_verified: true }, { subject: 'customer-google-sub' })
+  const login = await googleLogin(database, challenge.data.nonce, credential)
+  const cookie = cookieFrom(login)
+  const middleware = adminMiddleware.createAdminSessionMiddleware()
+  const qna = context(request('/api/admin/questions', 'GET', undefined, cookie), env(database))
+  qna.next = async () => Response.json({ allowed: true })
+  assert.equal((await middleware(qna)).status, 200)
+  assert.equal((await middleware(context(request('/api/admin/moderator-preauthorizations', 'POST', { email: 'other@gmail.com' }, cookie), env(database)))).status, 403)
+  assert.equal((await middleware(context(request('/api/admin/questions/q1', 'DELETE', undefined, cookie), env(database)))).status, 403)
   database.close()
 })
 

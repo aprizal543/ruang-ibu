@@ -1,4 +1,4 @@
-import type { AdminQuestion, AdminQuestionPage, AdminSummary, ModerationStatus } from '../types/admin'
+import type { AdminQuestion, AdminQuestionPage, AdminSummary, ModerationStatus, ModeratorPreauthorization, ModeratorPreauthorizationStatus } from '../types/admin'
 
 export class AdminApiError extends Error {
   constructor(readonly status: number, readonly code: string, message: string) {
@@ -82,4 +82,24 @@ export function saveAnswer(id: string, answer: string, legacyPublicText?: { publ
 
 export function deleteQuestion(id: string): Promise<{ id: string; deleted: true }> {
   return request(`/api/admin/questions/${encodeURIComponent(id)}`, { method: 'DELETE' })
+}
+
+export function getModeratorPreauthorizations(signal?: AbortSignal): Promise<ModeratorPreauthorization[]> {
+  return request<unknown>('/api/admin/moderator-preauthorizations', {}, signal).then((value) => {
+    if (!isRecord(value) || !Array.isArray(value.authorizations)) throw invalidResponse()
+    const allowed = new Set<ModeratorPreauthorizationStatus>(['active', 'expired', 'consumed', 'revoked'])
+    if (value.authorizations.some((row) => !isRecord(row) || typeof row.id !== 'string' || typeof row.email !== 'string'
+      || row.role !== 'moderator' || typeof row.status !== 'string' || !allowed.has(row.status as ModeratorPreauthorizationStatus)
+      || typeof row.createdAt !== 'number' || typeof row.expiresAt !== 'number'
+      || !(row.consumedAt === null || typeof row.consumedAt === 'number'))) throw invalidResponse()
+    return value.authorizations as ModeratorPreauthorization[]
+  })
+}
+
+export function preauthorizeModerator(email: string): Promise<{ id: string; email: string; role: 'moderator'; status: 'active'; expiresAt: number }> {
+  return request('/api/admin/moderator-preauthorizations', { method: 'POST', body: JSON.stringify({ email }) })
+}
+
+export function revokeModeratorPreauthorization(id: string): Promise<{ id: string; status: 'revoked' }> {
+  return request(`/api/admin/moderator-preauthorizations/${encodeURIComponent(id)}`, { method: 'DELETE' })
 }

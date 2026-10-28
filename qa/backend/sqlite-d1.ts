@@ -29,9 +29,10 @@ class SqliteD1Statement {
 
 export class SqliteD1Database {
   readonly database = new DatabaseSync(':memory:')
+  private batchQueue: Promise<void> = Promise.resolve()
 
   constructor() {
-    for (const file of ['0001_questions.sql', '0002_admin_auth.sql']) {
+    for (const file of ['0001_questions.sql', '0002_admin_auth.sql', '0003_moderator_pre_authorization.sql']) {
       this.database.exec(readFileSync(new URL(`../../migrations/${file}`, import.meta.url), 'utf8'))
     }
   }
@@ -41,15 +42,24 @@ export class SqliteD1Database {
   }
 
   async batch(statements: SqliteD1Statement[]) {
-    this.database.exec('BEGIN IMMEDIATE')
+    const previousBatch = this.batchQueue
+    let releaseBatch!: () => void
+    this.batchQueue = new Promise<void>((resolve) => { releaseBatch = resolve })
+    await previousBatch
+    let transactionStarted = false
     try {
+      this.database.exec('BEGIN IMMEDIATE')
+      transactionStarted = true
       const results = []
       for (const statement of statements) results.push(await statement.run())
       this.database.exec('COMMIT')
+      transactionStarted = false
       return results
     } catch (error) {
-      this.database.exec('ROLLBACK')
+      if (transactionStarted) this.database.exec('ROLLBACK')
       throw error
+    } finally {
+      releaseBatch()
     }
   }
 

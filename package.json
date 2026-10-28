@@ -11,6 +11,8 @@
     "test:backend": "node --import tsx --test qa/backend/*.test.ts qa/backend/*.test.mjs",
     "test:auth:workerd": "node qa/workers/google-oidc-workerd.test.mjs",
     "admin:verify-google-sub": "node --import tsx scripts/admin/verify-google-sub.mjs",
+    "admin:verify-production-owner-identity": "node --import tsx scripts/admin/verify-production-owner-identity.mjs",
+    "admin:provision-production-owner": "node --import tsx scripts/admin/provision-production-owner.mjs",
     "test:browser:route-scroll": "node qa/public-regression.browser.mjs",
     "test:browser:route-scroll:legacy": "node qa/route-scroll.browser.mjs",
     "test:browser:m2": "node qa/public-regression.browser.mjs",

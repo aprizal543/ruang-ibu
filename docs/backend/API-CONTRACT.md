@@ -7,13 +7,13 @@ Base path: same-origin `/api`. JSON uses `{ data: ... }` or `{ error: { code, me
 | Method and route | Request | Success | Main errors | Access |
 |---|---|---|---|---|
 | `POST /api/auth/google/challenge` | `{}`; max 1 KiB | `200 {data:{clientId,nonce,expiresAt}}` | `400`, `403`, `429`, `413`, `503` | Exact `Origin`, `Sec-Fetch-Site: same-origin`; nonce is random, short-lived and persisted only as a digest. Client ID is public configuration. |
-| `POST /api/auth/google` | `{credential,nonce}`; exact keys, max 12 KiB | `200 {data:{authenticated:true,user:{id,email,role},expiresAt}}` plus session cookie | `400`, generic `401`, `403`, `413`, `429`, `503` | Google JWT signature/JWKS, RS256, issuer, audience, expiry, nonce and `email_verified` are verified server-side. Only an active, privately provisioned `google_sub` match can create a session. |
+| `POST /api/auth/google` | `{credential,nonce}`; exact keys, max 12 KiB | `200 {data:{authenticated:true,user:{id,email,role},expiresAt}}` plus session cookie | `400`, generic `401`, `403`, `413`, `429`, `503` | Google JWT signature/JWKS, RS256, issuer, audience, expiry, nonce and `email_verified` are verified server-side. Existing accounts match immutable `google_sub`; first activation is allowed only for an unexpired Owner-created Moderator preauthorization whose email matches the verified claim. |
 | `GET /api/auth/session` | Session cookie | `200 {data:{authenticated:true,user:{id,email,role},expiresAt}}` | `401`, `503` | Cookie required; no-store. |
 | `POST /api/auth/logout` | `{}` and session cookie | `200 {data:{loggedOut:true}}`; revokes D1 session and expires cookie | `400`, `403`, `503` | Exact Origin and `Sec-Fetch-Site: same-origin`. |
 
 Cookie: `__Host-ruang_ibu_session`, opaque random 256-bit value, `Secure; HttpOnly; SameSite=Strict; Path=/; Max-Age=28800`. Only a SHA-256 digest is stored in D1. Session validity ends at the earlier of 30 minutes idle or 8 hours absolute. There are no password, public registration, password recovery, bearer-token, or login-bypass endpoints.
 
-Identity and role are bound to the pre-provisioned `google_sub` and role in D1. A successful Google sign-in never creates an admin account. Owner/moderator provisioning is a private operator process; it requires independent verification of the Google subject and email. Google ID tokens remain in memory only long enough to POST to the same-origin verifier and are never stored in Web Storage, URL, D1, or audit events. Do not log request bodies.
+Identity and role are bound to the immutable `google_sub` and server-side role in D1. There is no public registration or client-selected role. An Owner may create a time-limited Moderator email preauthorization through the Owner-only API; only a matching verified Google login can consume it, and activation, authorization consumption, and both audit records run in one D1 batch. Owner creation remains a separate private bootstrap. Google ID tokens remain in memory only long enough to POST to the same-origin verifier and are never stored in Web Storage, URL, D1, or audit events. Do not log request bodies.
 
 ## Public Q&A
 
@@ -40,6 +40,15 @@ Every `/api/admin/*` request uses the D1 session middleware. Owner and moderator
 | `PUT /api/admin/questions/:id/answer` | `{answer}` (10-2,000 characters); legacy `pending` additionally requires `{publicDisplayName,publicQuestionText}` | Answer and `answered` status | Current public questions can be answered or updated. A legacy pending row is published only with the reviewed public fields and answer in one D1 batch. |
 | `DELETE /api/admin/questions/:id` | empty body | `{id,deleted:true}` | Owner only; confirmation is frontend behavior, authorization is server-side. |
 | `POST /api/admin/retention/purge` | empty body or `{}` | `{deleted}` | Owner only, manual only; never schedule/execute until customer retention approval. |
+| `GET /api/admin/moderator-preauthorizations` | none | `{authorizations:[...]}` | Owner only; no-store; last 50 records; never returns a Google `sub`. |
+| `POST /api/admin/moderator-preauthorizations` | `{email}`; exact key, Gmail only | `201 {id,email,role:"moderator",status:"active",expiresAt}` | Owner only; role fixed by server; expires after 30 days; duplicate account/active authorization rejected. |
+| `DELETE /api/admin/moderator-preauthorizations/:authorizationId` | empty body | `{id,status:"revoked"}` | Owner only; revokes an unused active authorization and records an audit event. Does not disable an activated account. |
+
+Moderator permission scope: read and manage Q&A through existing routes. Moderator cannot delete questions, run retention purge, or create/read/revoke Moderator preauthorizations. These restrictions are enforced in Pages Functions middleware and handlers, not only in the dashboard UI.
+
+### First-login Moderator activation
+
+Google login for an already active account continues to match by its stored `sub`. If no account matches, the verified `email` and `sub` returned by the same server-side OIDC verification path may activate one unexpired, Owner-created email preauthorization. The server fixes the new role to `moderator`; activation, authorization consumption, and both audit records are atomic. Unknown, disabled, duplicate, expired, revoked, or mismatched identities receive the generic login-denied response. This is not public self-registration. Migration `0003_moderator_pre_authorization.sql` is applied to QA/staging and Production; the matching application code is deployed to QA only and is not deployed to Production.
 
 Auth errors: `401 unauthorized`, `403 forbidden/origin_not_allowed`, `409` state conflict, `503 admin_auth_not_configured/admin_auth_unavailable`; responses contain no stack traces or secrets.
 

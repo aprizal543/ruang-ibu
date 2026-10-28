@@ -6,8 +6,18 @@ pages_build_output_dir = "./dist"
 [env.production]
 compatibility_date = "2026-10-23"
 
-# Keep this database binding scoped to Pages Preview deployments only.
-# Production has no D1 binding declared in this file.
+# Production and Preview use separate databases behind the same D1 binding name.
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "ruang-ibu-production"
+database_id = "2b9c3de9-eafb-4842-a613-27eab7ae7174"
+migrations_dir = "migrations"
+
+[env.production.vars]
+GOOGLE_OAUTH_CLIENT_ID = "58823770770-4nqm2e2m197d36hvs9vdif89debi2lbu.apps.googleusercontent.com"
+TURNSTILE_SITE_KEY = "0x4AAAAAAFpegnscxxPJYONH"
+TURNSTILE_ALLOWED_HOSTNAMES = "ruang-ibu.pages.dev"
+
 [[env.preview.d1_databases]]
 binding = "DB"
 database_name = "ruang-ibu-staging"

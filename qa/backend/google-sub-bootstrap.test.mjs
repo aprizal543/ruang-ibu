@@ -1,7 +1,21 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
+import { once } from 'node:events'
 import { createServer } from 'node:http'
 import { createGoogleSubBootstrapHandler } from '../../scripts/admin/verify-google-sub.mjs'
+import { listenOwnerBootstrapServer } from '../../scripts/admin/verify-production-owner-identity.mjs'
+
+test('operator bootstrap listener binds IPv6 localhost so localhost:5173 reaches the private runner', async () => {
+  const server = createServer((_request, response) => response.end('ok'))
+  const listening = once(server, 'listening')
+  listenOwnerBootstrapServer(server, 0)
+  await listening
+  try {
+    assert.equal(server.address()?.address, '::1')
+  } finally {
+    await new Promise((resolve) => server.close(resolve))
+  }
+})
 
 async function withServer(handlerFactory, run) {
   let handler
@@ -14,8 +28,9 @@ async function withServer(handlerFactory, run) {
   finally { await new Promise((resolve) => server.close(resolve)) }
 }
 
-test('local bootstrap exposes a one-use nonce and only prints a server-verified Google subject', async () => {
+test('local bootstrap exposes a one-use nonce and returns verified credential only to its in-memory callback', async () => {
   const verified = []
+  const successMessage = 'Google identity verified and owner email matched.'
   await withServer((origin, expectedHost) => createGoogleSubBootstrapHandler({
     clientId: 'synthetic.apps.googleusercontent.com',
     verifyCredential: async (credential, nonce, clientId) => {
@@ -25,25 +40,30 @@ test('local bootstrap exposes a one-use nonce and only prints a server-verified 
       return { sub: 'verified-synthetic-subject', email_verified: true }
     },
     createNonce: () => 'N'.repeat(43),
-    onVerified: (claims) => verified.push(claims.sub),
+    onVerified: async (claims, credential, nonce) => {
+      await new Promise((resolve) => setTimeout(resolve, 20))
+      verified.push({ sub: claims.sub, credential, nonce })
+    },
+    successMessage,
     origin,
     expectedHost,
   }), async (base) => {
     const challenge = await fetch(`${base}/challenge`, { headers: { 'Sec-Fetch-Site': 'same-origin' } })
     assert.equal(challenge.status, 200)
-    const { clientId, nonce } = await challenge.json()
+    const { clientId, nonce, successMessage: challengeMessage } = await challenge.json()
     assert.equal(clientId, 'synthetic.apps.googleusercontent.com')
     assert.equal(nonce, 'N'.repeat(43))
+    assert.equal(challengeMessage, successMessage)
 
     const headers = { Origin: base, 'Sec-Fetch-Site': 'same-origin', 'Content-Type': 'application/json' }
     const valid = await fetch(`${base}/verify`, { method: 'POST', headers, body: JSON.stringify({ credential: 'header.payload.signature', nonce }) })
     assert.equal(valid.status, 200)
     assert.deepEqual(await valid.json(), { verified: true })
-    assert.deepEqual(verified, ['verified-synthetic-subject'])
+    assert.deepEqual(verified, [{ sub: 'verified-synthetic-subject', credential: 'header.payload.signature', nonce }])
 
     const replay = await fetch(`${base}/verify`, { method: 'POST', headers, body: JSON.stringify({ credential: 'header.payload.signature', nonce }) })
     assert.equal(replay.status, 401)
-    assert.deepEqual(verified, ['verified-synthetic-subject'])
+    assert.deepEqual(verified, [{ sub: 'verified-synthetic-subject', credential: 'header.payload.signature', nonce }])
   })
 })
 

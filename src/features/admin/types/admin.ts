@@ -34,6 +34,18 @@ export interface AdminQuestionPage {
   nextCursor: string | null
 }
 
+export type ModeratorPreauthorizationStatus = 'active' | 'expired' | 'consumed' | 'revoked'
+
+export interface ModeratorPreauthorization {
+  id: string
+  email: string
+  role: 'moderator'
+  status: ModeratorPreauthorizationStatus
+  createdAt: number
+  expiresAt: number
+  consumedAt: number | null
+}
+
 export interface ApiErrorState {
   status: number
   code: string

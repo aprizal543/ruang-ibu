@@ -2,9 +2,9 @@ import { useCallback, useEffect, useRef, useState, type FormEvent, type ReactNod
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, CaretLeft, CaretRight, ChatCircleText, Check, EyeSlash, Info, Trash, WarningCircle } from '@phosphor-icons/react'
 import { questionArticleRegistry } from '../../../content/questionArticleRegistry'
-import { AdminApiError, deleteQuestion, getQuestion, getQuestions, getSummary, moderateQuestion, saveAnswer } from '../api/adminApi'
+import { AdminApiError, deleteQuestion, getQuestion, getQuestions, getSummary, getModeratorPreauthorizations, moderateQuestion, preauthorizeModerator, revokeModeratorPreauthorization, saveAnswer } from '../api/adminApi'
 import { useAdminUser } from '../auth-context'
-import type { AdminQuestion, AdminQuestionPage, AdminSummary, ModerationStatus } from '../types/admin'
+import type { AdminQuestion, AdminQuestionPage, AdminSummary, ModerationStatus, ModeratorPreauthorization } from '../types/admin'
 
 const statuses: Array<{ id: ModerationStatus | 'unanswered'; label: string }> = [
   { id: 'unanswered', label: 'Belum dijawab' }, { id: 'answered', label: 'Sudah dijawab' }, { id: 'rejected', label: 'Ditolak' }, { id: 'hidden', label: 'Disembunyikan' },
@@ -250,8 +250,85 @@ export function AdminQuestionDetailPage() {
 
 export function AdminSettingsPage() {
   const user = useAdminUser()
+  const [authorizations, setAuthorizations] = useState<ModeratorPreauthorization[]>([])
+  const [authorizationsLoading, setAuthorizationsLoading] = useState(user.role === 'owner')
+  const [authorizationsError, setAuthorizationsError] = useState('')
+  const [email, setEmail] = useState('')
+  const [formBusy, setFormBusy] = useState(false)
+  const [feedback, setFeedback] = useState<{ kind: 'success' | 'error'; text: string } | null>(null)
+  const [revokeId, setRevokeId] = useState<string | null>(null)
+  const [revokeBusy, setRevokeBusy] = useState(false)
+  const loadAuthorizations = useCallback(async (signal?: AbortSignal) => {
+    const rows = await getModeratorPreauthorizations(signal)
+    if (!signal?.aborted) {
+      setAuthorizations(rows)
+      setAuthorizationsError('')
+    }
+  }, [])
+  useEffect(() => {
+    if (user.role !== 'owner') return
+    const controller = new AbortController()
+    setAuthorizationsLoading(true)
+    void loadAuthorizations(controller.signal).catch((reason: unknown) => {
+      if (!controller.signal.aborted) setAuthorizationsError(reason instanceof AdminApiError ? reason.message : 'Daftar akses belum dapat dimuat.')
+    }).finally(() => { if (!controller.signal.aborted) setAuthorizationsLoading(false) })
+    return () => controller.abort()
+  }, [loadAuthorizations, user.role])
+
+  const submitPreauthorization = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    if (formBusy) return
+    setFormBusy(true)
+    setFeedback(null)
+    try {
+      await preauthorizeModerator(email)
+      setEmail('')
+      setFeedback({ kind: 'success', text: 'Praotorisasi Moderator dibuat. Berlaku selama 30 hari.' })
+      await loadAuthorizations()
+    } catch (reason) {
+      const text = reason instanceof AdminApiError && reason.status === 409
+        ? 'Alamat ini sudah memiliki akun atau praotorisasi aktif.'
+        : reason instanceof AdminApiError ? reason.message : 'Praotorisasi belum dapat dibuat.'
+      setFeedback({ kind: 'error', text })
+    } finally { setFormBusy(false) }
+  }
+
+  const revokePreauthorization = async () => {
+    if (!revokeId || revokeBusy) return
+    setRevokeBusy(true)
+    try {
+      await revokeModeratorPreauthorization(revokeId)
+      setFeedback({ kind: 'success', text: 'Praotorisasi berhasil dicabut.' })
+      setRevokeId(null)
+      await loadAuthorizations()
+    } catch (reason) {
+      setFeedback({ kind: 'error', text: reason instanceof AdminApiError ? reason.message : 'Praotorisasi belum dapat dicabut.' })
+    } finally { setRevokeBusy(false) }
+  }
+
   return <div className="admin-page" data-admin-page="settings"><PageHeading eyebrow="PREFERENSI PENGELOLA" title="Pengaturan dasar" description="Informasi akun dan kebijakan data yang saat ini berlaku." />
     <section className="admin-panel admin-settings-panel"><p className="admin-eyebrow">AKSES DAN PRIVASI</p><h2>Akun pengelola</h2><dl className="admin-metadata"><div><dt>Email</dt><dd>{user.email}</dd></div><div><dt>Peran</dt><dd>{user.role === 'owner' ? 'Pemilik' : 'Moderator'}</dd></div><div><dt>Metode masuk</dt><dd>Google Identity Services</dd></div><div><dt>Sesi</dt><dd>Maksimal 8 jam · berakhir setelah 30 menit tidak aktif</dd></div></dl><p>Hanya akun Google yang telah ditautkan secara privat ke identitas pengelola yang dapat masuk. Untuk mengubah akses akun, hubungi pemilik Ruang Ibu.</p></section>
+    {user.role === 'owner' && <section className="admin-panel admin-settings-panel" data-admin-preauthorization>
+      <p className="admin-eyebrow">AKSES PENGELOLA</p><h2>Praotorisasi Moderator</h2>
+      <p>Tambahkan alamat Gmail customer. Saat orang tersebut masuk dengan Google dan email terverifikasi cocok, akun Moderator akan diaktifkan. Role Moderator ditetapkan oleh server dan praotorisasi berlaku selama 30 hari.</p>
+      <p className="admin-private-notice">Praotorisasi tidak mengirim email dan tidak memberi akses sampai login Google pertama berhasil diverifikasi. Jangan memasukkan alamat selain yang sudah disetujui.</p>
+      <form className="admin-preauth-form" onSubmit={(event) => void submitPreauthorization(event)}>
+        <label className="admin-field" htmlFor="moderator-preauthorization-email">Alamat Gmail customer
+          <input id="moderator-preauthorization-email" type="email" autoComplete="email" inputMode="email" maxLength={254} required value={email} onChange={(event) => setEmail(event.currentTarget.value)} placeholder="nama@gmail.com" />
+        </label>
+        <button className="admin-button" type="submit" disabled={formBusy}>{formBusy ? 'Menyimpan…' : 'Praotorisasi Moderator'}</button>
+      </form>
+      {feedback && <Toast kind={feedback.kind} >{feedback.text}</Toast>}
+      {authorizationsError && <div className="admin-state admin-state--error" role="alert">{authorizationsError}<button className="admin-button admin-button--secondary" type="button" onClick={() => { setAuthorizationsLoading(true); void loadAuthorizations().catch(() => setAuthorizationsError('Daftar akses belum dapat dimuat.')).finally(() => setAuthorizationsLoading(false)) }}>Coba lagi</button></div>}
+      <div className="admin-preauth-list" aria-live="polite">
+        <h3>Daftar praotorisasi</h3>
+        {authorizationsLoading ? <LoadingState label="Memuat daftar akses…" /> : authorizations.length === 0 ? <p className="admin-preauth-empty">Belum ada praotorisasi Moderator.</p> : authorizations.map((authorization) => <div className="admin-preauth-row" key={authorization.id}>
+          <div><strong>{authorization.email}</strong><span className="admin-preauth-meta">Moderator · {authorization.status === 'active' ? 'Aktif' : authorization.status === 'expired' ? 'Kedaluwarsa' : authorization.status === 'consumed' ? 'Sudah diaktifkan' : 'Dicabut'} · berakhir {dateFormat.format(new Date(authorization.expiresAt))}</span></div>
+          {authorization.status === 'active' && <button className="admin-button admin-button--secondary" type="button" onClick={() => setRevokeId(authorization.id)}>Cabut akses</button>}
+        </div>)}
+      </div>
+    </section>}
     <section className="admin-panel admin-settings-panel"><p className="admin-eyebrow">RETENSI · BELUM DISETUJUI CUSTOMER</p><h2>Nilai implementasi sementara</h2><p>Angka berikut adalah default M3 untuk bahan review, bukan kebijakan final. Tidak ada penghapusan terjadwal dan dashboard ini tidak menyediakan purge massal.</p><ul className="admin-retention-list"><li><span>Pertanyaan menunggu moderasi</span><strong>90 hari sejak dikirim</strong></li><li><span>Ditolak atau disembunyikan</span><strong>30 hari sejak ditangani</strong></li><li><span>Disetujui atau dijawab</span><strong>365 hari sejak ditangani</strong></li></ul><p className="admin-settings-footnote">Sebelum kebijakan disetujui, penghapusan hanya dapat dilakukan satu per satu dengan konfirmasi.</p></section>
+    {revokeId && <ConfirmDialog title="Cabut praotorisasi ini?" description="Customer tidak dapat mengaktifkan akses Moderator menggunakan praotorisasi ini. Jika akun sudah diaktifkan, pencabutan ini tidak menonaktifkan akun tersebut." confirmLabel="Cabut praotorisasi" busy={revokeBusy} onCancel={() => setRevokeId(null)} onConfirm={() => void revokePreauthorization()} destructive />}
   </div>
 }

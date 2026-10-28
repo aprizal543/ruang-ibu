@@ -34,7 +34,15 @@ Halaman riwayat meminta empat status tertangani sekaligus melalui filter status 
 
 ## Akses akun (M4.6C — lokal)
 
-Admin masuk melalui tombol resmi Google Identity Services di `/admin/login`. Hanya Google `sub` yang sebelumnya ditautkan secara privat ke baris `admin_users` aktif dapat membuat sesi; login Google tidak membuat akun otomatis dan peran tidak berasal dari token/request. Tidak ada password login, pendaftaran publik, atau reset password. ID token hanya berada sementara di memori dan dikirim ke API same-origin untuk verifikasi signature, issuer, audience, expiry, nonce, dan email terverifikasi. Cookie sesi tetap HttpOnly/Secure/SameSite=Strict; batas idle 30 menit dan absolut 8 jam; logout mencabut sesi. Moderator dapat melakukan moderasi/jawaban, sedangkan hapus individual dan purge hanya untuk pemilik. Data pertanyaan, email, ID token, dan sesi tidak disimpan di Web Storage. Identitas owner/moderator disediakan melalui proses operator privat. Integrasi Google, migration 0002, dan akun belum terhubung/diterapkan di Preview atau Production.
+Admin masuk melalui tombol resmi Google Identity Services di `/admin/login`. Login Google selalu memverifikasi signature, issuer, audience, expiry, nonce, dan email terverifikasi; role tidak berasal dari token/request. Tidak ada password login, reset password, atau pendaftaran publik. ID token hanya berada sementara di memori dan dikirim ke API same-origin. Cookie sesi HttpOnly/Secure/SameSite=Strict; idle 30 menit, absolut 8 jam; logout mencabut sesi. Moderator dapat mengelola Tanya Jawab, sedangkan hapus individual dan purge hanya untuk Owner. Data pertanyaan, email, ID token, dan sesi tidak disimpan di Web Storage. Catatan akses awal M4.6C di bagian ini adalah riwayat; lihat prosedur M6.5 di bawah untuk onboarding Moderator saat migration 0003 tersedia.
+
+## M6.5 — Praotorisasi Moderator oleh Owner
+
+Di Pengaturan Dasar, hanya Owner yang melihat bagian **Praotorisasi Moderator**. Owner memasukkan Gmail yang sudah disepakati; server menetapkan role `moderator`, mencatat praotorisasi yang berlaku 30 hari, dan menampilkan status aktif/kedaluwarsa/sudah diaktifkan/dicabut. Owner dapat mencabut praotorisasi yang belum dipakai. Tidak ada email undangan yang dikirim.
+
+Customer mengaktifkan akses sendiri dengan membuka `/admin/login` dan masuk menggunakan Google. Server hanya mengaktifkan akun jika token Google lolos verifikasi penuh dan email terverifikasi cocok dengan praotorisasi aktif. Google `sub` kemudian ditautkan permanen; aktivasi sekali pakai serta auditnya bersifat atomik. Customer tidak memberikan password, OTP, akses Gmail, atau sesi Google kepada developer. Moderator dapat mengelola Tanya Jawab, tetapi tidak dapat menghapus pertanyaan, menjalankan purge, atau mengelola praotorisasi/akun.
+
+**Status M6.5/M6.6:** Migration `0003` sudah diterapkan pada QA/staging dan Production. Kode onboarding Moderator terdeploy hanya ke QA; belum ada Moderator customer yang diaktifkan dan kode tersebut belum dideploy ke Production. Catatan M4.6C di atas adalah riwayat dan tidak lagi menjelaskan status integrasi terbaru.
 # Public Q&A handoff (M5A)
 
 > Historical baseline only. Its pending/approval flow is superseded by the M5 UX direct-publication revision below; do not use it as the current behavior.

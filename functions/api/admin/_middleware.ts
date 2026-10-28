@@ -13,6 +13,8 @@ function noStore(response: Response): Response {
 function requiresOwner(request: Request): boolean {
   const path = new URL(request.url).pathname
   return (request.method === 'DELETE' && /^\/api\/admin\/questions\/[^/]+$/u.test(path))
+    || (request.method === 'POST' && path === '/api/admin/moderator-preauthorizations')
+    || (request.method === 'DELETE' && /^\/api\/admin\/moderator-preauthorizations\/[^/]+$/u.test(path))
     || (request.method === 'POST' && path === '/api/admin/retention/purge')
 }
 

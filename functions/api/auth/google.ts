@@ -1,6 +1,7 @@
 import { createRemoteJWKSet, jwtVerify, type JWTVerifyGetKey, type JWTPayload } from 'jose'
 import { apiError, isResponse, jsonResponse, readJsonObject } from '../../_shared/http'
 import type { AdminIdentity, Env, PagesContext } from '../../_shared/types'
+import { activatePreauthorizedModerator } from './moderator-activation'
 import {
   ABSOLUTE_SESSION_MS,
   appendCookie,
@@ -99,9 +100,10 @@ export function createGoogleLoginHandler(keySetFactory: () => JWTVerifyGetKey = 
         return failedLogin()
       }
 
-      const user = await env.DB.prepare(`SELECT id, email, role FROM admin_users
+      let user = await env.DB.prepare(`SELECT id, email, role FROM admin_users
         WHERE google_sub = ? AND is_active = 1 LIMIT 1`)
         .bind(claims.sub).first<AdminIdentity>()
+      if (!user) user = await activatePreauthorizedModerator(env.DB, claims.email, claims.sub, now)
       if (!user) {
         await recordGoogleLoginFailure(env.DB, loginBucket, now)
         return failedLogin()

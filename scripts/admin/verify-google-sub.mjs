@@ -59,9 +59,9 @@ main{background:#fffdf8;border:1px solid #dfd6c6;border-radius:1rem;padding:2rem
 #status{min-height:2rem;color:#8a4938}.note{font-size:.9rem;color:#55675e}
 </style><script src="/app.js" defer></script></head><body><main>
 <p>Ruang Ibu · Alat lokal operator</p><h1>Verifikasi identitas Google</h1>
-<p>Masuk dengan akun yang akan diprovisikan. Server lokal akan memeriksa signature dan klaim token Google sebelum menampilkan subject. Token tidak disimpan atau dicatat.</p>
+<p>Masuk dengan akun Google yang ingin diverifikasi. Server lokal memeriksa signature dan klaim yang diperlukan. Token tidak disimpan atau dicatat; halaman hanya menampilkan status verifikasi.</p>
 <div id="google-button"></div><p id="status" role="status" aria-live="polite">Menyiapkan tombol Google…</p>
-<p class="note">Gunakan hanya pada komputer tepercaya. Setelah subject diverifikasi, jalankan prosedur provisioning Preview yang telah mendapat otorisasi.</p>
+<p class="note">Gunakan hanya pada komputer tepercaya. Setelah verifikasi, proses lokal akan menampilkan ringkasan target Production dan menunggu konfirmasi terpisah sebelum membuat akun.</p>
 </main></body></html>`
 
 const browserScript = `const statusNode=document.querySelector('#status');
@@ -80,7 +80,7 @@ async function start(){
     const response=await fetch('/verify',{method:'POST',credentials:'same-origin',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:result.credential,nonce:challenge.nonce})});
     const outcome=await response.json();
     if(!response.ok||outcome.verified!==true)throw new Error();
-    status('Identitas berhasil diverifikasi. Lihat terminal lokal untuk subject. Token tidak disimpan.');
+    status(challenge.successMessage);
    }catch{status('Verifikasi gagal. Token tidak diterima untuk provisioning; tutup dan mulai ulang alat lokal.')}
   }});
   google.accounts.id.renderButton(document.querySelector('#google-button'),{type:'standard',theme:'outline',size:'large',shape:'pill',text:'signin_with'});
@@ -97,6 +97,7 @@ export function createGoogleSubBootstrapHandler({
   now = () => Date.now(),
   origin = LOCAL_ORIGIN,
   expectedHost = LOCAL_HOST,
+  successMessage = 'Identitas Google berhasil diverifikasi. Token tidak disimpan.',
 } = {}) {
   if (typeof clientId !== 'string' || !clientId.endsWith('.apps.googleusercontent.com')) throw new Error('A valid public Google Web Client ID is required.')
   let pendingChallenge = null
@@ -119,7 +120,7 @@ export function createGoogleSubBootstrapHandler({
       const nonce = createNonce()
       if (typeof nonce !== 'string' || !NONCE_PATTERN.test(nonce)) return send(response, 500, { error: 'challenge_unavailable' })
       pendingChallenge = { nonce, expiresAt: now() + NONCE_TTL_MS }
-      return send(response, 200, { clientId, nonce, expiresAt: pendingChallenge.expiresAt })
+      return send(response, 200, { clientId, nonce, expiresAt: pendingChallenge.expiresAt, successMessage })
     }
     if (request.method === 'POST' && url.pathname === '/verify') {
       if (request.headers.origin !== origin || request.headers['sec-fetch-site'] !== 'same-origin') {
@@ -139,7 +140,7 @@ export function createGoogleSubBootstrapHandler({
       try {
         const claims = await verifyCredential(body.credential, challenge.nonce, clientId)
         if (claims.email_verified !== true || typeof claims.sub !== 'string' || !claims.sub) throw new Error('invalid_claims')
-        onVerified(claims)
+        await onVerified(claims, body.credential, challenge.nonce)
         return send(response, 200, { verified: true })
       } catch {
         return send(response, 401, { error: 'verification_failed' })
