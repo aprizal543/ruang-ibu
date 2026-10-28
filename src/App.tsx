@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useRef, useState } from 'react'
 import { Route, Routes, useParams } from 'react-router-dom'
 import TherapyDetailPage from './components/therapy/TherapyDetailPage'
 import { therapyArticles } from './content/therapyArticles'
@@ -14,6 +14,14 @@ import EvaluationPage from './pages/EvaluationPage'
 import { AboutPage, FaqPage, NotFoundPage, SafetyPage, SourcesPage } from './pages/InformationPages'
 import SiteMenu from './components/layout/SiteMenu'
 import RouteScrollManager from './components/navigation/RouteScrollManager'
+
+const AdminLayout = lazy(() => import('./features/admin/components/AdminLayout'))
+const AdminLoginPage = lazy(() => import('./features/admin/pages/AdminLoginPage'))
+const AdminOverviewPage = lazy(() => import('./features/admin/pages/AdminPages').then((module) => ({ default: module.AdminOverviewPage })))
+const AdminQuestionsPage = lazy(() => import('./features/admin/pages/AdminPages').then((module) => ({ default: module.AdminQuestionsPage })))
+const AdminQuestionDetailPage = lazy(() => import('./features/admin/pages/AdminPages').then((module) => ({ default: module.AdminQuestionDetailPage })))
+const AdminHistoryPage = lazy(() => import('./features/admin/pages/AdminPages').then((module) => ({ default: module.AdminHistoryPage })))
+const AdminSettingsPage = lazy(() => import('./features/admin/pages/AdminPages').then((module) => ({ default: module.AdminSettingsPage })))
 
 function TherapyArticleRoute() {
   const { slug } = useParams()
@@ -46,6 +54,14 @@ export default function App() {
         <Route path="/hamil" element={<PregnancyGuidePage />} />
         <Route path="/bersalin" element={<BirthGuidePage />} />
         <Route path="/evaluasi" element={<EvaluationPage />} />
+        <Route path="/admin/login" element={<Suspense fallback={<p role="status" aria-live="polite">Memuat halaman masuk…</p>}><AdminLoginPage /></Suspense>} />
+        <Route path="/admin" element={<Suspense fallback={<p role="status" aria-live="polite">Memuat ruang pengelola…</p>}><AdminLayout /></Suspense>}>
+          <Route index element={<AdminOverviewPage />} />
+          <Route path="questions" element={<AdminQuestionsPage />} />
+          <Route path="questions/:id" element={<AdminQuestionDetailPage />} />
+          <Route path="history" element={<AdminHistoryPage />} />
+          <Route path="settings" element={<AdminSettingsPage />} />
+        </Route>
         <Route path="/panduan/hamil" element={<PregnancyGuidePage />} />
         <Route path="/panduan/bersalin" element={<BirthGuidePage />} />
         <Route

@@ -1,0 +1,62 @@
+import assert from 'node:assert/strict'
+import { readFileSync } from 'node:fs'
+import { test } from 'node:test'
+import { DatabaseSync } from 'node:sqlite'
+
+const migration = readFileSync(new URL('../../migrations/0001_questions.sql', import.meta.url), 'utf8')
+const authMigration = readFileSync(new URL('../../migrations/0002_admin_auth.sql', import.meta.url), 'utf8')
+
+test('D1 migration is idempotent and defines constraints and required indexes', () => {
+  const database = new DatabaseSync(':memory:')
+  database.exec(migration)
+  database.exec(migration)
+  const tables = database.prepare("SELECT name FROM sqlite_master WHERE type = 'table'").all().map((row: any) => row.name)
+  assert.ok(tables.includes('questions'))
+  assert.ok(tables.includes('answers'))
+  assert.ok(tables.includes('moderation_events'))
+  assert.ok(tables.includes('question_rate_limits'))
+  const indexes = database.prepare("SELECT name FROM sqlite_master WHERE type = 'index'").all().map((row: any) => row.name)
+  for (const name of ['idx_questions_article_status_created', 'idx_questions_status_created', 'idx_questions_expires_at', 'idx_moderation_events_question_created']) assert.ok(indexes.includes(name), `${name} exists`)
+
+  assert.throws(() => database.prepare(`INSERT INTO questions
+    (id, article_slug, display_name, question_text, consent_at, moderation_status, created_at, updated_at, expires_at)
+    VALUES ('bad', 'unknown', 'Nama', 'pertanyaan cukup panjang', 'now', 'pending', 'now', 'now', 'later')`).run())
+  database.close()
+})
+
+test('answer foreign key and one-answer constraint are enforced', () => {
+  const database = new DatabaseSync(':memory:')
+  database.exec(migration)
+  assert.throws(() => database.prepare(`INSERT INTO answers (id, question_id, answer_text, answered_by, created_at, updated_at)
+    VALUES ('orphan', 'missing', 'Jawaban cukup panjang untuk validasi', 'admin', 'now', 'now')`).run())
+  database.prepare(`INSERT INTO questions (id, article_slug, display_name, question_text, consent_at, moderation_status,
+    public_display_name, public_question_text, created_at, updated_at, expires_at)
+    VALUES ('q1', 'nyeri-punggung-kehamilan', 'Nama', 'Pertanyaan yang cukup panjang', 'now', 'approved', 'Publik', 'Pertanyaan publik yang disunting moderator', 'now', 'now', 'later')`).run()
+  database.prepare(`INSERT INTO answers (id, question_id, answer_text, answered_by, created_at, updated_at)
+    VALUES ('a1', 'q1', 'Jawaban cukup panjang untuk validasi', 'admin', 'now', 'now')`).run()
+  assert.throws(() => database.prepare(`INSERT INTO answers (id, question_id, answer_text, answered_by, created_at, updated_at)
+    VALUES ('a2', 'q1', 'Jawaban lain cukup panjang untuk validasi', 'admin', 'now', 'now')`).run())
+  database.close()
+})
+
+test('admin OIDC migration is additive, idempotent, and constrains identity, sessions, nonce, throttle, and audit', () => {
+  const database = new DatabaseSync(':memory:')
+  database.exec(migration)
+  database.exec(authMigration)
+  database.exec(authMigration)
+  const tables = database.prepare("SELECT name FROM sqlite_master WHERE type = 'table'").all().map((row: any) => row.name)
+  for (const name of ['questions', 'answers', 'moderation_events', 'question_rate_limits', 'admin_users', 'admin_sessions', 'admin_login_throttles', 'admin_login_nonces', 'admin_auth_events']) {
+    assert.ok(tables.includes(name), `${name} remains available`)
+  }
+  const indexes = database.prepare("SELECT name FROM sqlite_master WHERE type = 'index'").all().map((row: any) => row.name)
+  for (const name of ['idx_admin_users_active_role', 'idx_admin_sessions_user_active', 'idx_admin_sessions_expiry', 'idx_admin_login_throttles_expiry', 'idx_admin_login_nonces_expiry', 'idx_admin_auth_events_user_created']) assert.ok(indexes.includes(name), `${name} exists`)
+  assert.throws(() => database.prepare(`INSERT INTO admin_users (id,email,google_sub,role,created_at,updated_at)
+    VALUES ('bad-role','bad@example.test','bad-google-sub','administrator',1,1)`).run())
+  assert.throws(() => database.prepare(`INSERT INTO admin_users (id,email,google_sub,role,created_at,updated_at)
+    VALUES ('missing-sub','missing@example.test','', 'owner',1,1)`).run())
+  assert.throws(() => database.prepare(`INSERT INTO admin_sessions (session_hash, admin_user_id, created_at, last_seen_at, absolute_expires_at)
+    VALUES ('${'a'.repeat(64)}', 'missing-user', 1, 1, 2)`).run())
+  assert.throws(() => database.prepare(`INSERT INTO admin_auth_events (event_id, action, created_at, metadata_json)
+    VALUES ('bad-event', 'password_login', 1, '{}')`).run())
+  database.close()
+})

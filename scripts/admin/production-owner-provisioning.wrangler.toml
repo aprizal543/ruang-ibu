@@ -1,0 +1,14 @@
+# Local-only binding configuration for the private M6.4 operator runner.
+# This is not a deployment config: no routes, triggers, vars, or public URL.
+name = "ruang-ibu-owner-bootstrap-local"
+main = "./production-owner-provisioning-local-worker.mjs"
+compatibility_date = "2026-10-23"
+account_id = "32a9a8d36173f8af3e9f404956e7b7d7"
+workers_dev = false
+preview_urls = false
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ruang-ibu-production"
+database_id = "2b9c3de9-eafb-4842-a613-27eab7ae7174"
+remote = true

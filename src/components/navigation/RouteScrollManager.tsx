@@ -45,6 +45,7 @@ function scrollToAnchor(hash: string, pathname: string): (() => void) | null {
 
   let active = true
   let observer: MutationObserver | undefined
+  let alignmentTimer: number | undefined
   const timeout = window.setTimeout(() => {
     if (!active) return
     cleanup()
@@ -53,6 +54,7 @@ function scrollToAnchor(hash: string, pathname: string): (() => void) | null {
   const cleanup = () => {
     active = false
     window.clearTimeout(timeout)
+    if (alignmentTimer !== undefined) window.clearTimeout(alignmentTimer)
     observer?.disconnect()
   }
 
@@ -74,8 +76,19 @@ function scrollToAnchor(hash: string, pathname: string): (() => void) | null {
     // when a direct URL is opened in a backgrounded browser tab.
     void document.fonts.ready.then(() => {
       if (!active || window.location.pathname !== pathname || window.location.hash !== hash) return
-      document.getElementById(id)?.scrollIntoView({ block: 'start', behavior: 'auto' })
-      cleanup()
+      // Let React's disclosure update and the browser's native fragment handling settle first.
+      alignmentTimer = window.setTimeout(() => {
+        if (!active || window.location.pathname !== pathname || window.location.hash !== hash) {
+          cleanup()
+          return
+        }
+        const target = document.getElementById(id)
+        if (target) {
+          target.getBoundingClientRect()
+          target.scrollIntoView({ block: 'start', behavior: 'auto' })
+        }
+        cleanup()
+      }, 50)
     })
   }
 

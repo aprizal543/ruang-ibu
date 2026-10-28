@@ -17,7 +17,7 @@ Status ini menilai kecocokan sumber untuk klaim yang ditampilkan, bukan persetuj
 | B06 | `kecemasan-persalinan` | Meminta penjelasan/dukungan; musik boleh dihentikan; nyeri dan cemas adalah luaran berbeda. | S2/S22; C07/C08; S40 (2026 overview) | S40 mencakup 20 review lintas masa maternal dan intervensi musik beragam. | Bias, heterogenitas, imprecision; bukan bukti playlist Ruang Ibu. | PARTIALLY SUPPORTED |
 | T01 | `teknik-pernapasan` | Pisahkan persiapan hamil dari napas kala I. | S1/S2 (guidelines); S5/S6/S15 (official/patient info); S32 (2024 SR); S39 (2026 RCT) | S32: kala I; S39: 71 primipara, dimulai awal T2 selama 8 minggu, outcome kenyamanan T3. | S32 bukan bukti ibu hamil; S39 bukan latihan baru dimulai T3/protokol persalinan. | PARTIALLY SUPPORTED |
 | T02 | `musik-relaksasi` | Musik pilihan bukan terapi terstruktur atau janji outcome klinis. | S1/S2; S13; C04â€“C08; S40 (2026 overview) | S40 meninjau 20 review pada periode berbeda. | Heterogenitas/bias dan intervensi beragam; tidak membuktikan playlist individual. | PARTIALLY SUPPORTED |
-| T03 | `relaksasi-otot-ringan` | Grounding sumber membahas kewalahan/panik; halaman tidak mengajarkan latihan atau menjanjikan efek. | S14/S22; S37 (2024 SR); S38 (2024 RCT) | Review intervensi beragam dan RCT program terstruktur. | Tidak ada bukti langsung bagi grounding Ruang Ibu; panduan hanya komunikasi/meminta dukungan. | INSUFFICIENT EVIDENCE for efficacy |
+| T03 | `relaksasi-otot-ringan` | S14 specifically mentions grounding/breathing as an option for distressing birth memories; the article does not teach a technique or promise an effect. | S14/S22; S37 (2024 SR); S38 (2024 RCT) | Review interventions are varied; the RCT tested a structured program. | No direct evidence for grounding as general Ruang Ibu relaxation; guidance is limited to communication/support. | INSUFFICIENT EVIDENCE for general efficacy |
 | T04 | `pijat-pendamping-persalinan` | Sentuhan atas persetujuan; studi pijat sakral/shiatsu bukan pijat umum pendamping. | S1/S2; S33 (2025 SR); S34 (2024 RCT) | S33: sembilan studi; S34: 80 nullipara, shiatsu oleh bidan terlatih. | Teknik/intervensi spesifik dan heterogen; tidak memberi teknik mandiri. | PARTIALLY SUPPORTED |
 
 ### Sumber baru yang diverifikasi dan digunakan
@@ -102,3 +102,35 @@ Article-level status remains `DRAFT` for T01â€“T04. Per-claim source notes 
 ### M2.1 public mapping check — 27 October 2026
 
 S3, S4, and S28 stay in the internal source register for historical traceability but are absent from current public article and guide source-ID mappings. The `/sumber` page excludes entries classified `historical_source`. Official guidance and health information remain separately labeled: S1 is a guideline and S27 is official health information. Newer evidence is not treated as interchangeable across trimester III, labor stage, provider, or intervention; the population and intervention boundaries above remain in force. C01–C08 DOI/URL values remain unchanged. No article has clinical approval recorded.
+
+## Whole-site reference audit addendum — 28 October 2026
+
+The updated 43-record inventory and detailed 11-article/12-topic evidence-to-claim audit are in [`PHASE-2.3-SOURCE-AUDIT.md`](PHASE-2.3-SOURCE-AUDIT.md#whole-site-reference-and-release-audit--28-october-2026). The key decisions for this matrix are:
+
+- S1 (WHO 2018) is a clinical guideline, not new research. Keep it only as scoped historical/global guidance; use current NICE NG235 S2 (2023, updated 9 June 2026) as the primary labor-care guideline. WHO's 2025 compilation is not new underlying trial evidence.
+- S3/S4 (Cochrane 2018) and S28 (systematic review 2021) are historical-only and are excluded from current public article/guide mappings. Newer S32/S33/S34/S37/S40 sources are narrower; no one-to-one replacement is claimed.
+- S25 is verified as Kemenkes 2019; it remains supplementary for anchor/traceability while the same guide also maps S23, Buku KIA 2024. S27 is official ACOG information last reviewed 2020; newer S31 (feasibility massage study) does not replace it. S30 is ACOG information published 2020, last reviewed 2025, not recent research.
+- Current primary research/reviews with 2022–2026 publication years remain C01–C08 and S31–S40; the source register also has S2 and S23 in that range. Do not treat studies in labor as evidence for trimester-III pregnancy, trained-provider protocols as lay massage instructions, perineal heat as pregnancy back heat, or structured music therapy as the Ruang Ibu playlist.
+- The revised metadata only corrects source date labels/publication years for S8, S13, S25, S26, and S30. It does not change DOI/URL identity or article source IDs. C01–C08 remain unchanged. Every article and guide remains `clinicalReview: draft`; no item is clinically approved.
+
+Current claim-level status: A01/A04/A05/A06 and B01/B05/B06/T01/T02/T04 have bounded or partial support as shown in the article matrix above; T03 has insufficient direct evidence for a general relaxation efficacy claim. A04 must not infer a warm-back-compress dose from perineal-compress research. A05/T04 must not imply universal safety or instruct unsupervised massage. T01 must not extrapolate labor breathing evidence to a new trimester-III technique. T03 remains non-procedural and its `sourceReview` is `draft` until scope and clinical review are resolved.
+
+## Final targeted copy remediation — 28 October 2026
+
+These editorial statuses apply to narrow claims only: **VERIFIED** = source directly supports the factual statement within its stated scope; **LIMITED EVIDENCE** = study evidence is described with its population/intervention/outcome limits; **CLINICAL REVIEW REQUIRED** = patient-facing safety and practical guidance is still draft for qualified Indonesian maternity review. They are not clinical approval labels.
+
+| Article | Verified/bounded material | Limited or unsupported claim removed/narrowed | Remaining status |
+|---|---|---|---|
+| A01 | S26/S30 describe back-pain information and warning context; C04 is a mixed intervention review. | C01–C03 now explicitly remain small, intervention-specific pregnancy studies, not universal back-pain evidence. | LIMITED EVIDENCE; CLINICAL REVIEW REQUIRED |
+| A04 | S30 supports lowest heating-pad setting, towel barrier, and limiting use; no specific temperature/minute value is added. | C01–C03 no longer imply general compress efficacy or provide an application dose. | LIMITED EVIDENCE; CLINICAL REVIEW REQUIRED |
+| A05 | S27 is retained as older official patient information; S31 is a small feasibility study of remedial massage for pelvic-girdle pain. | No general prenatal massage efficacy/safety is inferred from S31 or reflexology/other interventions. | LIMITED EVIDENCE; CLINICAL REVIEW REQUIRED |
+| A06 | S5 supports help-seeking context; C05/C06 studied structured interventions. | Their results are not equated with casual playlist use or mental-health treatment. | LIMITED EVIDENCE; CLINICAL REVIEW REQUIRED |
+| B01 | S2 is the current primary guideline; S32 is a labor-first-stage review with very low certainty for pain. | The general sentence implying labor music may reduce pain has been removed; C07 is now described as heterogeneous and not a product evaluation. | LIMITED EVIDENCE; CLINICAL REVIEW REQUIRED |
+| B05 | S2/S36 describe provider-led second-stage perineal heat. | Copy states outcome variation and prohibits inference to pregnancy back compress or self-application. | LIMITED EVIDENCE; CLINICAL REVIEW REQUIRED |
+| B06 | C07 and C08 address different interventions/outcomes and are named narrowly. | Wording no longer suggests that music reliably reduces anxiety. | LIMITED EVIDENCE; CLINICAL REVIEW REQUIRED |
+| T01 | S2/S32 concern labor context; S5 is pregnancy-anxiety context. | Step-by-step breathing procedure and trimester-III extrapolation were removed. | LIMITED EVIDENCE; CLINICAL REVIEW REQUIRED |
+| T02 | S13 defines the professional music-therapy distinction; S2 supports labor choice. | Efficacy claims for chosen Ruang Ibu audio were removed. | LIMITED EVIDENCE; CLINICAL REVIEW REQUIRED |
+| T03 | S14's specific birth-trauma support page is only described in that scope. | General grounding/relaxation efficacy and self-guided steps were removed. | INSUFFICIENT EVIDENCE; source and clinical review required |
+| T04 | S2 permits preference-led labor massage in its bounded context when companion techniques are taught. | S33/S34 do not validate generic lay massage, pressure, location, or duration; no such instruction is published. | LIMITED EVIDENCE; CLINICAL REVIEW REQUIRED |
+
+Source identities, IDs, C01–C08 DOI/URLs, and all article reference anchors are unchanged. `clinicalReview` remains `draft` for every article.

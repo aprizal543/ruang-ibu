@@ -12,6 +12,8 @@ import type { TherapyArticle, TherapyParagraph, TherapyReference } from '../../c
 import SourceDisclosure from '../ui/SourceDisclosure'
 import TherapyArticleFigure from './TherapyArticleFigure'
 import { getTherapySourceTypeLabel } from '../../content/therapySourceLabels'
+import { questionArticleRegistry } from '../../content/questionArticleRegistry'
+import PublicArticleQuestions from '../../features/questions/PublicArticleQuestions'
 import '../../styles/therapy-detail.css'
 
 interface TherapyDetailPageProps {
@@ -132,6 +134,7 @@ function ReferenceList({
 export default function TherapyDetailPage({ article, references }: TherapyDetailPageProps) {
   const location = useLocation()
   const navigate = useNavigate()
+  const questionArticle = questionArticleRegistry.find((entry) => entry.id === article.id)
 
   useEffect(() => {
     document.title = `${article.title} · Ruang Ibu`
@@ -192,6 +195,7 @@ export default function TherapyDetailPage({ article, references }: TherapyDetail
           </section>
 
           <AudioCompanion audio={article.audio} />
+          {questionArticle && <PublicArticleQuestions articleSlug={questionArticle.slug} />}
           <ReferenceList ids={article.referenceIds} references={references} />
 
           <Link className="therapy-detail__catalog-link" to="/terapi">Kembali ke Jenis Terapi</Link>

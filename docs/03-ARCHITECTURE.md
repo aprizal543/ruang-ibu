@@ -1,12 +1,12 @@
 # RUANG IBU — Software Architecture v1.1
 
-**Status:** proposed and implementation-ready design; no claim that frontend/backend has been built.  
+**Status:** public frontend plus local M3–M4.6C Cloudflare Pages Functions/D1 implementation. M4.6C uses Google OIDC identity verification and D1-backed admin sessions; remote OAuth/D1 integration and hosted Workers Free runtime verification remain pending.
 **Source references:** `01-DESIGN-SYSTEM.md`, `02-PRD.md`, approved mobile collage.  
-**Guiding principle:** simple static content-first mobile web; **no backend until there is a validated need**.
+**Guiding principle:** static content-first mobile web; add backend only for the reviewed, consent-based Q&A requirement. Evaluation stays ephemeral.
 
 ## 1. Architecture decision
 
-For the educational MVP, choose **React + TypeScript + Vite + Tailwind CSS + React Router + `vite-plugin-pwa`**; deploy generated static files to Cloudflare Pages or Vercel over HTTPS. `vite-plugin-pwa` generates the Web App Manifest and integrates a Workbox service worker. Use Workbox `injectManifest` so cache admission, article-version invalidation, audio download limits, and range playback are explicit and testable. Native HTML5 `<audio>` provides playback; a small React hook controls player state and errors. Content source remains version-controlled typed JSON/Markdown (or TS typed content objects), published as separate same-origin versioned resources rather than embedded in the application-shell bundle; this permits reviewed content corrections without an app-shell release. No login, database, server-side personal evaluation data, or production analytics during MVP.
+The public application uses **React + TypeScript + Vite + Tailwind CSS + React Router + `vite-plugin-pwa`** and static Cloudflare Pages assets. Workbox `injectManifest` keeps cache admission, article invalidation, and audio behavior explicit. Native HTML5 `<audio>` provides playback. The M5 public article Q&A reads approved/answered threads and submits new questions to the existing Cloudflare Pages Functions/D1 API. After same-origin, validation/risk, rate-limit, and server-side Turnstile checks succeed, a new row is inserted directly as `approved` with its public text; in the public UI this legacy-compatible status means “Belum dijawab,” not moderator approval. D1 stores questions, answers, moderation events, and short-lived HMAC rate-limit buckets. Admin APIs authenticate opaque, D1-backed sessions issued only after server-side verification of a Google OIDC ID token and a match to a privately provisioned Google `sub`; owner/moderator roles remain server-side. There is no password login, public admin registration, visitor account, automated clinical answer, health-data analytics, or persisted evaluation score. The local direct-publication UX revision and tests are implemented; it has not been deployed to QA, and hosted end-to-end behavior remains unverified.
 
 ### C4-like context diagram
 
@@ -20,6 +20,10 @@ flowchart LR
   W --> E["Ephemeral evaluation state in browser memory"]
   W --> SW["Workbox service worker + bounded Cache Storage"]
   W --> CM["Same-origin approved-content manifest"]
+  W --> QAPI["Pages Functions Q&A API"]
+  QAPI --> TS["Turnstile Siteverify"]
+  QAPI --> D1["D1: private submissions + sanitized public Q&A"]
+  MOD["Authorized owner / moderator with D1-backed session"] --> QAPI
 ```
 
 No arrow to external collection service or clinical decision engine: these are explicitly out of scope.
@@ -56,9 +60,9 @@ flowchart TB
 | Content | typed TS/JSON or Markdown compiled at build time | citation traceability and prepublication review gates |
 | Testing | Vitest + React Testing Library + Playwright + axe-core | component, route, accessibility and visual tests |
 | Hosting | Cloudflare Pages / Vercel static | simple deployment; HTTPS and caching |
-| PWA | `vite-plugin-pwa` + Web App Manifest + Workbox `injectManifest` | install metadata and controlled offline shell/content/audio caching; no backend required |
+| PWA | `vite-plugin-pwa` + Web App Manifest + Workbox `injectManifest` | install metadata and controlled offline shell/content/audio caching; API excluded |
 | Offline content | same-origin content manifest + versioned approved articles | detect and remove superseded content when online; offline content is visibly time-bounded |
-| Storage | Workbox Cache Storage + `ExpirationPlugin` + app-level byte accounting | limited, user-selected audio downloads; browser storage remains best-effort |
+| Storage | Workbox Cache Storage for approved static/audio only; D1 for Q&A | evaluation remains memory-only; API results are no-store and not cached |
 | Monitoring | build error logs, optional privacy-respecting coarse site status | no assessment/user health tracking |
 
 ## 3. Proposed repository layout
@@ -250,7 +254,9 @@ Show 'perubahan persepsi yang Anda laporkan selama sesi ini', not 'terapi terbuk
 
 ## 9. Security/privacy posture
 
-- No auth/backend or collection of health data. HTTPS only. Security headers: reasonable CSP adapted to font/media needs, `X-Content-Type-Options: nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`; avoid overly permissive third-party embed scripts.
+- Q&A stores only visitor-submitted display name, question and optional email plus moderator-approved public text and answer. No visitor account, diagnosis, or automatic response. HTTPS only. Security headers include `X-Content-Type-Options: nosniff` and `Referrer-Policy`; avoid overly permissive third-party embed scripts.
+- Admin API validates an opaque session cookie against D1, enforces idle and absolute expiry, checks that the account remains active, and applies server-side owner/moderator authorization. Missing D1 or HMAC configuration fails closed. Google GIS ID tokens are verified server-side with `jose` against Google's JWKS, RS256 signature, issuer, audience, expiry, one-time D1 nonce and verified email; the stable `sub` must match a pre-provisioned admin. Mutating auth/admin routes require exact Origin and same-origin Fetch Metadata. Local Wrangler/workerd WebCrypto verification passes with synthetic fixtures, but hosted Workers Free CPU/network behavior is a release gate. Visitor submission requires server-side Turnstile, bounded validation and an HMAC-based D1 rate limit. See `docs/backend/SECURITY-MODEL.md`.
+- Public API returns only moderator-approved fields and is `no-store`. Do not log payloads, emails, IPs, JWTs, or secrets. Cloudflare Preview and Production must use separate D1 and Turnstile configuration.
 - No uploading user data. Avoid personal analytics, external error/session replay tools, and health details in URLs.
 - Assets served from same-origin `/audio/` and `/images/` where possible; provide cache headers for immutable hashed assets.
 - Do not infer health conditions from slider scores. Any future clinical features require separate threat model, consent, lawful basis, and professional review.
@@ -290,7 +296,7 @@ Show 'perubahan persepsi yang Anda laporkan selama sesi ini', not 'terapi terbuk
 
 ## 13. Design and architecture decisions (ADRs)
 
-- **ADR-001 Static first:** avoid backend/db until actual data collection requirement exists. Simpler, more private, cheaper.
+- **ADR-001 Static first with scoped Q&A:** static delivery remains the default; the approved moderated Q&A is the only M3 D1 collection. Evaluation remains ephemeral and independent.
 - **ADR-002 Mobile screenshot lock:** source screenshot overrides generic generators; manual visual QA gate per screen.
 - **ADR-003 No personal health collection:** ephemeral scores are not sent/stored.
 - **ADR-004 Verified publication:** clinical instructions only after review, audio only after audit.
@@ -298,6 +304,8 @@ Show 'perubahan persepsi yang Anda laporkan selama sesi ini', not 'terapi terbuk
 - **ADR-006 PWA without visual redesign:** `vite-plugin-pwa` + Manifest + Workbox are the official delivery/offline layer; the approved mobile composition, palette, and six-tab IA remain frozen.
 - **ADR-007 Bounded offline medical content:** cache only clinically approved article revisions, expose last verification, withhold stale instructions after seven days, and invalidate withdrawals when online. Offline clients cannot receive revocations until reconnecting.
 - **ADR-008 Explicit audio downloads:** only user-selected licensed files are cached, capped at 3 tracks / 20 MiB per file / 50 MiB total / 30 days; browser eviction remains possible.
+- **ADR-009 Moderated Q&A:** Cloudflare Pages Functions + D1 and Turnstile; public text is separate from original submission and questions are never auto-published. Visitor accounts and automated answers are out of scope.
+- **ADR-010 Independent admin authentication (revised M4.6C):** Admins use individually provisioned Google OIDC `sub` identities, opaque D1-backed sessions and server-side owner/moderator roles. GIS ID tokens are verified through Google's JWKS with a short-lived one-use nonce; no password login, auto-registration or default credential exists. The implementation is local-only until Preview OAuth origins/client ID, D1/secrets and private owner provisioning are authorized, then hosted Workers runtime behavior is verified. Cloudflare Access is not the application authentication dependency; any edge restriction is a separate owner decision.
 
 ## 14. Deployment checklist
 

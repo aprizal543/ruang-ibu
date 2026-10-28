@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ruang Ibu M4 — Galeri Review Dashboard</title>
+    <style>
+      :root { color-scheme: light; font-family: "DM Sans", Arial, sans-serif; color: #263b32; background: #f8f4ee; }
+      body { margin: 0; padding: 32px; }
+      header { max-width: 1200px; margin: 0 auto 24px; }
+      h1 { margin: 0; color: #9b4f3c; font-family: Georgia, serif; font-size: clamp(28px, 4vw, 42px); font-weight: 500; }
+      p { color: #56635b; line-height: 1.55; }
+      .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); gap: 22px; max-width: 1200px; margin: auto; }
+      figure { margin: 0; overflow: hidden; border: 1px solid #e7dfd5; border-radius: 16px; background: #fffdf9; box-shadow: 0 7px 24px rgb(45 53 47 / 5%); }
+      img { display: block; width: 100%; height: auto; background: #f0ece5; }
+      figcaption { padding: 14px 16px; font-size: 14px; font-weight: 650; }
+      figcaption small { display: block; margin-top: 4px; color: #69716b; font-weight: 450; }
+      @media (max-width: 600px) { body { padding: 18px; } }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Dashboard Ruang Ibu · M4</h1>
+      <p>Evidence browser memakai record uji sintetis. Ini adalah tangkapan viewport Chromium, bukan tampilan perangkat fisik. Integrasi Cloudflare Access dan D1 belum diuji.</p>
+    </header>
+    <main class="gallery" aria-label="Screenshot dashboard untuk review">
+      <figure><img src="overview-desktop-1440x900.png" alt="Ringkasan dashboard desktop" loading="lazy"><figcaption>Ringkasan · Desktop<small>1440 × 900</small></figcaption></figure>
+      <figure><img src="overview-mobile-390x844.png" alt="Ringkasan dashboard mobile" loading="lazy"><figcaption>Ringkasan · Mobile<small>390 × 844</small></figcaption></figure>
+      <figure><img src="questions-inbox-desktop-1440x900.png" alt="Daftar pertanyaan dashboard desktop" loading="lazy"><figcaption>Inbox Tanya Jawab · Desktop<small>1440 × 900</small></figcaption></figure>
+      <figure><img src="questions-inbox-mobile-390x844.png" alt="Daftar pertanyaan dashboard mobile" loading="lazy"><figcaption>Inbox Tanya Jawab · Mobile<small>390 × 844</small></figcaption></figure>
+      <figure><img src="pending-detail-390x844.png" alt="Detail pertanyaan yang menunggu moderasi" loading="lazy"><figcaption>Detail pertanyaan pending<small>390 × 844</small></figcaption></figure>
+      <figure><img src="moderation-form-390x844.png" alt="Form penyuntingan pertanyaan publik sebelum persetujuan" loading="lazy"><figcaption>Form moderasi dan pratinjau publik<small>390 × 844</small></figcaption></figure>
+      <figure><img src="answer-editor-desktop-1440x900.png" alt="Editor jawaban pengelola" loading="lazy"><figcaption>Editor jawaban<small>1440 × 900</small></figcaption></figure>
+      <figure><img src="history-mobile-390x844.png" alt="Riwayat penanganan pertanyaan" loading="lazy"><figcaption>Riwayat penanganan<small>390 × 844</small></figcaption></figure>
+      <figure><img src="settings-desktop-1440x900.png" alt="Informasi akses dan retensi pada pengaturan" loading="lazy"><figcaption>Pengaturan dan retensi sementara<small>1440 × 900</small></figcaption></figure>
+      <figure><img src="empty-state-mobile-390x844.png" alt="State inbox kosong" loading="lazy"><figcaption>State inbox kosong<small>390 × 844</small></figcaption></figure>
+      <figure><img src="auth-unavailable-mobile-390x844.png" alt="Pesan akses pengelola belum tersedia" loading="lazy"><figcaption>Access belum tersedia<small>390 × 844</small></figcaption></figure>
+    </main>
+  </body>
+</html>

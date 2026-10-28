@@ -8,14 +8,25 @@
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty",
     "test:content": "node qa/customer-content-coverage.mjs && node qa/m2-content-regression.mjs",
-    "test:browser:route-scroll": "node qa/route-scroll.browser.mjs",
-    "test:browser:m2": "node qa/m2-articles.browser.mjs",
+    "test:backend": "node --import tsx --test qa/backend/*.test.ts qa/backend/*.test.mjs",
+    "test:auth:workerd": "node qa/workers/google-oidc-workerd.test.mjs",
+    "admin:verify-google-sub": "node --import tsx scripts/admin/verify-google-sub.mjs",
+    "admin:verify-production-owner-identity": "node --import tsx scripts/admin/verify-production-owner-identity.mjs",
+    "admin:provision-production-owner": "node --import tsx scripts/admin/provision-production-owner.mjs",
+    "test:browser:route-scroll": "node qa/public-regression.browser.mjs",
+    "test:browser:route-scroll:legacy": "node qa/route-scroll.browser.mjs",
+    "test:browser:m2": "node qa/public-regression.browser.mjs",
+    "test:browser:m2:legacy": "node qa/m2-articles.browser.mjs",
+    "test:browser:public-regression": "node qa/public-regression.browser.mjs",
+    "test:browser:admin": "node qa/admin-dashboard.browser.mjs",
+    "test:browser:m5a": "node qa/public-qna.browser.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
     "@fontsource-variable/dm-sans": "^5.2.6",
     "@fontsource-variable/fraunces": "^5.2.6",
     "@phosphor-icons/react": "^2.1.10",
+    "jose": "^6.2.13",
     "lucide-react": "^0.468.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
@@ -29,8 +40,10 @@
     "autoprefixer": "^10.4.21",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
+    "tsx": "^4.23.15",
     "typescript": "~5.9.2",
     "vite": "^7.1.5",
-    "vite-plugin-pwa": "^1.0.3"
+    "vite-plugin-pwa": "^1.0.3",
+    "wrangler": "^4.153.0"
   }
 }
