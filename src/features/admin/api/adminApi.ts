@@ -29,11 +29,13 @@ async function request<T>(path: string, init: RequestInit = {}, signal?: AbortSi
   let body: unknown
   try { body = await response.json() } catch { body = null }
   if (!response.ok) {
+    if (response.status === 401 && typeof window !== 'undefined') window.dispatchEvent(new Event('ruang-ibu:admin-session-ended'))
     const error = (body as { error?: { code?: unknown; message?: unknown } } | null)?.error
     const code = typeof error?.code === 'string' ? error.code : 'request_failed'
     const message = typeof error?.message === 'string' ? error.message : 'Permintaan belum dapat diproses.'
     throw new AdminApiError(response.status, code, message)
   }
+  if (typeof window !== 'undefined') window.dispatchEvent(new Event('ruang-ibu:admin-session-activity'))
   const data = (body as { data?: unknown } | null)?.data
   if (data === undefined || data === null) throw new AdminApiError(502, 'invalid_response', 'Respons layanan pengelola tidak sesuai format.')
   return data as T

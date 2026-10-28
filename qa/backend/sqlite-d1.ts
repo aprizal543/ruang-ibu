@@ -31,7 +31,9 @@ export class SqliteD1Database {
   readonly database = new DatabaseSync(':memory:')
 
   constructor() {
-    this.database.exec(readFileSync(new URL('../../migrations/0001_questions.sql', import.meta.url), 'utf8'))
+    for (const file of ['0001_questions.sql', '0002_admin_auth.sql']) {
+      this.database.exec(readFileSync(new URL(`../../migrations/${file}`, import.meta.url), 'utf8'))
+    }
   }
 
   prepare(sql: string) {

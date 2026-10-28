@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
-import { ChatCircleText, ClockCounterClockwise, GearSix, House, List, X } from '@phosphor-icons/react'
+import { Navigate, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { ChatCircleText, ClockCounterClockwise, GearSix, House, List, SignOut, X } from '@phosphor-icons/react'
+import { AdminApiError } from '../api/adminApi'
+import { getAdminSession, logoutAdmin, type AdminSessionUser } from '../api/authApi'
+import { AdminAuthContext } from '../auth-context'
 import '../admin.css'
 
 const items = [
@@ -12,9 +15,74 @@ const items = [
 
 export default function AdminLayout() {
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [session, setSession] = useState<AdminSessionUser | null>(null)
+  const [authLoading, setAuthLoading] = useState(true)
+  const [authError, setAuthError] = useState<AdminApiError | null>(null)
+  const [logoutBusy, setLogoutBusy] = useState(false)
+  const [logoutError, setLogoutError] = useState('')
   const triggerRef = useRef<HTMLButtonElement>(null)
   const closeRef = useRef<HTMLButtonElement>(null)
   const location = useLocation()
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const controller = new AbortController()
+    setAuthLoading(true)
+    getAdminSession(controller.signal).then((user) => {
+      setSession(user)
+      setAuthError(null)
+    }).catch((reason: unknown) => {
+      if (reason instanceof DOMException && reason.name === 'AbortError') return
+      const error = reason instanceof AdminApiError ? reason : new AdminApiError(500, 'auth_error', 'Sesi pengelola belum dapat diperiksa.')
+      if (error.status === 401) {
+        navigate('/admin/login', { replace: true, state: { from: `${location.pathname}${location.search}` } })
+      } else {
+        setAuthError(error)
+      }
+    }).finally(() => { if (!controller.signal.aborted) setAuthLoading(false) })
+    return () => controller.abort()
+  }, [location.pathname, location.search, navigate])
+
+  useEffect(() => {
+    const onSessionEnded = () => navigate('/admin/login', { replace: true, state: { from: `${location.pathname}${location.search}` } })
+    window.addEventListener('ruang-ibu:admin-session-ended', onSessionEnded)
+    return () => window.removeEventListener('ruang-ibu:admin-session-ended', onSessionEnded)
+  }, [location.pathname, location.search, navigate])
+
+  useEffect(() => {
+    if (!session) return
+    let idleTimer = 0
+    const expire = () => {
+      setSession(null)
+      navigate('/admin/login', { replace: true, state: { from: `${location.pathname}${location.search}` } })
+    }
+    const scheduleIdleExpiry = () => {
+      window.clearTimeout(idleTimer)
+      idleTimer = window.setTimeout(expire, 30 * 60 * 1000)
+    }
+    const absoluteTimer = window.setTimeout(expire, Math.max(0, session.expiresAt - Date.now()))
+    scheduleIdleExpiry()
+    window.addEventListener('ruang-ibu:admin-session-activity', scheduleIdleExpiry)
+    return () => {
+      window.clearTimeout(idleTimer)
+      window.clearTimeout(absoluteTimer)
+      window.removeEventListener('ruang-ibu:admin-session-activity', scheduleIdleExpiry)
+    }
+  }, [session, location.pathname, location.search, navigate])
+
+  const logout = async () => {
+    setLogoutBusy(true)
+    setLogoutError('')
+    try {
+      await logoutAdmin()
+      setSession(null)
+      navigate('/admin/login', { replace: true })
+    } catch (reason) {
+      setLogoutError(reason instanceof AdminApiError ? reason.message : 'Sesi belum dapat ditutup. Coba lagi.')
+    } finally {
+      setLogoutBusy(false)
+    }
+  }
   const closeDrawer = useCallback(() => {
     triggerRef.current?.focus()
     setDrawerOpen(false)
@@ -40,7 +108,12 @@ export default function AdminLayout() {
     return () => document.removeEventListener('keydown', onKeyDown)
   }, [drawerOpen, closeDrawer])
 
+  if (authLoading) return <main className="admin-auth-state" role="status" aria-live="polite"><span className="admin-spinner" aria-hidden="true" />Memeriksa sesi pengelola…</main>
+  if (authError) return <main className="admin-auth-state" data-admin-auth-error><div className="admin-auth-state__card"><p className="admin-eyebrow">RUANG PENGELOLA</p><h1>Akses pengelola belum tersedia</h1><p>{authError.status === 403 ? 'Akun ini belum memiliki izin sebagai pengelola.' : authError.status === 503 ? 'Layanan pengelola belum dikonfigurasi. Hubungi administrator website.' : 'Sesi pengelola belum dapat diperiksa. Coba lagi.'}</p><button className="admin-button" type="button" onClick={() => { setAuthError(null); setAuthLoading(true); void getAdminSession().then(setSession).catch((reason: unknown) => setAuthError(reason instanceof AdminApiError ? reason : new AdminApiError(500, 'auth_error', 'Sesi pengelola belum dapat diperiksa.'))).finally(() => setAuthLoading(false)) }}>Coba lagi</button></div></main>
+  if (!session) return <Navigate to="/admin/login" replace state={{ from: `${location.pathname}${location.search}` }} />
+
   return (
+    <AdminAuthContext.Provider value={session}>
     <div className="admin-app" data-admin-app>
       <a className="admin-skip-link" href="#admin-main">Lewati ke konten utama</a>
       <aside className="admin-sidebar" aria-label="Navigasi pengelola">
@@ -60,8 +133,10 @@ export default function AdminLayout() {
             <List size={22} aria-hidden="true" />
           </button>
           <div className="admin-topbar__title"><span>Ruang Ibu</span><span aria-hidden="true">/</span><strong>Pengelola</strong></div>
-          <div className="admin-topbar__badge">Untuk pengelola</div>
+          <div className="admin-topbar__badge">{session.role === 'owner' ? 'Pemilik' : 'Moderator'} · {session.email}</div>
+          <button className="admin-button admin-button--secondary admin-logout-button" type="button" onClick={() => void logout()} disabled={logoutBusy} aria-label="Keluar dari ruang pengelola"><SignOut size={18} aria-hidden="true" />{logoutBusy ? 'Keluar…' : 'Keluar'}</button>
         </header>
+        {logoutError && <p className="admin-logout-error" role="alert">{logoutError}</p>}
         <main id="admin-main" className="admin-main" tabIndex={-1}><Outlet /></main>
       </div>
 
@@ -77,6 +152,7 @@ export default function AdminLayout() {
         </aside>
       </div>}
     </div>
+    </AdminAuthContext.Provider>
   )
 }
 

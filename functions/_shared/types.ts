@@ -23,13 +23,16 @@ export interface Env {
   TURNSTILE_SECRET_KEY?: string
   TURNSTILE_ALLOWED_HOSTNAMES?: string
   RATE_LIMIT_HMAC_KEY?: string
-  ACCESS_TEAM_DOMAIN?: string
-  ACCESS_AUD?: string
-  ADMIN_EMAILS?: string
+  ADMIN_AUTH_HMAC_KEY?: string
+  GOOGLE_OAUTH_CLIENT_ID?: string
 }
 
+export type AdminRole = 'owner' | 'moderator'
+
 export interface AdminIdentity {
+  id: string
   email: string
+  role: AdminRole
 }
 
 export interface PagesContext<E = Env> {

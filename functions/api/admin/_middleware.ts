@@ -1,35 +1,6 @@
-import { createRemoteJWKSet, jwtVerify, type JWTVerifyGetKey } from 'jose'
-import { apiError, hasSameOrigin } from '../../_shared/http'
-import type { AdminIdentity, Env, PagesContext, PagesFunction } from '../../_shared/types'
-
-type JwksResolver = (issuer: string) => JWTVerifyGetKey
-
-const remoteKeys = new Map<string, JWTVerifyGetKey>()
-
-function getRemoteKeys(issuer: string): JWTVerifyGetKey {
-  let keySet = remoteKeys.get(issuer)
-  if (!keySet) {
-    keySet = createRemoteJWKSet(new URL(`${issuer}/cdn-cgi/access/certs`), { timeoutDuration: 5000 })
-    remoteKeys.set(issuer, keySet)
-  }
-  return keySet
-}
-
-function getAccessConfig(env: Env): { issuer: string; audience: string; admins: Set<string> } | null {
-  if (!env.ACCESS_TEAM_DOMAIN || !env.ACCESS_AUD || !env.ADMIN_EMAILS) return null
-  const issuer = env.ACCESS_TEAM_DOMAIN.trim()
-  let issuerUrl: URL
-  try {
-    issuerUrl = new URL(issuer)
-  } catch {
-    return null
-  }
-  if (issuerUrl.protocol !== 'https:' || issuerUrl.origin !== issuer || issuerUrl.pathname !== '/') return null
-  const audience = env.ACCESS_AUD.trim()
-  if (!audience || /\s/u.test(audience)) return null
-  const admins = new Set(env.ADMIN_EMAILS.split(',').map((email) => email.trim().toLowerCase()).filter((email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email)))
-  return admins.size > 0 ? { issuer, audience, admins } : null
-}
+import { apiError } from '../../_shared/http'
+import type { Env, PagesContext, PagesFunction } from '../../_shared/types'
+import { authKeyIsConfigured, getSessionToken, hasSameOriginBrowserRequest, resolveAdminSession } from '../auth/_shared'
 
 function noStore(response: Response): Response {
   const headers = new Headers(response.headers)
@@ -39,38 +10,38 @@ function noStore(response: Response): Response {
   return new Response(response.body, { status: response.status, statusText: response.statusText, headers })
 }
 
-export function createAdminAccessMiddleware(resolveKeys: JwksResolver = getRemoteKeys): PagesFunction {
-  return async (context: PagesContext) => {
-    const config = getAccessConfig(context.env)
-    if (!config) return apiError(503, 'admin_auth_not_configured', 'Akses pengelola belum dikonfigurasi.')
+function requiresOwner(request: Request): boolean {
+  const path = new URL(request.url).pathname
+  return (request.method === 'DELETE' && /^\/api\/admin\/questions\/[^/]+$/u.test(path))
+    || (request.method === 'POST' && path === '/api/admin/retention/purge')
+}
 
-    if (!['GET', 'HEAD', 'OPTIONS'].includes(context.request.method) && !hasSameOrigin(context.request)) {
-      return apiError(403, 'origin_not_allowed', 'Permintaan tidak diizinkan.')
+export function createAdminSessionMiddleware(): PagesFunction<Env> {
+  return async (context: PagesContext<Env>) => {
+    if (!context.env.DB || !authKeyIsConfigured(context.env)) {
+      return noStore(apiError(503, 'admin_auth_not_configured', 'Akses pengelola belum tersedia.'))
     }
 
-    const token = context.request.headers.get('Cf-Access-Jwt-Assertion')
-    if (!token || token.length > 16384) return apiError(401, 'unauthorized', 'Autentikasi pengelola diperlukan.')
+    if (!['GET', 'HEAD'].includes(context.request.method) && !hasSameOriginBrowserRequest(context.request)) {
+      return noStore(apiError(403, 'origin_not_allowed', 'Permintaan tidak diizinkan.'))
+    }
 
-    let identity: AdminIdentity
+    const token = getSessionToken(context.request)
+    if (!token) return noStore(apiError(401, 'unauthorized', 'Autentikasi pengelola diperlukan.'))
+
     try {
-      const { payload } = await jwtVerify(token, resolveKeys(config.issuer), {
-        issuer: config.issuer,
-        audience: config.audience,
-        algorithms: ['RS256'],
-        requiredClaims: ['exp', 'iat', 'iss', 'aud'],
-        clockTolerance: 5,
-      })
-      if (typeof payload.email !== 'string') return apiError(401, 'unauthorized', 'Autentikasi pengelola diperlukan.')
-      const email = payload.email.trim().toLowerCase()
-      if (!config.admins.has(email)) return apiError(403, 'forbidden', 'Identitas ini tidak memiliki akses pengelola.')
-      identity = { email }
-    } catch {
-      return apiError(401, 'unauthorized', 'Autentikasi pengelola tidak valid.')
-    }
+      const identity = await resolveAdminSession(context.env.DB, token)
+      if (!identity) return noStore(apiError(401, 'unauthorized', 'Autentikasi pengelola diperlukan.'))
+      if (requiresOwner(context.request) && identity.role !== 'owner') {
+        return noStore(apiError(403, 'forbidden', 'Tindakan ini memerlukan izin pemilik.'))
+      }
 
-    context.data.admin = identity
-    return noStore(await context.next())
+      context.data.admin = { id: identity.id, email: identity.email, role: identity.role }
+      return noStore(await context.next())
+    } catch {
+      return noStore(apiError(503, 'admin_auth_unavailable', 'Layanan pengelola belum tersedia.'))
+    }
   }
 }
 
-export const onRequest = createAdminAccessMiddleware()
+export const onRequest = createAdminSessionMiddleware()

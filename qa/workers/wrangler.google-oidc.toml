@@ -1,0 +1,4 @@
+name = "ruang-ibu-google-oidc-workerd-test"
+main = "./google-oidc-workerd.ts"
+compatibility_date = "2026-10-27"
+workers_dev = false

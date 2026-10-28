@@ -1,46 +1,55 @@
-# Q&A Backend API Contract (M3)
+# API Contract — Q&A and Google OIDC Admin Authentication
 
-Base path: same-origin `/api`. All responses use JSON `{ data }` or `{ error: { code, message } }`, `Cache-Control: no-store`, `X-Content-Type-Options: nosniff`, and `Referrer-Policy: no-referrer`. No endpoint returns an authentication token.
+Base path: same-origin `/api`. JSON uses `{ data: ... }` or `{ error: { code, message } }`. Admin, auth, and error responses are `Cache-Control: no-store`. Session credentials are never returned in JSON.
 
-## Public
+The Google OIDC routes below describe the local M4.6C implementation only. They have not been configured or tested against a Google Web Client or Cloudflare Preview deployment.
 
-| Method and route | Request | Success response | Errors | Access |
+## Admin authentication
+
+| Method and route | Request | Success | Main errors | Access |
 |---|---|---|---|---|
-| `GET /api/questions?articleSlug=...&limit=10&cursor=...` | Exact allowlisted article slug; limit 1–20, cursor opaque | `200 { data: { questions: [{id, articleSlug, displayName, question, status, createdAt, answer}], nextCursor } }` | `400 invalid_article/invalid_pagination`, `503 service_not_configured`, `500 request_failed` | Public; only approved/answered rows and sanitized public fields. No email, original text, IP, moderator or event metadata. |
-| `POST /api/questions` | `{ articleSlug, displayName, question, email?, consentToPublicModeration, turnstileToken }` | `201 { data: { id, status: "pending", message } }` | `400 invalid_submission/invalid_json`, `403 origin_not_allowed/verification_failed`, `413 payload_too_large`, `429 rate_limited`, `503 service_not_configured/verification_unavailable`, `500 request_failed` | Same-origin; server Turnstile validation and HMAC IP rate limit. Unknown fields rejected. |
+| `POST /api/auth/google/challenge` | `{}`; max 1 KiB | `200 {data:{clientId,nonce,expiresAt}}` | `400 invalid_json/invalid_challenge_request`, `403 origin_not_allowed`, `429 login_limited`, `413 payload_too_large`, `503 auth_not_configured/auth_unavailable` | Exact `Origin`, `Sec-Fetch-Site: same-origin`; nonce is random, short-lived and persisted only as a digest. `clientId` is public configuration. |
+| `POST /api/auth/google` | `{credential,nonce}`; exact keys, max 12 KiB | `200 {data:{authenticated:true,user:{id,email,role},expiresAt}}` plus session cookie | `400`, generic `401 google_login_denied`, `403 origin_not_allowed`, `413`, `429 login_limited`, `503 auth_not_configured/auth_unavailable` | Exact Origin and Fetch Metadata. Google JWT signature/JWKS, RS256, issuer, audience, expiry, age, nonce and `email_verified` are verified server-side. Only an active, privately provisioned `google_sub` match can create a session. |
+| `GET /api/auth/session` | Session cookie | `200 {data:{authenticated:true,user:{id,email,role},expiresAt}}` | `401 unauthorized`, `503 auth_not_configured/auth_unavailable` | Cookie required; no-store. |
+| `POST /api/auth/logout` | `{}` and session cookie | `200 {data:{loggedOut:true}}`; revokes D1 session and expires cookie | `400`, `403 origin_not_allowed`, `503 auth_unavailable` | Exact Origin and `Sec-Fetch-Site: same-origin`. |
 
-Limits: display name 2–50 characters, question 10–1,000, email at most 254 and valid if supplied, request body at most 8 KiB. Public page size is 10 by default and capped at 20. A new record is always pending; a successful response is a receipt and does not imply publication.
+Cookie: `__Host-ruang_ibu_session`, opaque random 256-bit value, `Secure; HttpOnly; SameSite=Strict; Path=/; Max-Age=28800`. Only a SHA-256 digest is stored in D1. Session validity ends at the earlier of 30 minutes idle or 8 hours absolute. There are no password, public registration, password recovery, bearer-token, or login-bypass endpoints.
 
-Proposed form copy for M5 (not yet rendered in the UI): “Saya menyetujui pertanyaan saya ditinjau moderator dan, jika disetujui, ditampilkan secara publik setelah disunting. Saya tidak menyertakan nama lengkap, alamat, nomor identitas, hasil pemeriksaan, atau riwayat kesehatan.” Add a nearby notice that the form is for general education, does not replace a midwife/doctor, and is not an emergency channel; urgent concerns should go to the user's care team or local emergency service. Do not promise email notifications.
+Identity and role are bound to the pre-provisioned `google_sub` and role in D1. A successful Google sign-in never creates an admin account. Owner/moderator provisioning is a private operator process; it requires independent verification of the Google subject and email. Google ID tokens remain in memory only long enough to POST to the same-origin verifier and are never stored in Web Storage, URL, D1, or audit events. Do not log request bodies.
 
-## Admin
+## Public Q&A
 
-Every `/api/admin/*` request passes Pages Functions middleware that verifies the Cloudflare Access RS256 JWT, issuer, audience, expiry and email allowlist. Missing configuration fails closed (503). Mutations also require same-origin `Origin` and a same-origin/none Fetch Metadata value when present. Responses are no-store.
+| Method and route | Request | Success | Main errors | Access |
+|---|---|---|---|---|
+| `GET /api/questions?articleSlug=...&limit=10&cursor=...` | Exact allowlisted article slug; limit 1–20 | `200 {data:{questions,nextCursor}}` with approved/answered rows and sanitized public fields only | `400 invalid_article/invalid_pagination`, `503 service_not_configured`, `500 request_failed` | Public; no email, original text, IP, moderator, or audit metadata. |
+| `POST /api/questions` | `{articleSlug,displayName,question,email?,consentToPublicModeration,turnstileToken}` | `201 {data:{id,status:"pending",message}}` | `400`, `403`, `413`, `429`, `503`, `500` | Exact same-origin, server-side Turnstile, validation, HMAC rate limit. Unknown fields rejected. |
 
-| Method and route | Request | Success response | Notes |
+Visitor limits: display name 2–50 characters; question 10–1,000; optional email max 254 and validated; request max 8 KiB. New questions are always pending. The M5 public submission UI is not implemented. Proposed consent copy remains for future review; it is not an active form.
+
+## Admin API
+
+Every `/api/admin/*` request uses the D1 session middleware. Owner and moderator identities/roles are resolved server-side from the active user row. Both may read, moderate, and answer. Only `owner` may delete a question or call retention purge. Missing D1 or `ADMIN_AUTH_HMAC_KEY` fails closed. Mutations require exact Origin and `Sec-Fetch-Site: same-origin`. All responses are no-store.
+
+| Method and route | Request | Success | Notes |
 |---|---|---|---|
-| `GET /api/admin/summary` | none | `200 { data: { total, pending, approved, answered, rejected, hidden } }` | Counts from D1. |
-| `GET /api/admin/questions?status=&articleSlug=&expiresBefore=&limit=20&cursor=` | optional allowlisted filters; `status` accepts one status or a comma-separated set of distinct statuses (used by M4 history); `expiresBefore` is an ISO timestamp; limit 1–50 | `200 { data: { questions, nextCursor } }` | Bounded, newest first; includes original fields and `expiresAt` needed for moderation/retention review; private. |
-| `GET /api/admin/questions/:id` | none | `200 { data: question and optional answer }` | 404 if absent. |
-| `DELETE /api/admin/questions/:id` | empty body | `200 { data: { id, deleted: true } }` | Deletes question/answer and adds an audit tombstone without question text or email. |
-| `POST /api/admin/questions/:id/moderation` | `{ action: "approve", publicDisplayName, publicQuestionText }`, or `{ action: "reject" }` / `{ action: "hide" }` | `200 { data: { id, status } }` | Approve requires moderator-edited public fields. Reject applies only to pending; hide applies to approved/answered. Invalid transitions return 409. |
-| `PUT /api/admin/questions/:id/answer` | `{ answer }` (10–2,000 characters) | `200 { data: { id, status: "answered", answerUpdatedAt } }` | Only approved/answered; one answer is inserted or updated. |
-| `POST /api/admin/retention/purge` | empty body or `{}` | `200 { data: { deleted } }` | Manual action only; deletes up to 500 expired records per call, atomically with an audit event. No scheduled purge exists in M3. |
+| `GET /api/admin/summary` | none | Counts by status | D1-backed. |
+| `GET /api/admin/questions?status=&articleSlug=&expiresBefore=&limit=20&cursor=` | allowlisted filters; limit 1–50 | Bounded page + cursor | Private fields are admin-only. |
+| `GET /api/admin/questions/:id` | none | Question and optional answer | 404 if absent. |
+| `POST /api/admin/questions/:id/moderation` | approve with public fields, or reject/hide action | New status | Enforces transitions; approve stores moderator-edited public fields only. |
+| `PUT /api/admin/questions/:id/answer` | `{answer}` (10–2,000 characters) | Answer and answered status | Single official answer row; update in place. |
+| `DELETE /api/admin/questions/:id` | empty body | `{id,deleted:true}` | Owner only; confirmation is frontend behavior, authorization is server-side. |
+| `POST /api/admin/retention/purge` | empty body or `{}` | `{deleted}` | Owner only, manual only; never schedule/execute until customer retention approval. |
 
-Admin errors include `401 unauthorized`, `403 forbidden/origin_not_allowed`, `404 not_found`, `409 invalid_transition`, `400` validation errors, `503 admin_auth_not_configured`, and a generic `500 request_failed`. Internal exception details are not returned.
+Auth errors: `401 unauthorized`, `403 forbidden/origin_not_allowed`, `409` state conflict, `503 admin_auth_not_configured/admin_auth_unavailable`; responses contain no stack traces or secrets.
 
 ## Status transitions
 
 | Current | Action | Next |
 |---|---|---|
-| pending | approve (with sanitized public name and question) | approved |
+| pending | approve with moderator-edited public name/question | approved |
 | pending | reject | rejected |
 | approved or answered | hide | hidden |
 | approved | write answer | answered |
 | answered | update answer | answered |
 
-Rejected/hidden rows cannot be re-approved through the current API. A new moderation policy/version is required before adding a transition. Audit events record actor, action, timestamp and minimal status metadata, not credentials or visitor IP.
-
-### Retention review before purge
-
-An authorized moderator can inspect candidates through `GET /api/admin/questions?expiresBefore=<URL-encoded ISO timestamp>` and follow `nextCursor`; every row includes `status` and `expiresAt`. M3 provides no scheduled purge and no dashboard confirmation UI. The M4 dashboard should surface this candidate list and require an explicit operator action after the customer approves the retention policy. The manual purge is Access-protected and removes the question and its optional email, cascades the public answer, and removes the Q&A from public reads. Existing moderation audit rows remain with `question_id = NULL`; a minimal `retention_purge` event records count and batch ID, not the removed email or question text.
+Audit events store actor, action, time and minimal metadata. They never store Google ID tokens, session tokens, HMAC keys, IPs or visitor email. Retention defaults remain customer-unapproved; purge must remain disabled operationally.

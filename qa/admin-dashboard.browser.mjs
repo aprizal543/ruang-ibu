@@ -51,12 +51,35 @@ const fixture = `(() => {
     { id: 'synthetic-pending-reject', articleSlug: 'pijat-kehamilan', displayName: 'Nama Uji', question: 'Apakah saya dapat bertanya tentang pilihan pijat kehamilan kepada bidan?', email: null, status: 'pending', publicDisplayName: null, publicQuestion: null, createdAt: now, updatedAt: now, moderatedAt: null, expiresAt: now, answer: null },
   ]
   const json = (data, status = 200) => Promise.resolve(new Response(JSON.stringify({ data }), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } }))
-  window.__adminFixture = { records, calls: [], mode: 'ok' }
+  window.__adminFixture = { records, calls: [], mode: 'auth-required', googleOptions: null }
+  window.google = { accounts: { id: {
+    initialize(options) { window.__adminFixture.googleOptions = options },
+    renderButton(parent) {
+      const button = document.createElement('button')
+      button.type = 'button'
+      button.textContent = 'Google Sign-In test fixture'
+      button.dataset.googleSigninFixture = 'true'
+      button.addEventListener('click', () => window.__adminFixture.googleOptions?.callback({ credential: 'synthetic.google.oidc.token' }))
+      parent.replaceChildren(button)
+    },
+  } } }
   window.fetch = async (input, init = {}) => {
     const url = new URL(typeof input === 'string' ? input : input.url, location.origin)
-    if (!url.pathname.startsWith('/api/admin/')) return originalFetch(input, init)
     const method = (init.method || 'GET').toUpperCase()
     window.__adminFixture.calls.push({ method, path: url.pathname, search: url.search, body: init.body || null })
+    const authUser = { id: 'synthetic-owner', email: 'operator@example.test', role: 'owner', expiresAt: Date.now() + 8 * 60 * 60 * 1000 }
+    if (url.pathname === '/api/auth/session' && method === 'GET') {
+      if (window.__adminFixture.mode === 'auth-required') return new Response(JSON.stringify({ error: { code: 'unauthorized', message: 'Autentikasi diperlukan.' } }), { status: 401, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } })
+      if (window.__adminFixture.mode === 'auth-unavailable') return new Response(JSON.stringify({ error: { code: 'auth_unavailable', message: 'Backend belum tersedia.' } }), { status: 503, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } })
+      return json({ authenticated: true, user: { id: authUser.id, email: authUser.email, role: authUser.role }, expiresAt: authUser.expiresAt })
+    }
+    if (url.pathname === '/api/auth/google/challenge' && method === 'POST') return json({ clientId: 'synthetic.apps.googleusercontent.com', nonce: 'A'.repeat(43), expiresAt: Date.now() + 300000 })
+    if (url.pathname === '/api/auth/google' && method === 'POST') {
+      window.__adminFixture.mode = 'ok'
+      return json({ authenticated: true, user: { id: authUser.id, email: authUser.email, role: authUser.role }, expiresAt: authUser.expiresAt })
+    }
+    if (url.pathname === '/api/auth/logout' && method === 'POST') return json({ loggedOut: true })
+    if (!url.pathname.startsWith('/api/admin/')) return originalFetch(input, init)
     if (window.__adminFixture.mode === 'network-error') throw new TypeError('Synthetic network error')
     if (window.__adminFixture.mode === 'unauthorized') return new Response(JSON.stringify({ error: { code: 'unauthorized', message: 'Autentikasi diperlukan.' } }), { status: 401, headers: { 'Content-Type': 'application/json' } })
     if (window.__adminFixture.mode === 'forbidden') return new Response(JSON.stringify({ error: { code: 'forbidden', message: 'Akun tidak diizinkan.' } }), { status: 403, headers: { 'Content-Type': 'application/json' } })
@@ -99,10 +122,38 @@ await cdp('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, devi
 await cdp('Page.addScriptToEvaluateOnNewDocument', { source: fixture })
 await cdp('Page.navigate', { url: `${origin}/admin` })
 for (let i = 0; i < 80; i += 1) {
+  if (await evaluate('Boolean(document.querySelector("[data-admin-login]"))')) break
+  await sleep(100)
+}
+assert.equal(await evaluate('Boolean(document.querySelector("[data-admin-login]"))'), true, 'Direct admin navigation without a session renders login instead of private dashboard data')
+assert.equal(await evaluate('Boolean(document.querySelector("[data-admin-app]"))'), false, 'Unauthenticated route does not render admin shell')
+await mkdir(resolve('docs/evidence/m4-admin'), { recursive: true })
+await cdp('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true })
+await screenshot('admin-login-mobile-390x844')
+await evaluate(`window.__adminFixture.mode = 'auth-unavailable'; history.pushState({}, '', '/admin'); dispatchEvent(new PopStateEvent('popstate'))`)
+for (let i = 0; i < 60; i += 1) {
+  if (await evaluate('Boolean(document.querySelector("[data-admin-auth-error]"))')) break
+  await sleep(100)
+}
+assert.equal(await evaluate('Boolean(document.querySelector("[data-admin-auth-error]"))'), true, 'Unavailable auth backend shows a closed error state')
+assert.equal(await evaluate('Boolean(document.querySelector("[data-admin-app]"))'), false, 'Unavailable auth backend exposes no admin data')
+await screenshot('admin-auth-unavailable-mobile-390x844')
+await evaluate(`window.__adminFixture.mode = 'auth-required'; history.pushState({}, '', '/admin/login'); dispatchEvent(new PopStateEvent('popstate'))`)
+for (let i = 0; i < 60; i += 1) {
+  if (await evaluate('Boolean(document.querySelector("[data-admin-login]"))')) break
+  await sleep(100)
+}
+assert.equal(await evaluate('Boolean(document.querySelector("[data-admin-login]"))'), true, 'Expired/absent session returns to login')
+await cdp('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false })
+await evaluate(`window.__adminFixture.mode = 'ok'`)
+await waitFor('Boolean(document.querySelector("[data-google-signin-fixture]"))', 'Google GIS sign-in control')
+await click('[data-google-signin-fixture]')
+for (let i = 0; i < 80; i += 1) {
   if (await evaluate('Boolean(document.querySelector("[data-admin-app]"))')) break
   await sleep(150)
 }
 assert.equal(await evaluate('Boolean(document.querySelector("[data-admin-app]"))'), true, 'Admin route renders the dashboard shell')
+assert.equal(await evaluate('window.__adminFixture.calls.some((call) => call.path === "/api/auth/google" && JSON.parse(call.body).credential === "synthetic.google.oidc.token" && JSON.parse(call.body).nonce === "A".repeat(43))'), true, 'Google credential and one-time challenge are posted to the same-origin API in memory')
 await evaluate(`document.querySelectorAll('.admin-state--error button').forEach((button) => button.click())`)
 async function waitFor(expression, label) {
   for (let i = 0; i < 60; i += 1) {
@@ -278,7 +329,12 @@ await waitFor('document.querySelector(".admin-state--error")?.textContent.includ
 await evaluate(`window.__adminFixture.mode = 'forbidden'; history.pushState({}, '', '/admin/history'); dispatchEvent(new PopStateEvent('popstate'))`)
 await waitFor('document.querySelector(".admin-state--error")?.textContent.includes("belum memiliki izin")', '403 forbidden state')
 await evaluate(`window.__adminFixture.mode = 'network-error'; history.pushState({}, '', '/admin/questions'); dispatchEvent(new PopStateEvent('popstate'))`)
-await waitFor('document.querySelector(".admin-state--error")?.textContent.includes("Layanan belum dapat dijangkau")', 'network error state')
+for (let i = 0; i < 60; i += 1) {
+  if (await evaluate('document.querySelector(".admin-state--error")?.textContent.includes("Layanan belum dapat dijangkau")')) break
+  await sleep(100)
+}
+const networkErrorState = await evaluate('({ href: location.href, text: document.querySelector(".admin-state--error")?.textContent, fixtureMode: window.__adminFixture.mode, calls: window.__adminFixture.calls.slice(-8) })')
+assert.match(networkErrorState.text ?? '', /Layanan belum dapat dijangkau/u, `Network error state is rendered (${JSON.stringify(networkErrorState)})`)
 const storageKeys = await evaluate('({ local: Object.keys(localStorage), session: Object.keys(sessionStorage) })')
 const storageContents = await evaluate('JSON.stringify({ local: Object.fromEntries(Object.entries(localStorage)), session: Object.fromEntries(Object.entries(sessionStorage)) })')
 assert.equal(/synthetic-|private-test@example|Pengunjung Uji|Ibu Contoh|bearer|access_token|jwt/i.test(storageContents), false, `Admin does not persist question data or credentials in Web Storage (${JSON.stringify(storageKeys)})`)
@@ -291,6 +347,13 @@ assert.equal(await evaluate('[...document.querySelectorAll("button")].some((butt
 assert.equal(await evaluate('document.body.innerText.includes("BELUM DISETUJUI CUSTOMER")'), true, 'Settings labels retention values as awaiting customer approval')
 await cdp('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false })
 await screenshot('settings-desktop-1440x900')
+assert.equal(await evaluate('Boolean(document.querySelector(".admin-password-form, input[type=password]"))'), false, 'Password authentication controls are absent from the dashboard')
+assert.equal(await evaluate('window.__adminFixture.calls.some((call) => call.path.includes("/api/auth/change-password") || call.path === "/api/auth/login")'), false, 'Legacy password endpoints are not called')
+assert.equal(await evaluate('location.search.includes("synthetic") || location.hash.includes("synthetic")'), false, 'Google credential is never placed in the URL')
+await evaluate(`window.__adminFixture.mode = 'auth-required'`)
+await click('.admin-logout-button')
+await waitFor('Boolean(document.querySelector("[data-admin-login]"))', 'logout returns to admin login')
+assert.equal(await evaluate('window.__adminFixture.calls.some((call) => call.path === "/api/auth/logout" && call.method === "POST")'), true, 'Logout revokes session through the server API')
 const cacheUrls = await evaluate(`caches.keys().then((keys) => Promise.all(keys.map((key) => caches.open(key).then((cache) => cache.keys()))).then((requests) => requests.flat().map((request) => request.url)))`)
 assert.equal(cacheUrls.some((url) => /\/api\/admin\//.test(url)), false, 'Admin API responses are absent from Cache Storage')
 const sw = await (await import('node:fs/promises')).readFile(resolve('src/pwa/service-worker.ts'), 'utf8')
@@ -299,5 +362,9 @@ const viteConfig = await (await import('node:fs/promises')).readFile(resolve('vi
 assert.match(viteConfig, /AdminLayout-\*\.js/)
 assert.match(viteConfig, /AdminPages-\*\.js/)
 assert.match(viteConfig, /AdminLayout-\*\.css/)
+assert.match(viteConfig, /AdminLoginPage-\*\.js/)
+assert.match(viteConfig, /authApi-\*\.js/)
+assert.match(viteConfig, /auth-context-\*\.js/)
+assert.match(viteConfig, /admin-\*\.css/)
 assert.deepEqual(errors, [], `Dashboard has no runtime errors: ${errors.join('; ')}`)
 socket.close()

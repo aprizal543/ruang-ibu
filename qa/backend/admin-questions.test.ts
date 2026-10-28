@@ -163,7 +163,7 @@ test('one answer is created then updated without duplicate rows and publishes an
   database.close()
 })
 
-test('moderators can reject, hide, and delete while retaining a minimal audit tombstone', async () => {
+test('admin deletion handler retains a minimal audit tombstone without visitor content', async () => {
   assert.ok(moderationModule && detailModule, 'moderation and deletion endpoints exist')
   const database = new SqliteD1Database()
   await insertQuestion(database, { id: 'q-reject', status: 'pending' })

@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowLeft, ArrowRight, CaretLeft, CaretRight, ChatCircleText, Check, EyeSlash, Info, Trash, WarningCircle } from '@phosphor-icons/react'
 import { questionArticleRegistry } from '../../../content/questionArticleRegistry'
 import { AdminApiError, deleteQuestion, getQuestion, getQuestions, getSummary, moderateQuestion, saveAnswer } from '../api/adminApi'
+import { useAdminUser } from '../auth-context'
 import type { AdminQuestion, AdminQuestionPage, AdminSummary, ModerationStatus } from '../types/admin'
 
 const statuses: Array<{ id: ModerationStatus; label: string }> = [
@@ -163,6 +164,7 @@ export function AdminQuestionDetailPage() {
   const navigate = useNavigate()
   const loader = useCallback((signal: AbortSignal) => getQuestion(id, signal), [id])
   const { data: question, error, loading, reload } = useResource(loader, [loader])
+  const adminUser = useAdminUser()
   const [publicName, setPublicName] = useState('')
   const [publicQuestion, setPublicQuestion] = useState('')
   const [answer, setAnswer] = useState('')
@@ -236,7 +238,7 @@ export function AdminQuestionDetailPage() {
           <section className="admin-panel admin-public-preview"><p className="admin-eyebrow">VERSI PUBLIK</p><h2>Pratinjau tampilan</h2>{question.status === 'pending' ? <div className="admin-public-preview__body"><strong>{publicName}</strong><p>{publicQuestion}</p></div> : question.status === 'approved' || question.status === 'answered' ? <div className="admin-public-preview__body"><strong>{question.publicDisplayName}</strong><p>{question.publicQuestion}</p>{question.answer && <div><span>Jawaban Ruang Ibu</span><p>{question.answer}</p></div>}</div> : <div className="admin-public-preview__private">Pertanyaan ini tidak ditampilkan kepada publik.</div>}<small>Pratinjau internal. Pertanyaan baru tampil setelah disetujui.</small></section>
           <section className="admin-panel admin-history-card"><p className="admin-eyebrow">WAKTU PENANGANAN</p><h2>Informasi status</h2><dl className="admin-metadata"><div><dt>Dikirim</dt><dd>{formatDate(question.createdAt)}</dd></div><div><dt>Terakhir ditangani</dt><dd>{formatDate(question.moderatedAt)}</dd></div><div><dt>Masa retensi saat ini</dt><dd>{formatDate(question.expiresAt)}</dd></div></dl>{question.moderatedBy && <small>Petugas: {question.moderatedBy}</small>}</section>
           {(question.status === 'approved' || question.status === 'answered') && <button className="admin-button admin-button--danger-outline admin-hide-button" type="button" onClick={() => setConfirmAction('hide')}><EyeSlash size={18} /> Sembunyikan pertanyaan</button>}
-          <button className="admin-button admin-button--text-danger admin-delete-button" type="button" onClick={() => setConfirmAction('delete')}><Trash size={17} /> Hapus pertanyaan</button>
+          {adminUser.role === 'owner' && <button className="admin-button admin-button--text-danger admin-delete-button" type="button" onClick={() => setConfirmAction('delete')}><Trash size={17} /> Hapus pertanyaan</button>}
         </aside>
       </div>
       {confirmAction && <ConfirmDialog title={confirmAction === 'reject' ? 'Tolak pertanyaan ini?' : confirmAction === 'hide' ? 'Sembunyikan pertanyaan ini?' : 'Hapus pertanyaan ini?'} description={confirmAction === 'reject' ? 'Pertanyaan yang ditolak tidak akan ditampilkan kepada publik.' : confirmAction === 'hide' ? 'Pertanyaan ini dan jawabannya tidak lagi tampil pada halaman publik.' : 'Pertanyaan beserta jawaban terkait akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.'} confirmLabel={confirmAction === 'reject' ? 'Tolak pertanyaan' : confirmAction === 'hide' ? 'Sembunyikan' : 'Hapus pertanyaan'} destructive={confirmAction === 'delete'} busy={busy} onCancel={() => setConfirmAction(null)} onConfirm={() => confirmAction === 'delete' ? void remove() : void act(confirmAction)} />}
@@ -245,8 +247,9 @@ export function AdminQuestionDetailPage() {
 }
 
 export function AdminSettingsPage() {
-  return <div className="admin-page" data-admin-page="settings"><PageHeading eyebrow="PREFERENSI PENGELOLA" title="Pengaturan dasar" description="Informasi akses dan kebijakan data yang saat ini berlaku." />
-    <section className="admin-panel admin-settings-panel"><p className="admin-eyebrow">AKSES DAN PRIVASI</p><h2>Akses pengelola</h2><p>Dashboard dan API pengelola harus dilindungi Cloudflare Access pada route <code>/admin</code>, <code>/admin/*</code>, dan <code>/api/admin/*</code>. Akses web ini tidak menyediakan login sendiri.</p><div className="admin-setup-note"><WarningCircle size={20} /><div><strong>Konfigurasi Cloudflare belum diverifikasi untuk Preview.</strong><p>Jika API belum tersedia, dashboard menolak akses dan tidak menampilkan data lokal atau contoh.</p></div></div></section>
+  const user = useAdminUser()
+  return <div className="admin-page" data-admin-page="settings"><PageHeading eyebrow="PREFERENSI PENGELOLA" title="Pengaturan dasar" description="Informasi akun dan kebijakan data yang saat ini berlaku." />
+    <section className="admin-panel admin-settings-panel"><p className="admin-eyebrow">AKSES DAN PRIVASI</p><h2>Akun pengelola</h2><dl className="admin-metadata"><div><dt>Email</dt><dd>{user.email}</dd></div><div><dt>Peran</dt><dd>{user.role === 'owner' ? 'Pemilik' : 'Moderator'}</dd></div><div><dt>Metode masuk</dt><dd>Google Identity Services</dd></div><div><dt>Sesi</dt><dd>Maksimal 8 jam · berakhir setelah 30 menit tidak aktif</dd></div></dl><p>Hanya akun Google yang telah ditautkan secara privat ke identitas pengelola yang dapat masuk. Untuk mengubah akses akun, hubungi pemilik Ruang Ibu.</p></section>
     <section className="admin-panel admin-settings-panel"><p className="admin-eyebrow">RETENSI · BELUM DISETUJUI CUSTOMER</p><h2>Nilai implementasi sementara</h2><p>Angka berikut adalah default M3 untuk bahan review, bukan kebijakan final. Tidak ada penghapusan terjadwal dan dashboard ini tidak menyediakan purge massal.</p><ul className="admin-retention-list"><li><span>Pertanyaan menunggu moderasi</span><strong>90 hari sejak dikirim</strong></li><li><span>Ditolak atau disembunyikan</span><strong>30 hari sejak ditangani</strong></li><li><span>Disetujui atau dijawab</span><strong>365 hari sejak ditangani</strong></li></ul><p className="admin-settings-footnote">Sebelum kebijakan disetujui, penghapusan hanya dapat dilakukan satu per satu dengan konfirmasi.</p></section>
   </div>
 }

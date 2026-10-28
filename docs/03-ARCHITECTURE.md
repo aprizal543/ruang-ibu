@@ -1,12 +1,12 @@
 # RUANG IBU — Software Architecture v1.1
 
-**Status:** baseline frontend architecture plus M3 local Cloudflare Pages Functions/D1 Q&A foundation; remote Cloudflare resources remain unprovisioned.
+**Status:** public frontend plus local M3–M4.6C Cloudflare Pages Functions/D1 implementation. M4.6C uses Google OIDC identity verification and D1-backed admin sessions; remote OAuth/D1 integration and hosted Workers Free runtime verification remain pending.
 **Source references:** `01-DESIGN-SYSTEM.md`, `02-PRD.md`, approved mobile collage.  
 **Guiding principle:** static content-first mobile web; add backend only for the reviewed, consent-based Q&A requirement. Evaluation stays ephemeral.
 
 ## 1. Architecture decision
 
-The public application uses **React + TypeScript + Vite + Tailwind CSS + React Router + `vite-plugin-pwa`** and static Cloudflare Pages assets. Workbox `injectManifest` keeps cache admission, article invalidation, and audio behavior explicit. Native HTML5 `<audio>` provides playback. Reviewed Q&A APIs run in Cloudflare Pages Functions and use D1 for question records, answers, moderation events, and short-lived HMAC rate-limit buckets. Cloudflare Turnstile protects visitor submissions; Cloudflare Access JWT verification protects admin APIs. No visitor accounts, automated clinical answers, analytics of health data, or persisted evaluation scores are added. Local M3 functions/tests exist; remote Preview/Production bindings and secrets are not configured.
+The public application uses **React + TypeScript + Vite + Tailwind CSS + React Router + `vite-plugin-pwa`** and static Cloudflare Pages assets. Workbox `injectManifest` keeps cache admission, article invalidation, and audio behavior explicit. Native HTML5 `<audio>` provides playback. Reviewed Q&A APIs run in Cloudflare Pages Functions and use D1 for question records, answers, moderation events, and short-lived HMAC rate-limit buckets. Cloudflare Turnstile protects visitor submissions. Admin APIs authenticate opaque, D1-backed sessions issued only after server-side verification of a Google OIDC ID token and a match to a privately provisioned Google `sub`; owner/moderator roles remain server-side. There is no password login, public admin registration, visitor account, automated clinical answer, health-data analytics, or persisted evaluation score. Local implementation and tests exist; remote Preview/Production OAuth, bindings and secrets are not configured, and hosted Workers runtime behavior remains unverified.
 
 ### C4-like context diagram
 
@@ -23,7 +23,7 @@ flowchart LR
   W --> QAPI["Pages Functions Q&A API"]
   QAPI --> TS["Turnstile Siteverify"]
   QAPI --> D1["D1: private submissions + sanitized public Q&A"]
-  MOD["Moderator through Cloudflare Access"] --> QAPI
+  MOD["Authorized owner / moderator with D1-backed session"] --> QAPI
 ```
 
 No arrow to external collection service or clinical decision engine: these are explicitly out of scope.
@@ -255,7 +255,7 @@ Show 'perubahan persepsi yang Anda laporkan selama sesi ini', not 'terapi terbuk
 ## 9. Security/privacy posture
 
 - Q&A stores only visitor-submitted display name, question and optional email plus moderator-approved public text and answer. No visitor account, diagnosis, or automatic response. HTTPS only. Security headers include `X-Content-Type-Options: nosniff` and `Referrer-Policy`; avoid overly permissive third-party embed scripts.
-- Admin API verifies Cloudflare Access RS256 JWT issuer/AUD/expiry and exact email allowlist; missing configuration fails closed. Visitor submission requires same-origin, server-side Turnstile, bounded validation and an HMAC-based D1 rate limit. See `docs/backend/SECURITY-MODEL.md`.
+- Admin API validates an opaque session cookie against D1, enforces idle and absolute expiry, checks that the account remains active, and applies server-side owner/moderator authorization. Missing D1 or HMAC configuration fails closed. Google GIS ID tokens are verified server-side with `jose` against Google's JWKS, RS256 signature, issuer, audience, expiry, one-time D1 nonce and verified email; the stable `sub` must match a pre-provisioned admin. Mutating auth/admin routes require exact Origin and same-origin Fetch Metadata. Local Wrangler/workerd WebCrypto verification passes with synthetic fixtures, but hosted Workers Free CPU/network behavior is a release gate. Visitor submission requires server-side Turnstile, bounded validation and an HMAC-based D1 rate limit. See `docs/backend/SECURITY-MODEL.md`.
 - Public API returns only moderator-approved fields and is `no-store`. Do not log payloads, emails, IPs, JWTs, or secrets. Cloudflare Preview and Production must use separate D1 and Turnstile configuration.
 - No uploading user data. Avoid personal analytics, external error/session replay tools, and health details in URLs.
 - Assets served from same-origin `/audio/` and `/images/` where possible; provide cache headers for immutable hashed assets.
@@ -304,7 +304,8 @@ Show 'perubahan persepsi yang Anda laporkan selama sesi ini', not 'terapi terbuk
 - **ADR-006 PWA without visual redesign:** `vite-plugin-pwa` + Manifest + Workbox are the official delivery/offline layer; the approved mobile composition, palette, and six-tab IA remain frozen.
 - **ADR-007 Bounded offline medical content:** cache only clinically approved article revisions, expose last verification, withhold stale instructions after seven days, and invalidate withdrawals when online. Offline clients cannot receive revocations until reconnecting.
 - **ADR-008 Explicit audio downloads:** only user-selected licensed files are cached, capped at 3 tracks / 20 MiB per file / 50 MiB total / 30 days; browser eviction remains possible.
-- **ADR-009 Moderated Q&A:** Cloudflare Pages Functions + D1, Turnstile and Access; public text is separate from original submission, questions are never auto-published, and no custom visitor/admin password system is introduced.
+- **ADR-009 Moderated Q&A:** Cloudflare Pages Functions + D1 and Turnstile; public text is separate from original submission and questions are never auto-published. Visitor accounts and automated answers are out of scope.
+- **ADR-010 Independent admin authentication (revised M4.6C):** Admins use individually provisioned Google OIDC `sub` identities, opaque D1-backed sessions and server-side owner/moderator roles. GIS ID tokens are verified through Google's JWKS with a short-lived one-use nonce; no password login, auto-registration or default credential exists. The implementation is local-only until Preview OAuth origins/client ID, D1/secrets and private owner provisioning are authorized, then hosted Workers runtime behavior is verified. Cloudflare Access is not the application authentication dependency; any edge restriction is a separate owner decision.
 
 ## 14. Deployment checklist
 
