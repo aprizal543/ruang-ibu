@@ -15,13 +15,13 @@ This document records the ten customer-approved revision areas for future planni
 
 1. Add images and captions to educational material after selecting and documenting rights-cleared assets.
 2. Add a **“Yang Bisa Ibu Lakukan”** section to each article, subject to source and clinical review.
-3. Add per-article questions and answers with moderation; do not use an AI chatbot.
+3. Add per-article questions and answers with server-side abuse checks, public unanswered questions, and Admin answer/hide/delete workflows; do not use an AI chatbot.
 4. Add an `/admin` dashboard that follows the approved Ruang Ibu visual design.
 5. Add backend services using Cloudflare Pages Functions, D1, Turnstile, and independent D1-backed admin sessions.
 6. Fix scroll behavior, navigation, and the article reading experience (Milestone 1).
 7. Audit research from 2022–2026 while retaining the customer's eight mandatory journals.
 8. Add restrained visual enhancements and light animation within the approved design system.
-9. Use this article sequence: title → introduction → visual → discussion → safety → practical options → sources → questions and answers at the bottom.
+9. Use this article sequence: title → introduction → visual → discussion → safety → practical options → Tanya Jawab → Sumber Informasi at the bottom.
 10. Test and release through Cloudflare Preview before any production release.
 
 ## Delivery and content constraints
@@ -34,3 +34,17 @@ This document records the ten customer-approved revision areas for future planni
 - Article content, imagery, source claims, and practical options remain subject to their applicable licensing, evidence, and clinical review gates.
 - No Production Cloudflare resource or database has been provisioned by M3. Do not claim deployment or change Production without a separate approved release.
 - Q&A retention values in the local M3 implementation are provisional defaults only (pending 90 days, rejected/hidden 30 days, approved/answered 365 days). Customer approval is pending; no scheduled purge is configured.
+
+## Whole-site scientific-source and Production readiness audit — 28 October 2026
+
+The completed local source inventory and evidence-to-claim review are recorded in `docs/content-research/PHASE-2.3-SOURCE-AUDIT.md` and `docs/content-research/THERAPY-CLAIM-SOURCE-MATRIX.md`. It covers all 43 registry records, 11 article routes/12 customer topics, both maternity guides, Sources disclosures, relaxation audio copy, and the ephemeral Evaluation page. The inventory identifies 7 records explicitly published before 2022, 16 official-information entries without a verified publication year, and 20 entries dated 2022–2026. Three older Cochrane/systematic research reviews are archive-only; older guidelines and official health information are separately classified and retained only with the source-scope/date caveats documented in the audit. C01–C08 DOI and URL identity is unchanged.
+
+This is a bibliographic/editorial audit, not clinical review. Every article/guide remains `clinicalReview: draft`. Unresolved source-access and clinical-copy gates include the direct T03 grounding evidence, general prenatal massage scope, pregnancy warm-compress protocol/effect claims, pregnancy-versus-labor breathing boundaries, and confirmation of warning-sign wording against current Indonesian maternity pathways. No clinician approval is implied.
+
+### Targeted content remediation — 28 October 2026
+
+Copy for A01/A04/A05/A06/B01/B05/B06/T01–T04 was narrowed where studies were small, structured, population-specific, or indirect. T03 no longer presents grounding as a general clinical relaxation method and has no self-guided technique; its source review remains draft. No source IDs, article URLs, DOI, customer reference identity, article structure, or Q&A workflow changed. The source audit and claim matrix record VERIFIED facts, LIMITED EVIDENCE, and CLINICAL REVIEW REQUIRED items separately. All clinical review states remain draft, so Production stays NO-GO pending a qualified Indonesian maternity review and the operational release gates below.
+
+The reviewer-ready per-article form is `docs/content-research/CLINICAL-REVIEW-PACKET-2026-10-28.md`. It records the claims, source IDs, safety boundaries, and blank reviewer decision/name/date/note fields; it does not change application review state.
+
+**Production status: NO-GO.** QA owner-confirmed M5 functionality does not establish Production readiness. Production D1 and its `0001`/`0002` migrations, Production OAuth client/origin, runtime binding/variables, encrypted auth/rate-limit/Turnstile secrets, exact Turnstile hostname, Production Owner provisioning path, and final clinical review remain unverified or unprepared. The existing provisioning script is pinned to staging and must not be used for Production. Direct-publication PII/spam screening is heuristic; operational moderation, hide/delete response, privacy notice, and customer-approved retention policy remain release gates. Production must use a separate D1 database, not staging. The current detailed release gates and rollback sequence are in `docs/backend/DEPLOYMENT-RUNBOOK.md`.

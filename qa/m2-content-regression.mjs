@@ -92,6 +92,12 @@ assert.doesNotMatch(detail, /Panduan untuk Ibu/, 'The previous overlapping secti
 assert.match(detail, /Informasi ini bersifat edukasi dan tidak menggantikan penilaian bidan atau dokter/, 'The public article uses a plain education disclaimer')
 assert.doesNotMatch(allArticleData, /clinicalReview:\s*\{\s*status:\s*'approved'/, 'Article data does not claim clinical approval')
 
+const t03 = articles.match(/'relaksasi-otot-ringan':\s*\{([\s\S]*?)(?=\n  'pijat-pendamping-persalinan':)/)?.[1]
+assert.ok(t03, 'T03 body relaxation article remains present')
+assert.match(t03, /sourceReview:\s*\{\s*status:\s*'draft'\s*\}/, 'T03 source review remains draft while its general method is unresolved')
+assert.doesNotMatch(t03, /grounding[^\n]{0,100}(?:efektif|mengurangi|menurunkan|meredakan)|(?:efektif|mengurangi|menurunkan|meredakan)[^\n]{0,100}grounding/i, 'T03 does not claim grounding efficacy')
+assert.doesNotMatch(t03, /(?:lakukan|ikuti|praktikkan|latih) grounding/i, 'T03 does not publish self-guided grounding steps')
+
 const sourceFiles = ['src/content/therapyArticles.ts', 'src/content/customerRevisionArticles.ts']
 const guideInstructions = []
 for (const path of sourceFiles) {

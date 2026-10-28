@@ -95,8 +95,8 @@ assert.match(articles, /'kompres-hangat-kehamilan'[\s\S]*?S30/, 'Pregnancy warm-
 assert.match(articles, /clinicalReview: \{ status: 'draft' \}/, 'Customer article clinical review must remain in draft status')
 assert.match(articles, /Kompres Hangat Saat Hamil[\s\S]*?Mengenal Kompres Hangat/, 'Pregnancy warm-compress article title and subheading are missing')
 for (const step of [
-  'Berikut beberapa hal yang dapat Ibu perhatikan saat menggunakan sumber hangat untuk membantu meredakan pegal pada otot punggung.',
-  'Gunakan sumber hangat pada otot punggung yang terasa pegal.',
+  'Bukti manfaat langsung masih terbatas. Langkah berikut berfokus pada bertanya dan menghindari paparan panas yang berlebihan.',
+  'Tanyakan kepada bidan atau dokter apakah sumber hangat sesuai untuk keluhan dan kondisi kehamilan Ibu.',
   'pilih pengaturan panas paling rendah',
   'dengan handuk agar tidak langsung menyentuh kulit',
   'Batasi lama pemakaian. Jangan gunakan terlalu lama.',
