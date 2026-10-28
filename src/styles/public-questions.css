@@ -1,0 +1,97 @@
+.public-qna {
+  margin-top: 26px;
+  padding: 23px 18px 20px;
+  border: 1px solid var(--ri-border);
+  border-radius: var(--ri-radius-lg, 20px);
+  background: var(--ri-ivory);
+}
+
+.public-qna__header h2,
+.public-qna__form-heading h3 {
+  margin: 0;
+  color: var(--ri-terra);
+  font-family: var(--ri-font-display);
+  font-size: 27px;
+  font-weight: 500;
+  letter-spacing: -.025em;
+  line-height: 1.16;
+}
+
+.public-qna__eyebrow {
+  margin: 0 0 5px;
+  color: var(--ri-moss);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.public-qna__header > p:last-child,
+.public-qna__disclaimer,
+.public-qna__state,
+.public-qna__empty {
+  color: var(--ri-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.public-qna__header > p:last-child { margin: 8px 0 0; }
+.public-qna__list { display: grid; gap: 13px; margin: 18px 0 0; padding: 0; list-style: none; }
+.public-qna__item { min-width: 0; padding: 14px 0 0; border-top: 1px solid var(--ri-border); }
+.public-qna__question-meta { display: flex; align-items: baseline; flex-wrap: wrap; gap: 5px 10px; }
+.public-qna__question-meta strong { color: var(--ri-forest); font-size: 14px; }
+.public-qna__question-meta time { color: var(--ri-muted); font-size: 12px; }
+.public-qna__item > p,
+.public-qna__answer p { margin: 7px 0 0; color: var(--ri-ink); font-size: 15px; line-height: 1.65; overflow-wrap: anywhere; }
+.public-qna__unanswered { display: inline-block; margin-top: 9px; padding: 4px 9px; border-radius: 999px; color: var(--ri-moss); background: #edf1e9; font-size: 12px; line-height: 1.4; }
+.public-qna__answer-toggle { display: inline-flex; min-height: 44px; align-items: center; margin-top: 7px; padding: 0 12px; border: 1px solid var(--ri-border); border-radius: 999px; color: var(--ri-forest); background: #edf1e9; font: inherit; font-size: 13px; font-weight: 650; line-height: 1.35; cursor: pointer; }
+.public-qna__answer-toggle:focus-visible { outline: 3px solid var(--ri-terra); outline-offset: 3px; }
+.public-qna__answer { margin-top: 13px; padding: 12px 14px; border-radius: 12px; background: #f1f3ed; }
+.public-qna__answer[hidden] { display: none; }
+.public-qna__answer h3 { margin: 0; color: var(--ri-forest); font-size: 13px; font-weight: 700; }
+.public-qna__answer p { margin-top: 5px; }
+.public-qna__empty, .public-qna__state { margin: 15px 0 0; }
+.public-qna__state--error { color: var(--ri-danger); }
+.public-qna__state--error button { min-height: 44px; margin-top: 4px; padding: 0 12px; border: 0; border-radius: 999px; color: white; background: var(--ri-forest); font: inherit; }
+.public-qna__more { min-height: 44px; margin-top: 12px; padding: 0 14px; border: 1px solid var(--ri-border); border-radius: 999px; color: var(--ri-forest); background: transparent; font: inherit; font-size: 14px; font-weight: 650; }
+.public-qna__toggle { min-height: 48px; margin-top: 20px; padding: 0 18px; border: 0; border-radius: var(--ri-radius-pill); color: white; background: var(--ri-forest); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.public-qna__toggle:focus-visible,
+.public-qna__close:focus-visible { outline: 3px solid var(--ri-terra); outline-offset: 3px; }
+.public-qna__form-wrap { margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--ri-border); }
+.public-qna__form-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.public-qna__form-heading h3 { margin: 0; color: var(--ri-terra); font-family: var(--ri-font-display); font-size: 22px; font-weight: 500; line-height: 1.2; }
+.public-qna__close { min-width: 64px; min-height: 44px; padding: 0 12px; border: 1px solid var(--ri-border); border-radius: 999px; color: var(--ri-forest); background: transparent; font: inherit; font-size: 14px; font-weight: 650; cursor: pointer; }
+.public-qna__disclaimer { margin: 8px 0 16px; }
+.public-qna__field { display: grid; gap: 7px; margin-top: 14px; color: var(--ri-ink); font-size: 14px; font-weight: 650; }
+.public-qna__field small { color: var(--ri-muted); font-size: 12px; font-weight: 400; }
+.public-qna__field input,
+.public-qna__field textarea { width: 100%; min-width: 0; border: 1px solid #d9d2c9; border-radius: 12px; padding: 12px 13px; color: var(--ri-ink); background: #fffdfa; font: inherit; font-size: 16px; font-weight: 400; line-height: 1.5; }
+.public-qna__field input { min-height: 48px; }
+.public-qna__field textarea { min-height: 116px; resize: vertical; }
+.public-qna__field input::placeholder { color: #686a65; opacity: 1; }
+.public-qna__field input:focus-visible,
+.public-qna__field textarea:focus-visible,
+.public-qna__consent input:focus-visible,
+.public-qna__more:focus-visible,
+.public-qna__state--error button:focus-visible,
+.public-qna__submit:focus-visible { outline: 3px solid var(--ri-terra); outline-offset: 3px; }
+.public-qna__consent { display: grid; grid-template-columns: 22px minmax(0, 1fr); align-items: start; gap: 10px; margin-top: 16px; color: var(--ri-ink); font-size: 14px; line-height: 1.5; }
+.public-qna__consent input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--ri-forest); }
+.public-qna__verification { position: relative; min-height: 48px; margin-top: 14px; }
+.public-qna__verification > p { margin: 6px 0 0; color: var(--ri-muted); font-size: 12px; }
+.public-qna__form-message { margin: 12px 0 0; color: var(--ri-forest); font-size: 14px; line-height: 1.55; }
+.public-qna__form-message--error { color: var(--ri-danger); }
+.public-qna__submit { display: flex; width: 100%; min-height: 50px; align-items: center; justify-content: center; margin-top: 13px; padding: 10px 16px; border: 0; border-radius: var(--ri-radius-pill); color: white; background: var(--ri-forest); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.public-qna__submit:disabled { cursor: not-allowed; opacity: .58; }
+
+@media (max-width: 420px) {
+  .public-qna__form-heading { align-items: flex-start; }
+  .public-qna__form-heading h3 { font-size: 21px; }
+}
+
+@media (max-width: 380px) {
+  .public-qna { padding: 20px 15px 18px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .public-qna *, .public-qna *::before, .public-qna *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}

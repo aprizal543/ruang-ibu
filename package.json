@@ -17,6 +17,7 @@
     "test:browser:m2:legacy": "node qa/m2-articles.browser.mjs",
     "test:browser:public-regression": "node qa/public-regression.browser.mjs",
     "test:browser:admin": "node qa/admin-dashboard.browser.mjs",
+    "test:browser:m5a": "node qa/public-qna.browser.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

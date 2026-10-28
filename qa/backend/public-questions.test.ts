@@ -3,6 +3,7 @@ import { test } from 'node:test'
 import { SqliteD1Database } from './sqlite-d1.ts'
 
 const apiModule = await import('../../functions/api/questions/index.ts').catch(() => null)
+const configModule = await import('../../functions/api/questions/config.ts').catch(() => null)
 
 function createEnv(database = new SqliteD1Database()) {
   return {
@@ -26,14 +27,13 @@ function submitBody(overrides: Record<string, unknown> = {}) {
     articleSlug: 'nyeri-punggung-kehamilan',
     displayName: 'Ibu Rani',
     question: 'Apa yang dapat saya tanyakan kepada bidan tentang nyeri punggung?',
-    email: 'rani@example.test',
-    consentToPublicModeration: true,
+    consentToPublicDisplay: true,
     turnstileToken: 'test-token',
     ...overrides,
   }
 }
 
-test('valid submission is private, saved as pending, and returns no visitor data', async () => {
+test('valid submission is published immediately as unanswered and returns a safe public receipt', async () => {
   assert.ok(apiModule, 'public question API module exists')
   const env = createEnv()
   const response = await apiModule.handleQuestionPost({
@@ -45,12 +45,52 @@ test('valid submission is private, saved as pending, and returns no visitor data
 
   assert.equal(response.status, 201)
   assert.equal(response.headers.get('Cache-Control'), 'no-store')
-  assert.deepEqual(payload, { data: { id: stored.id, status: 'pending', message: 'Pertanyaan diterima dan menunggu moderasi.' } })
-  assert.equal(stored.moderation_status, 'pending')
-  assert.equal(stored.optional_email, 'rani@example.test')
-  assert.equal(stored.public_question_text, null)
-  assert.equal(JSON.stringify(payload).includes('rani@example.test'), false)
+  assert.equal(payload.data.status, 'approved')
+  assert.equal(payload.data.question.status, 'approved')
+  assert.equal(payload.data.question.question, stored.public_question_text)
+  assert.equal(stored.moderation_status, 'approved')
+  assert.equal(stored.optional_email, null)
+  assert.equal(stored.public_display_name, 'Ibu Rani')
+  assert.equal(stored.public_question_text, stored.question_text)
   env.DB.close()
+})
+
+test('submission accepts an omitted display name and publishes with a neutral public label', async () => {
+  assert.ok(apiModule, 'public question API module exists')
+  const env = createEnv()
+  const body = submitBody()
+  delete body.displayName
+  const response = await apiModule.handleQuestionPost({
+    request: request('/api/questions', { method: 'POST', body: JSON.stringify(body) }),
+    env,
+  }, async () => ({ success: true, action: 'ask_question', hostname: 'ruang-ibu.test' }))
+  const payload = await response.json()
+  const stored = await env.DB.prepare('SELECT display_name, moderation_status, public_display_name, public_question_text FROM questions').first()
+
+  assert.equal(response.status, 201)
+  assert.equal(stored.display_name, 'Ibu')
+  assert.equal(stored.moderation_status, 'approved')
+  assert.equal(stored.public_display_name, 'Ibu')
+  assert.equal(stored.public_question_text, body.question)
+  assert.equal(payload.data.status, 'approved')
+  env.DB.close()
+})
+
+test('Turnstile configuration exposes only the public site key and remains no-store', async () => {
+  assert.ok(configModule, 'public question configuration endpoint exists')
+  const configured = await configModule.onRequestGet({
+    request: new Request('https://ruang-ibu.test/api/questions/config'),
+    env: { TURNSTILE_SITE_KEY: '1x00000000000000000000AA', TURNSTILE_SECRET_KEY: 'synthetic-server-only-secret' },
+  })
+  const payload = await configured.json()
+  assert.equal(configured.status, 200)
+  assert.equal(configured.headers.get('Cache-Control'), 'no-store')
+  assert.deepEqual(payload, { data: { turnstileSiteKey: '1x00000000000000000000AA' } })
+  assert.equal(JSON.stringify(payload).includes('synthetic-server-only-secret'), false)
+
+  const missing = await configModule.onRequestGet({ request: new Request('https://ruang-ibu.test/api/questions/config'), env: {} })
+  assert.equal(missing.status, 503)
+  assert.equal(missing.headers.get('Cache-Control'), 'no-store')
 })
 
 test('public reads return only approved questions and never private columns', async () => {
@@ -117,7 +157,7 @@ test('POST rejects invalid origin, extra keys, bad email, unknown slug, oversize
     { body: submitBody({ articleSlug: 'made-up-article' }), status: 400 },
     { body: submitBody({ email: 'not-an-email' }), status: 400 },
     { body: submitBody({ extra: true }), status: 400 },
-    { body: submitBody({ consentToPublicModeration: false }), status: 400 },
+    { body: submitBody({ consentToPublicDisplay: false }), status: 400 },
     { body: submitBody({ question: 'short' }), status: 400 },
   ]
   for (const scenario of cases) {

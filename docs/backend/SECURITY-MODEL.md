@@ -4,7 +4,7 @@
 
 M4.6C locally replaces the M4.6A email/password authentication mechanism with Google Identity Services (GIS) OpenID Connect ID-token verification and the existing opaque D1-backed sessions. This is a local implementation, not a release approval. No Google or Cloudflare resource was created; no remote migration, account provisioning, deployment, or Production change was performed. Cloudflare Workers Free hosted CPU and remote JWKS behavior still require separately authorized verification. M4.6A PBKDF2 authentication was not viable on the hosted Free runtime and its password routes are removed.
 
-The change does not alter Q&A business rules, moderation actions/audit, dashboard, D1 question data, or owner/moderator role policy. Evaluation remains ephemeral. No M5 public Q&A UI is added.
+M5A adds the public article Q&A form and discussion using the existing M3 endpoints and M4 Admin workspace. The M5 UX revision publishes new questions directly only after server-side validation and Turnstile; the existing `approved` database state is used for public unanswered items. Answers remain administrator-authored, and hide/delete controls remain available. Existing schema, audit tables, and owner/moderator policy are reused; evaluation remains ephemeral.
 
 ## Local verification (2026-10-27)
 
@@ -46,7 +46,8 @@ These checks do not make Google OIDC Preview-ready. A real Preview Web Client/or
 - Mutating auth and admin routes require exact Origin and `Sec-Fetch-Site: same-origin`. Session cookies use `__Host-`, Secure, HttpOnly, SameSite=Strict and Path=/.
 - All auth/admin/error responses are no-store. Workbox excludes `/admin`, `/api/*`, and admin chunks from offline fallback/precache. User input is rendered as React text; no raw HTML rendering was introduced.
 - Google ID-token validity is short (max 5 minutes). JWKS is fetched over HTTPS and cached by `jose` to support key rotation. Network/JWKS errors fail closed.
-- CSP in `public/_headers` allows the GIS client and required Google GIS frames/connect endpoints only; it disallows objects and all framing. This header must be verified on the eventual Cloudflare Preview host, since Vite dev does not enforce Pages `_headers`.
+- CSP in `public/_headers` allows the GIS client and required Google endpoints plus Cloudflare Turnstile script/frame/connect endpoints; it disallows objects and all framing. This header must be verified on the eventual Cloudflare Preview host, since Vite dev does not enforce Pages `_headers`.
+- Public Q&A text and administrator answers are rendered as React text nodes. The form does not collect email or persist form state in Web Storage. A new question becomes public only after exact same-origin, input/PII/link/spam checks, D1 HMAC rate limit, consent, bounded payload, allowlisted article slug, and server-verified Turnstile action/hostname all pass; it is then stored directly as an unanswered public question. Missing site key, secret, hostname allowlist, HMAC key, or D1 fails closed. Existing legacy `pending` records remain private unless an administrator manually reviews their public text and publishes them together with an answer.
 - `jose` uses WebCrypto RSA verification. A synthetic local Wrangler/workerd harness verifies RS256 and rejects a forged signature using the exact production verifier. This proves local runtime API compatibility only, not hosted CPU quota or production JWKS connectivity.
 
 ## Threat model / remaining risk

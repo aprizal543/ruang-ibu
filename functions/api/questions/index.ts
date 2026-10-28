@@ -1,14 +1,14 @@
 import { resolveQuestionArticleSlug } from '../../../src/content/questionArticleRegistry'
 import { apiError, hasSameOrigin, isResponse, jsonResponse, readJsonObject } from '../../_shared/http'
 import { consumeQuestionRateLimit } from '../../_shared/rate-limit'
-import { validateQuestionSubmission } from '../../_shared/question-validation'
+import { classifyPublicQuestionRisk, validateQuestionSubmission } from '../../_shared/question-validation'
 import type { PagesContext } from '../../_shared/types'
 import { verifyTurnstileToken, type TurnstileVerifier } from '../../_shared/turnstile'
 
 const MAX_BODY_BYTES = 8192
 const DEFAULT_PAGE_SIZE = 10
 const MAX_PAGE_SIZE = 20
-const PENDING_RETENTION_DAYS = 90
+const SUBMISSION_EXPIRY_DAYS = 90
 
 interface PublicCursor {
   createdAt: string
@@ -128,7 +128,15 @@ export async function handleQuestionPost(
   const body = await readJsonObject(request, MAX_BODY_BYTES)
   if (isResponse(body)) return body
   const submission = validateQuestionSubmission(body)
-  if (!submission) return apiError(400, 'invalid_submission', 'Periksa kembali nama, pertanyaan, persetujuan, dan materi yang dipilih.')
+  if (!submission) {
+    const risk = typeof body.question === 'string'
+      ? classifyPublicQuestionRisk(typeof body.displayName === 'string' ? body.displayName : '', body.question)
+      : null
+    if (risk === 'personal_information') return apiError(400, 'personal_information_not_allowed', 'Hapus nomor telepon, email, nomor identitas, atau alamat dari pertanyaan sebelum mengirim.')
+    if (risk === 'links_not_allowed') return apiError(400, 'links_not_allowed', 'Hapus tautan dari pertanyaan dan kirim tanpa promosi.')
+    if (risk === 'spam') return apiError(400, 'spam_not_allowed', 'Tulis pertanyaan singkat yang berkaitan dengan materi Ruang Ibu.')
+    return apiError(400, 'invalid_submission', 'Periksa materi, nama tampilan, panjang pertanyaan, dan persetujuan sebelum mengirim.')
+  }
 
   const clientIp = request.headers.get('CF-Connecting-IP')
   if (!clientIp || clientIp.length > 128) return apiError(503, 'request_not_available', 'Permintaan belum dapat diproses.')
@@ -150,26 +158,40 @@ export async function handleQuestionPost(
 
     const now = new Date()
     const createdAt = now.toISOString()
-    const expiresAt = new Date(now.getTime() + PENDING_RETENTION_DAYS * 24 * 60 * 60 * 1000).toISOString()
+    const expiresAt = new Date(now.getTime() + SUBMISSION_EXPIRY_DAYS * 24 * 60 * 60 * 1000).toISOString()
     const id = crypto.randomUUID()
     await env.DB.prepare(`
       INSERT INTO questions (
         id, article_slug, display_name, question_text, optional_email, consent_at,
-        moderation_status, created_at, updated_at, expires_at
-      ) VALUES (?, ?, ?, ?, ?, ?, 'pending', ?, ?, ?)
+        moderation_status, public_display_name, public_question_text, created_at, updated_at, expires_at
+      ) VALUES (?, ?, ?, ?, NULL, ?, 'approved', ?, ?, ?, ?, ?)
     `).bind(
       id,
       submission.articleSlug,
       submission.displayName,
       submission.question,
-      submission.email,
       createdAt,
+      submission.displayName,
+      submission.question,
       createdAt,
       createdAt,
       expiresAt,
     ).run()
 
-    return jsonResponse({ data: { id, status: 'pending', message: 'Pertanyaan diterima dan menunggu moderasi.' } }, 201)
+    return jsonResponse({ data: {
+      id,
+      status: 'approved',
+      message: 'Pertanyaan berhasil dikirim dan langsung tampil.',
+      question: {
+        id,
+        articleSlug: submission.articleSlug,
+        displayName: submission.displayName,
+        question: submission.question,
+        status: 'approved',
+        createdAt,
+        answer: null,
+      },
+    } }, 201)
   } catch {
     return apiError(500, 'request_failed', 'Pertanyaan belum dapat dikirim. Silakan coba lagi.')
   }

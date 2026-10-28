@@ -21,6 +21,7 @@ export interface D1Database {
 export interface Env {
   DB?: D1Database
   TURNSTILE_SECRET_KEY?: string
+  TURNSTILE_SITE_KEY?: string
   TURNSTILE_ALLOWED_HOSTNAMES?: string
   RATE_LIMIT_HMAC_KEY?: string
   ADMIN_AUTH_HMAC_KEY?: string

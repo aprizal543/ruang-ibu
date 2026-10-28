@@ -6,12 +6,12 @@ import { AdminApiError, deleteQuestion, getQuestion, getQuestions, getSummary, m
 import { useAdminUser } from '../auth-context'
 import type { AdminQuestion, AdminQuestionPage, AdminSummary, ModerationStatus } from '../types/admin'
 
-const statuses: Array<{ id: ModerationStatus; label: string }> = [
-  { id: 'pending', label: 'Menunggu' }, { id: 'approved', label: 'Disetujui' }, { id: 'answered', label: 'Dijawab' }, { id: 'rejected', label: 'Ditolak' }, { id: 'hidden', label: 'Disembunyikan' },
+const statuses: Array<{ id: ModerationStatus | 'unanswered'; label: string }> = [
+  { id: 'unanswered', label: 'Belum dijawab' }, { id: 'answered', label: 'Sudah dijawab' }, { id: 'rejected', label: 'Ditolak' }, { id: 'hidden', label: 'Disembunyikan' },
 ]
-const historyStatuses = ['approved', 'answered', 'rejected', 'hidden'] as const
+const historyStatuses: readonly ModerationStatus[] = ['answered', 'rejected', 'hidden']
 const articleTitle = new Map(questionArticleRegistry.map((article) => [article.slug, article.title]))
-const statusLabels: Record<ModerationStatus, string> = { pending: 'Menunggu', approved: 'Disetujui', answered: 'Dijawab', rejected: 'Ditolak', hidden: 'Disembunyikan' }
+const statusLabels: Record<ModerationStatus, string> = { pending: 'Perlu diperiksa', approved: 'Belum dijawab', answered: 'Sudah dijawab', rejected: 'Ditolak', hidden: 'Disembunyikan' }
 const dateFormat = new Intl.DateTimeFormat('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })
 const formatDate = (value: string | null | undefined) => value ? dateFormat.format(new Date(value)) : '—'
 
@@ -90,23 +90,22 @@ function Toast({ children, kind = 'success', action }: { children: ReactNode; ki
 
 export function AdminOverviewPage() {
   const summaryResource = useResource<AdminSummary>(getSummary, [])
-  const pendingResource = useResource<AdminQuestionPage>((signal) => getQuestions({ status: 'pending', limit: 5 }, signal), [])
+  const unansweredResource = useResource<AdminQuestionPage>((signal) => getQuestions({ status: ['pending', 'approved'], limit: 5 }, signal), [])
   const recentResource = useResource<AdminQuestionPage>((signal) => getQuestions({ limit: 5 }, signal), [])
   const summary = summaryResource.data
   const metrics: Array<{ key: keyof AdminSummary; label: string; tone: string }> = [
-    { key: 'total', label: 'Total pertanyaan', tone: 'forest' }, { key: 'pending', label: 'Menunggu moderasi', tone: 'peach' }, { key: 'approved', label: 'Disetujui', tone: 'sage' },
-    { key: 'answered', label: 'Sudah dijawab', tone: 'green' }, { key: 'rejected', label: 'Ditolak', tone: 'neutral' }, { key: 'hidden', label: 'Disembunyikan', tone: 'neutral' },
+    { key: 'total', label: 'Total pertanyaan', tone: 'forest' }, { key: 'approved', label: 'Belum dijawab', tone: 'peach' }, { key: 'answered', label: 'Sudah dijawab', tone: 'green' },
   ]
   return <div className="admin-page" data-admin-page="overview">
     <PageHeading eyebrow="RUANG PENGELOLA" title="Ringkasan" description="Pantau pertanyaan dan tindak lanjut dari ibu." action={<Link className="admin-button" to="/admin/questions"><ChatCircleText size={18} /> Buka Tanya Jawab</Link>} />
     {summaryResource.error ? <StateMessage error={summaryResource.error} retry={summaryResource.reload} /> : summaryResource.loading ? <LoadingState label="Memuat ringkasan…" /> : <section className="admin-metrics" aria-label="Ringkasan pertanyaan">
-      {metrics.map((metric) => <article key={metric.key} className={`admin-metric admin-metric--${metric.tone}`}><span>{metric.label}</span><strong data-admin-stat={metric.key}>{summary?.[metric.key] ?? 0}</strong></article>)}
+      {metrics.map((metric) => <article key={metric.key} className={`admin-metric admin-metric--${metric.tone}`}><span>{metric.label}</span><strong data-admin-stat={metric.key}>{metric.key === 'approved' ? (summary?.approved ?? 0) + (summary?.pending ?? 0) : summary?.[metric.key] ?? 0}</strong></article>)}
     </section>}
     <div className="admin-overview-grid">
-      <section className="admin-panel"><div className="admin-panel__heading"><div><p className="admin-eyebrow">PERLU DITINJAU</p><h2>Menunggu moderasi</h2></div><Link to="/admin/questions?status=pending">Lihat semua <ArrowRight size={16} /></Link></div>
-        {pendingResource.loading ? <LoadingState /> : pendingResource.error ? <StateMessage error={pendingResource.error} retry={pendingResource.reload} /> : pendingResource.data?.questions.length ? <QuestionList questions={pendingResource.data.questions} compact /> : <EmptyState title="Belum ada pertanyaan yang menunggu moderasi." />}
+      <section className="admin-panel"><div className="admin-panel__heading"><div><p className="admin-eyebrow">TINDAK LANJUT</p><h2>Belum dijawab</h2></div><Link to="/admin/questions?status=unanswered">Lihat semua <ArrowRight size={16} /></Link></div>
+        {unansweredResource.loading ? <LoadingState /> : unansweredResource.error ? <StateMessage error={unansweredResource.error} retry={unansweredResource.reload} /> : unansweredResource.data?.questions.length ? <QuestionList questions={unansweredResource.data.questions} compact /> : <EmptyState title="Belum ada pertanyaan yang perlu dijawab." />}
       </section>
-      <section className="admin-panel"><div className="admin-panel__heading"><div><p className="admin-eyebrow">TERBARU</p><h2>Aktivitas pertanyaan</h2></div><Link to="/admin/history">Buka riwayat <ArrowRight size={16} /></Link></div>
+      <section className="admin-panel"><div className="admin-panel__heading"><div><p className="admin-eyebrow">TERBARU</p><h2>Pertanyaan terbaru</h2></div><Link to="/admin/history">Buka riwayat <ArrowRight size={16} /></Link></div>
         {recentResource.loading ? <LoadingState /> : recentResource.error ? <StateMessage error={recentResource.error} retry={recentResource.reload} /> : recentResource.data?.questions.length ? <QuestionList questions={recentResource.data.questions} compact /> : <EmptyState title="Belum ada pertanyaan." detail="Pertanyaan baru akan muncul di sini setelah diterima." />}
       </section>
     </div>
@@ -125,12 +124,14 @@ function QuestionList({ questions, compact = false }: { questions: AdminQuestion
 function QuestionCollectionPage({ history = false }: { history?: boolean }) {
   const [searchParams, setSearchParams] = useSearchParams()
   const statusParam = searchParams.get('status')
-  const status = statuses.some((candidate) => candidate.id === statusParam) ? statusParam as ModerationStatus : undefined
+  const status = statuses.some((candidate) => candidate.id === statusParam) ? statusParam as ModerationStatus | 'unanswered' : undefined
   const articleSlug = searchParams.get('articleSlug') ?? undefined
   const [cursorStack, setCursorStack] = useState<Array<string | null>>([null])
   useEffect(() => setCursorStack([null]), [status, articleSlug, history])
   const cursor = cursorStack.at(-1) ?? null
-  const effectiveStatus = history && !status ? historyStatuses : status
+  const effectiveStatus: ModerationStatus | readonly ModerationStatus[] | undefined = status === 'unanswered'
+    ? ['pending', 'approved']
+    : history && !status ? historyStatuses : status
   const loader = useCallback((signal: AbortSignal) => getQuestions({ status: effectiveStatus, articleSlug, cursor, limit: 20 }, signal), [effectiveStatus, articleSlug, cursor])
   const { data, error, loading, reload } = useResource(loader, [loader])
   const setFilter = (key: string, value: string) => {
@@ -141,12 +142,12 @@ function QuestionCollectionPage({ history = false }: { history?: boolean }) {
   }
   const visibleQuestions = data?.questions ?? []
   const title = history ? 'Riwayat penanganan' : 'Tanya Jawab'
-  const description = history ? 'Lihat pertanyaan yang telah diputuskan dan tindak lanjut terakhir.' : 'Periksa setiap pertanyaan sebelum menentukan apakah layak ditampilkan.'
+  const description = history ? 'Lihat jawaban dan pertanyaan yang disembunyikan atau ditolak.' : 'Baca pertanyaan pengunjung dan tulis jawaban jika diperlukan.'
   return <div className="admin-page" data-admin-page={history ? 'history' : 'questions'}>
     <PageHeading eyebrow={history ? 'ARSIP MODERASI' : 'RUANG PENGELOLA'} title={title} description={description} />
     <section className="admin-panel admin-inbox">
       <div className="admin-filter-bar">
-        <label className="admin-field admin-field--filter"><span>Status</span><select aria-label="Filter status" value={status ?? ''} onChange={(event) => setFilter('status', event.target.value)}><option value="">{history ? 'Semua riwayat' : 'Semua status'}</option>{statuses.filter((item) => !history || item.id !== 'pending').map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
+        <label className="admin-field admin-field--filter"><span>Status</span><select aria-label="Filter status" value={status ?? ''} onChange={(event) => setFilter('status', event.target.value)}><option value="">{history ? 'Semua riwayat' : 'Semua status'}</option>{statuses.filter((item) => !history || ['answered', 'rejected', 'hidden'].includes(item.id)).map((item) => <option key={item.id} value={item.id}>{item.label}</option>)}</select></label>
         <label className="admin-field admin-field--filter"><span>Materi</span><select aria-label="Filter materi" value={articleSlug ?? ''} onChange={(event) => setFilter('articleSlug', event.target.value)}><option value="">Semua materi</option>{questionArticleRegistry.map((article) => <option key={article.slug} value={article.slug}>{article.title}</option>)}</select></label>
       </div>
       <div className="admin-list-heading"><div><h2>{history ? 'Pertanyaan ditangani' : 'Daftar pertanyaan'}</h2><span>{loading ? 'Memuat…' : `${visibleQuestions.length} pada halaman ini`}</span></div></div>
@@ -169,7 +170,7 @@ export function AdminQuestionDetailPage() {
   const [publicQuestion, setPublicQuestion] = useState('')
   const [answer, setAnswer] = useState('')
   const [editingAnswer, setEditingAnswer] = useState(false)
-  const [confirmAction, setConfirmAction] = useState<'reject' | 'hide' | 'delete' | null>(null)
+  const [confirmAction, setConfirmAction] = useState<'hide' | 'delete' | null>(null)
   const [busy, setBusy] = useState(false)
   const [notice, setNotice] = useState<{ text: string; kind: 'success' | 'error'; conflict?: boolean } | null>(null)
   useEffect(() => {
@@ -180,12 +181,12 @@ export function AdminQuestionDetailPage() {
     setEditingAnswer(question.status === 'approved' || !question.answer)
   }, [question?.id, question?.updatedAt, question?.answerUpdatedAt])
 
-  const act = async (action: 'approve' | 'reject' | 'hide') => {
+  const hide = async () => {
     if (!question) return
     setBusy(true); setNotice(null)
     try {
-      await moderateQuestion(question.id, action === 'approve' ? { action, publicDisplayName: publicName, publicQuestionText: publicQuestion } : { action })
-      setNotice({ text: action === 'approve' ? 'Pertanyaan berhasil disetujui.' : action === 'reject' ? 'Pertanyaan berhasil ditolak.' : 'Pertanyaan berhasil disembunyikan.', kind: 'success' })
+      await moderateQuestion(question.id, { action: 'hide' })
+      setNotice({ text: 'Pertanyaan berhasil disembunyikan.', kind: 'success' })
       reload()
     } catch (reason) { setNotice({ text: reason instanceof AdminApiError ? reason.message : 'Perubahan belum dapat disimpan.', kind: 'error', conflict: reason instanceof AdminApiError && reason.status === 409 }) }
     finally { setBusy(false); setConfirmAction(null) }
@@ -195,7 +196,10 @@ export function AdminQuestionDetailPage() {
     if (!question) return
     setBusy(true); setNotice(null)
     try {
-      await saveAnswer(question.id, answer)
+      const legacyPublicText = question.status === 'pending'
+        ? { publicDisplayName: publicName, publicQuestionText: publicQuestion }
+        : undefined
+      await saveAnswer(question.id, answer, legacyPublicText)
       setEditingAnswer(false)
       setNotice({ text: question.answer ? 'Jawaban berhasil diperbarui.' : 'Jawaban berhasil dipublikasikan.', kind: 'success' })
       reload()
@@ -222,26 +226,24 @@ export function AdminQuestionDetailPage() {
             <dl className="admin-metadata"><div><dt>Nama panggilan</dt><dd>{question.displayName}</dd></div><div><dt>Materi</dt><dd>{articleTitle.get(question.articleSlug) ?? question.articleSlug}</dd></div><div><dt>Dikirim</dt><dd>{formatDate(question.createdAt)}</dd></div>{question.email && <div><dt>Email opsional · privat</dt><dd className="admin-private-value">{question.email}</dd></div>}</dl>
             <div className="admin-question-original"><span>Pertanyaan asli · privat</span><p>{question.question}</p></div>
           </section>
-          {question.status === 'pending' && <section className="admin-panel admin-moderation-panel"><div className="admin-panel__heading"><div><p className="admin-eyebrow">PEMERIKSAAN PUBLIKASI</p><h2>Siapkan versi yang tampil</h2></div></div>
-            <p className="admin-warning"><WarningCircle size={18} /> Pastikan pertanyaan tidak memuat informasi pribadi atau kesehatan sensitif sebelum dipublikasikan.</p>
-            <label className="admin-field"><span>Nama yang akan ditampilkan</span><input value={publicName} maxLength={50} onChange={(event) => setPublicName(event.target.value)} /></label>
-            <label className="admin-field"><span>Pertanyaan yang akan ditampilkan</span><textarea value={publicQuestion} maxLength={1000} rows={5} onChange={(event) => setPublicQuestion(event.target.value)} /><small>{publicQuestion.length}/1.000 karakter</small></label>
-            <div className="admin-action-row"><button type="button" className="admin-button admin-button--danger-outline" onClick={() => setConfirmAction('reject')} disabled={busy}>Tolak</button><button type="button" className="admin-button" onClick={() => void act('approve')} disabled={busy || publicName.trim().length < 2 || publicQuestion.trim().length < 10}>{busy ? 'Menyimpan…' : <><Check size={18} /> Setujui pertanyaan</>}</button></div>
-          </section>}
-          {(question.status === 'approved' || question.status === 'answered') && <section className="admin-panel admin-answer-panel"><div className="admin-panel__heading"><div><p className="admin-eyebrow">JAWABAN PENGELOLA</p><h2>{question.answer ? 'Jawaban diterbitkan' : 'Tulis jawaban'}</h2></div>{question.answer && !editingAnswer && <button className="admin-button admin-button--secondary" type="button" onClick={() => setEditingAnswer(true)}>Edit jawaban</button>}</div>
+          {(question.status === 'pending' || question.status === 'approved' || question.status === 'answered') && <section className="admin-panel admin-answer-panel"><div className="admin-panel__heading"><div><p className="admin-eyebrow">JAWABAN PENGELOLA</p><h2>{question.answer ? 'Jawaban diterbitkan' : 'Tulis jawaban'}</h2></div>{question.answer && !editingAnswer && <button className="admin-button admin-button--secondary" type="button" onClick={() => setEditingAnswer(true)}>Edit jawaban</button>}</div>
             <p className="admin-warning"><Info size={18} /> Jawaban harus bersifat edukatif, tidak memberikan diagnosis atau menggantikan pemeriksaan bidan/dokter.</p>
+            {question.status === 'pending' && <><p className="admin-warning"><WarningCircle size={18} /> Ini pertanyaan lama yang belum tampil. Periksa nama dan isi sebelum menerbitkannya bersama jawaban.</p>
+              <label className="admin-field"><span>Nama yang ditampilkan</span><input value={publicName} maxLength={50} onChange={(event) => setPublicName(event.target.value)} /></label>
+              <label className="admin-field"><span>Pertanyaan yang ditampilkan</span><textarea value={publicQuestion} maxLength={1000} rows={4} onChange={(event) => setPublicQuestion(event.target.value)} /><small>{publicQuestion.length}/1.000 karakter</small></label>
+            </>}
             {question.answer && !editingAnswer && <div className="admin-answer-current"><p>{question.answer}</p><small>{question.answerUpdatedAt ? `Diperbarui ${formatDate(question.answerUpdatedAt)}` : ''}{question.answeredBy ? ` · ${question.answeredBy}` : ''}</small></div>}
-            {editingAnswer && <form onSubmit={submitAnswer}><label className="admin-field"><span>Jawaban pengelola</span><textarea value={answer} maxLength={2000} minLength={10} rows={7} onChange={(event) => setAnswer(event.target.value)} required /><small>{answer.length}/2.000 karakter · minimal 10 karakter</small></label><div className="admin-action-row"><button type="button" className="admin-button admin-button--secondary" onClick={() => { setAnswer(question.answer ?? ''); setEditingAnswer(false) }} disabled={busy}>Batal</button><button type="submit" className="admin-button" disabled={busy || answer.trim().length < 10}>{busy ? 'Menyimpan…' : question.answer ? 'Simpan perubahan' : 'Simpan dan publikasikan'}</button></div></form>}
+            {(editingAnswer || question.status === 'pending') && <form onSubmit={submitAnswer}><label className="admin-field"><span>Jawaban pengelola</span><textarea value={answer} maxLength={2000} minLength={10} rows={7} onChange={(event) => setAnswer(event.target.value)} required /><small>{answer.length}/2.000 karakter · minimal 10 karakter</small></label><div className="admin-action-row">{question.answer && <button type="button" className="admin-button admin-button--secondary" onClick={() => { setAnswer(question.answer ?? ''); setEditingAnswer(false) }} disabled={busy}>Batal</button>}<button type="submit" className="admin-button" disabled={busy || answer.trim().length < 10 || (question.status === 'pending' && (publicName.trim().length < 2 || publicQuestion.trim().length < 10))}>{busy ? 'Menyimpan…' : question.answer ? 'Simpan perubahan' : 'Simpan dan publikasikan jawaban'}</button></div></form>}
           </section>}
         </div>
         <aside className="admin-detail-side">
-          <section className="admin-panel admin-public-preview"><p className="admin-eyebrow">VERSI PUBLIK</p><h2>Pratinjau tampilan</h2>{question.status === 'pending' ? <div className="admin-public-preview__body"><strong>{publicName}</strong><p>{publicQuestion}</p></div> : question.status === 'approved' || question.status === 'answered' ? <div className="admin-public-preview__body"><strong>{question.publicDisplayName}</strong><p>{question.publicQuestion}</p>{question.answer && <div><span>Jawaban Ruang Ibu</span><p>{question.answer}</p></div>}</div> : <div className="admin-public-preview__private">Pertanyaan ini tidak ditampilkan kepada publik.</div>}<small>Pratinjau internal. Pertanyaan baru tampil setelah disetujui.</small></section>
+          <section className="admin-panel admin-public-preview"><p className="admin-eyebrow">TAMPILAN PENGUNJUNG</p><h2>Pratinjau</h2>{question.status === 'pending' ? <div className="admin-public-preview__body"><strong>{publicName}</strong><p>{publicQuestion}</p></div> : question.status === 'approved' || question.status === 'answered' ? <div className="admin-public-preview__body"><strong>{question.publicDisplayName}</strong><p>{question.publicQuestion}</p>{question.answer && <div><span>Jawaban Ruang Ibu</span><p>{question.answer}</p></div>}</div> : <div className="admin-public-preview__private">Pertanyaan ini tidak ditampilkan kepada pengunjung.</div>}<small>{question.status === 'pending' ? 'Pertanyaan lama akan tampil bersama jawaban setelah disimpan.' : 'Pertanyaan tampil sebelum jawaban diterbitkan.'}</small></section>
           <section className="admin-panel admin-history-card"><p className="admin-eyebrow">WAKTU PENANGANAN</p><h2>Informasi status</h2><dl className="admin-metadata"><div><dt>Dikirim</dt><dd>{formatDate(question.createdAt)}</dd></div><div><dt>Terakhir ditangani</dt><dd>{formatDate(question.moderatedAt)}</dd></div><div><dt>Masa retensi saat ini</dt><dd>{formatDate(question.expiresAt)}</dd></div></dl>{question.moderatedBy && <small>Petugas: {question.moderatedBy}</small>}</section>
-          {(question.status === 'approved' || question.status === 'answered') && <button className="admin-button admin-button--danger-outline admin-hide-button" type="button" onClick={() => setConfirmAction('hide')}><EyeSlash size={18} /> Sembunyikan pertanyaan</button>}
+          {(question.status === 'pending' || question.status === 'approved' || question.status === 'answered') && <button className="admin-button admin-button--secondary admin-hide-button" type="button" onClick={() => setConfirmAction('hide')}><EyeSlash size={18} /> Sembunyikan pertanyaan</button>}
           {adminUser.role === 'owner' && <button className="admin-button admin-button--text-danger admin-delete-button" type="button" onClick={() => setConfirmAction('delete')}><Trash size={17} /> Hapus pertanyaan</button>}
         </aside>
       </div>
-      {confirmAction && <ConfirmDialog title={confirmAction === 'reject' ? 'Tolak pertanyaan ini?' : confirmAction === 'hide' ? 'Sembunyikan pertanyaan ini?' : 'Hapus pertanyaan ini?'} description={confirmAction === 'reject' ? 'Pertanyaan yang ditolak tidak akan ditampilkan kepada publik.' : confirmAction === 'hide' ? 'Pertanyaan ini dan jawabannya tidak lagi tampil pada halaman publik.' : 'Pertanyaan beserta jawaban terkait akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.'} confirmLabel={confirmAction === 'reject' ? 'Tolak pertanyaan' : confirmAction === 'hide' ? 'Sembunyikan' : 'Hapus pertanyaan'} destructive={confirmAction === 'delete'} busy={busy} onCancel={() => setConfirmAction(null)} onConfirm={() => confirmAction === 'delete' ? void remove() : void act(confirmAction)} />}
+      {confirmAction && <ConfirmDialog title={confirmAction === 'hide' ? 'Sembunyikan pertanyaan ini?' : 'Hapus pertanyaan ini?'} description={confirmAction === 'hide' ? 'Pertanyaan ini dan jawabannya tidak lagi tampil pada halaman publik.' : 'Pertanyaan beserta jawaban terkait akan dihapus permanen. Tindakan ini tidak dapat dibatalkan.'} confirmLabel={confirmAction === 'hide' ? 'Sembunyikan' : 'Hapus pertanyaan'} destructive={confirmAction === 'delete'} busy={busy} onCancel={() => setConfirmAction(null)} onConfirm={() => confirmAction === 'delete' ? void remove() : void hide()} />}
     </>}
   </div>
 }

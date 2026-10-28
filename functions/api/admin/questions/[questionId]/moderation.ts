@@ -29,7 +29,7 @@ export async function onRequestPost(context: PagesContext): Promise<Response> {
   const newStatus = actionText === 'approve' ? 'approved' : actionText === 'reject' ? 'rejected' : 'hidden'
   const retentionDays = newStatus === 'approved' ? 365 : 30
   const expires = new Date(now.getTime() + retentionDays * DAY_MS).toISOString()
-  const allowedFrom = actionText === 'approve' || actionText === 'reject' ? "'pending'" : "'approved', 'answered'"
+  const allowedFrom = actionText === 'approve' || actionText === 'reject' ? "'pending'" : "'pending', 'approved', 'answered'"
   try {
     const results = await context.env.DB!.batch([
       context.env.DB!.prepare(`UPDATE questions SET moderation_status = ?, public_display_name = ?, public_question_text = ?,

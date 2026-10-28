@@ -14,33 +14,52 @@ export interface ValidQuestionSubmission {
   articleSlug: string
   displayName: string
   question: string
-  email: string | null
   consent: true
   turnstileToken: string
 }
 
+export type PublicQuestionRisk = 'personal_information' | 'links_not_allowed' | 'spam'
+
+export function classifyPublicQuestionRisk(displayName: string, question: string): PublicQuestionRisk | null {
+  const text = `${displayName}\n${question}`
+  const lowerText = text.toLocaleLowerCase('id-ID')
+  const hasEmail = /\b[^\s@]+@[^\s@]+\.[^\s@]+\b/u.test(text)
+  const hasPhone = /(?:\+?62|0)(?:[\s().-]*\d){8,13}(?!\d)/u.test(text)
+  const hasIdentityNumber = /(?<!\d)\d{16}(?!\d)/u.test(text)
+  const namesPrivateContact = /\b(?:alamat saya|rumah saya di|nomor (?:hp|telepon|wa) saya|no\.?\s*(?:hp|telepon|wa) saya|email saya|nik saya|ktp saya)\b/u.test(lowerText)
+  if (hasEmail || hasPhone || hasIdentityNumber || namesPrivateContact) return 'personal_information'
+
+  const hasLink = /(?:https?:\/\/|www\.)|\b[\w-]+\.(?:com|net|org|id|co|io|gov)\b/iu.test(text)
+  if (hasLink) return 'links_not_allowed'
+
+  const hasRepeatedCharacter = /(.)\1{8,}/u.test(lowerText)
+  const hasRepeatedWord = /\b([\p{L}\p{N}]{2,})(?:\s+\1){4,}\b/iu.test(lowerText)
+  if (hasRepeatedCharacter || hasRepeatedWord) return 'spam'
+  return null
+}
+
 export function validateQuestionSubmission(body: Record<string, unknown>): ValidQuestionSubmission | null {
-  const allowedKeys = new Set(['articleSlug', 'displayName', 'question', 'email', 'consentToPublicModeration', 'turnstileToken'])
+  const allowedKeys = new Set(['articleSlug', 'displayName', 'question', 'consentToPublicDisplay', 'turnstileToken'])
   if (Object.keys(body).some((key) => !allowedKeys.has(key))) return null
   if (typeof body.articleSlug !== 'string' || !resolveQuestionArticleSlug(body.articleSlug)) return null
-  if (typeof body.displayName !== 'string' || typeof body.question !== 'string') return null
-  if (body.email !== undefined && typeof body.email !== 'string') return null
-  if (body.consentToPublicModeration !== true || typeof body.turnstileToken !== 'string') return null
+  if (body.displayName !== undefined && typeof body.displayName !== 'string') return null
+  if (typeof body.question !== 'string') return null
+  if (body.consentToPublicDisplay !== true || typeof body.turnstileToken !== 'string') return null
 
   const article = resolveQuestionArticleSlug(body.articleSlug)
-  const displayName = normalizePlainText(body.displayName).replace(/\s+/g, ' ')
+  const displayName = typeof body.displayName === 'string'
+    ? normalizePlainText(body.displayName).replace(/\s+/g, ' ')
+    : ''
   const question = normalizePlainText(body.question)
-  const email = body.email === undefined ? null : normalizePlainText(body.email)
-  if (!article || characterLength(displayName) < 2 || characterLength(displayName) > 50) return null
+  if (!article || (displayName !== '' && (characterLength(displayName) < 2 || characterLength(displayName) > 50))) return null
   if (characterLength(question) < 10 || characterLength(question) > 1000) return null
-  if (email !== null && (characterLength(email) > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email))) return null
   if (body.turnstileToken.length < 1 || body.turnstileToken.length > 2048) return null
+  if (classifyPublicQuestionRisk(displayName, question)) return null
 
   return {
     articleSlug: article.slug,
-    displayName,
+    displayName: displayName || 'Ibu',
     question,
-    email,
     consent: true,
     turnstileToken: body.turnstileToken,
   }

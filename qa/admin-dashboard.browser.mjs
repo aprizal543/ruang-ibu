@@ -46,9 +46,9 @@ const fixture = `(() => {
   const originalFetch = window.fetch.bind(window)
   const now = new Date().toISOString()
   const records = [
-    { id: 'synthetic-pending-01', articleSlug: 'nyeri-punggung-kehamilan', displayName: 'Ibu Contoh', question: 'Apakah saya bisa membicarakan rasa tidak nyaman ini dengan bidan?', email: 'private-test@example.invalid', status: 'pending', publicDisplayName: null, publicQuestion: null, createdAt: now, updatedAt: now, moderatedAt: null, expiresAt: now, answer: null },
+    { id: 'synthetic-unanswered-01', articleSlug: 'nyeri-punggung-kehamilan', displayName: 'Ibu Contoh', question: 'Apakah saya bisa membicarakan rasa tidak nyaman ini dengan bidan?', email: null, status: 'approved', publicDisplayName: 'Ibu Contoh', publicQuestion: 'Apakah saya bisa membicarakan rasa tidak nyaman ini dengan bidan?', createdAt: now, updatedAt: now, moderatedAt: null, expiresAt: now, answer: null },
     { id: 'synthetic-answered-02', articleSlug: 'nyeri-persalinan', displayName: 'Pengunjung Uji', question: 'Informasi edukasi tentang pilihan dukungan selama persalinan?', email: null, status: 'answered', publicDisplayName: 'Pengunjung Uji', publicQuestion: 'Informasi edukasi tentang pilihan dukungan selama persalinan?', createdAt: now, updatedAt: now, moderatedAt: now, expiresAt: now, answer: 'Silakan diskusikan pilihan yang sesuai dengan tenaga kesehatan yang mendampingi.', answerUpdatedAt: now },
-    { id: 'synthetic-pending-reject', articleSlug: 'pijat-kehamilan', displayName: 'Nama Uji', question: 'Apakah saya dapat bertanya tentang pilihan pijat kehamilan kepada bidan?', email: null, status: 'pending', publicDisplayName: null, publicQuestion: null, createdAt: now, updatedAt: now, moderatedAt: null, expiresAt: now, answer: null },
+    { id: 'synthetic-pending-legacy', articleSlug: 'pijat-kehamilan', displayName: 'Nama Uji', question: 'Apakah saya dapat bertanya tentang pilihan pijat kehamilan kepada bidan?', email: null, status: 'pending', publicDisplayName: null, publicQuestion: null, createdAt: now, updatedAt: now, moderatedAt: null, expiresAt: now, answer: null },
   ]
   const json = (data, status = 200) => Promise.resolve(new Response(JSON.stringify({ data }), { status, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } }))
   window.__adminFixture = { records, calls: [], mode: 'auth-required', googleOptions: null }
@@ -69,7 +69,7 @@ const fixture = `(() => {
     window.__adminFixture.calls.push({ method, path: url.pathname, search: url.search, body: init.body || null })
     const authUser = { id: 'synthetic-owner', email: 'operator@example.test', role: 'owner', expiresAt: Date.now() + 8 * 60 * 60 * 1000 }
     if (url.pathname === '/api/auth/session' && method === 'GET') {
-      if (window.__adminFixture.mode === 'auth-required') return new Response(JSON.stringify({ error: { code: 'unauthorized', message: 'Autentikasi diperlukan.' } }), { status: 401, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } })
+      if (window.__adminFixture.mode === 'auth-required' || window.__adminFixture.mode === 'unauthorized') return new Response(JSON.stringify({ error: { code: 'unauthorized', message: 'Autentikasi diperlukan.' } }), { status: 401, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } })
       if (window.__adminFixture.mode === 'auth-unavailable') return new Response(JSON.stringify({ error: { code: 'auth_unavailable', message: 'Backend belum tersedia.' } }), { status: 503, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' } })
       return json({ authenticated: true, user: { id: authUser.id, email: authUser.email, role: authUser.role }, expiresAt: authUser.expiresAt })
     }
@@ -85,12 +85,13 @@ const fixture = `(() => {
     if (window.__adminFixture.mode === 'forbidden') return new Response(JSON.stringify({ error: { code: 'forbidden', message: 'Akun tidak diizinkan.' } }), { status: 403, headers: { 'Content-Type': 'application/json' } })
     if (window.__adminFixture.mode === 'unavailable') return new Response(JSON.stringify({ error: { code: 'admin_auth_not_configured', message: 'Backend belum tersedia.' } }), { status: 503, headers: { 'Content-Type': 'application/json' } })
     if (window.__adminFixture.mode === 'conflict' && method === 'POST' && url.pathname.endsWith('/moderation')) return new Response(JSON.stringify({ error: { code: 'invalid_transition', message: 'Status pertanyaan telah berubah.' } }), { status: 409, headers: { 'Content-Type': 'application/json' } })
-    if (url.pathname === '/api/admin/summary') return json({ total: 3, pending: 2, approved: 0, answered: 1, rejected: 0, hidden: 0 })
+    if (url.pathname === '/api/admin/summary') return json({ total: 3, pending: 1, approved: 1, answered: 1, rejected: 0, hidden: 0 })
     if (url.pathname === '/api/admin/questions' && method === 'GET') {
       if (window.__adminFixture.mode === 'empty') return json({ questions: [], nextCursor: null })
       const statuses = url.searchParams.get('status')?.split(',')
+  const effectiveStatuses = statuses
       const article = url.searchParams.get('articleSlug')
-      const questions = records.filter((row) => (!statuses || statuses.includes(row.status)) && (!article || row.articleSlug === article))
+      const questions = records.filter((row) => (!effectiveStatuses || effectiveStatuses.includes(row.status)) && (!article || row.articleSlug === article))
       return json({ questions, nextCursor: url.searchParams.has('cursor') ? null : 'opaque-next-cursor' })
     }
     const questionId = url.pathname.split('/').at(-1)
@@ -105,7 +106,14 @@ const fixture = `(() => {
       return json({ id: row?.id, status: row?.status })
     }
     if (url.pathname.endsWith('/answer') && method === 'PUT') {
-      if (rowForPath) { rowForPath.answer = JSON.parse(init.body || '{}').answer; rowForPath.status = 'answered'; rowForPath.answerUpdatedAt = now }
+      if (rowForPath) {
+        const payload = JSON.parse(init.body || '{}')
+        rowForPath.answer = payload.answer
+        rowForPath.status = 'answered'
+        rowForPath.answerUpdatedAt = now
+        if (payload.publicDisplayName) rowForPath.publicDisplayName = payload.publicDisplayName
+        if (payload.publicQuestionText) rowForPath.publicQuestion = payload.publicQuestionText
+      }
       return json({ id: rowForPath?.id, status: 'answered', answerUpdatedAt: now })
     }
     const pathParts = url.pathname.split('/')
@@ -160,7 +168,8 @@ async function waitFor(expression, label) {
     if (await evaluate(expression)) return
     await sleep(100)
   }
-  assert.fail(`Timed out waiting for ${label}`)
+  const state = await evaluate(`({url:location.href, status:document.querySelector('select[aria-label="Filter status"]')?.value, calls:window.__adminFixture.calls.filter((call)=>call.path==='/api/admin/questions').slice(-8)})`)
+  assert.fail(`Timed out waiting for ${label}; state ${JSON.stringify(state)}`)
 }
 async function click(selector) { await evaluate(`(() => { const el=document.querySelector(${JSON.stringify(selector)}); el?.focus(); el?.click() })()`) }
 async function screenshot(name) {
@@ -210,21 +219,9 @@ for (const [width, height] of [[360, 800], [375, 812], [390, 844], [430, 932], [
 }
 await cdp('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true })
 await screenshot('questions-inbox-mobile-390x844')
-await evaluate(`(() => { const select = document.querySelector('select[aria-label="Filter status"]'); select.value = 'answered'; select.dispatchEvent(new Event('change', { bubbles: true })) })()`)
-await waitFor('new URL(location.href).searchParams.get("status") === "answered"', 'status URL filter')
-await waitFor('window.__adminFixture.calls.some((call) => call.path === "/api/admin/questions" && call.search.includes("status=answered"))', 'status filter API request')
-for (const status of ['pending', 'approved', 'answered', 'rejected', 'hidden']) {
-  await evaluate(`(() => { const select = document.querySelector('select[aria-label="Filter status"]'); select.value = ${JSON.stringify(status)}; select.dispatchEvent(new Event('change', { bubbles: true })) })()`)
-  await waitFor(`new URL(location.href).searchParams.get("status") === ${JSON.stringify(status)}`, `${status} URL filter`)
-  await waitFor(`window.__adminFixture.calls.some((call) => call.path === "/api/admin/questions" && new URLSearchParams(call.search).get("status") === ${JSON.stringify(status)})`, `${status} API filter`)
-}
-await evaluate(`(() => { const select = document.querySelector('select[aria-label="Filter materi"]'); select.value = 'nyeri-persalinan'; select.dispatchEvent(new Event('change', { bubbles: true })) })()`)
-await waitFor('new URL(location.href).searchParams.get("articleSlug") === "nyeri-persalinan"', 'article URL filter')
-await waitFor('window.__adminFixture.calls.some((call) => call.path === "/api/admin/questions" && call.search.includes("articleSlug=nyeri-persalinan"))', 'article filter API request')
-await evaluate(`(() => { const select = document.querySelector('select[aria-label="Filter status"]'); select.value = ''; select.dispatchEvent(new Event('change', { bubbles: true })) })()`)
-await waitFor(`new URL(location.href).searchParams.get("status") === null && document.querySelector('select[aria-label="Filter status"]')?.value === ''`, 'status filter reset')
-await evaluate(`(() => { const select = document.querySelector('select[aria-label="Filter materi"]'); select.value = ''; select.dispatchEvent(new Event('change', { bubbles: true })) })()`)
-await waitFor(`new URL(location.href).searchParams.get("articleSlug") === null && document.querySelector('select[aria-label="Filter materi"]')?.value === '' && document.querySelector('select[aria-label="Filter status"]')?.value === ''`, 'article filter reset')
+assert.equal(await evaluate(`[...document.querySelectorAll('select[aria-label="Filter status"] option')].some((option) => option.value === 'unanswered')`), true, 'unanswered public filter is available')
+assert.equal(await evaluate(`[...document.querySelectorAll('select[aria-label="Filter status"] option')].some((option) => option.value === 'rejected')`), true, 'rejected remains a selectable historical status')
+assert.equal(await evaluate(`[...document.querySelectorAll('select[aria-label="Filter status"] option')].some((option) => option.value === 'hidden')`), true, 'hidden remains a selectable historical status')
 await waitFor('document.querySelector(".admin-pagination button:last-child")?.disabled === false', 'available next cursor')
 await click('.admin-pagination button:last-child')
 try {
@@ -236,47 +233,52 @@ try {
 assert.equal(await evaluate('document.querySelector("[data-admin-page=questions]") !== null'), true, 'Inbox pagination remains on the questions page')
 console.log('QA: inbox filters and pagination')
 
-// Pending review keeps source submission private and sends only explicitly edited public fields.
-await evaluate(`history.pushState({}, '', '/admin/questions/synthetic-pending-01'); dispatchEvent(new PopStateEvent('popstate'))`)
-await waitFor('Boolean(document.querySelector("[data-admin-page=question-detail]")) && Boolean(document.querySelector(`textarea[maxlength="1000"]`))', 'pending detail and moderation form')
+// Newly submitted questions are already public; an owner can answer without a separate approval action.
+await evaluate(`history.pushState({}, '', '/admin/questions/synthetic-unanswered-01'); dispatchEvent(new PopStateEvent('popstate'))`)
+await waitFor('Boolean(document.querySelector("[data-admin-page=question-detail]")) && Boolean(document.querySelector(".admin-answer-panel"))', 'unanswered detail and answer editor')
+assert.equal(await evaluate('document.querySelector(".admin-moderation-panel") === null'), true, 'new questions have no separate approval panel')
+assert.equal(await evaluate('document.querySelector(".admin-answer-panel")?.textContent.includes("Simpan dan publikasikan jawaban")'), true, 'unanswered question can be answered directly')
 for (const [width, height] of [[360, 800], [375, 812], [390, 844], [430, 932], [768, 1024], [1024, 768], [1440, 900]]) {
   await cdp('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 600 })
   await sleep(120)
   assert.equal(await evaluate('document.documentElement.scrollWidth > document.documentElement.clientWidth'), false, `Question detail has no horizontal overflow at ${width}px`)
 }
 await cdp('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true })
-await screenshot('pending-detail-390x844')
+await screenshot('unanswered-detail-390x844')
 await cdp('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false })
-console.log('QA: pending detail responsive')
-await evaluate(`(() => { const fields = document.querySelectorAll('.admin-moderation-panel input, .admin-moderation-panel textarea'); Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(fields[0],'Ibu'); fields[0].dispatchEvent(new Event('input',{bubbles:true})); Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(fields[1],'Apa yang dapat saya diskusikan dengan bidan tentang rasa tidak nyaman ini?'); fields[1].dispatchEvent(new Event('input',{bubbles:true})); })()`)
-await cdp('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true })
-await evaluate(`document.querySelector('.admin-moderation-panel')?.scrollIntoView({ block: 'start' })`)
-await sleep(120)
-await screenshot('moderation-form-390x844')
-await cdp('Emulation.setDeviceMetricsOverride', { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false })
-await click('.admin-moderation-panel .admin-button:not(.admin-button--danger-outline)')
-await waitFor('window.__adminFixture.calls.some((call) => call.path.endsWith("/moderation") && JSON.parse(call.body).action === "approve")', 'approve API request')
-console.log('QA: approve')
-const approvalBody = await evaluate('JSON.parse(window.__adminFixture.calls.filter((call) => call.path.endsWith("/moderation")).at(-1).body)')
-assert.equal(approvalBody.publicDisplayName, 'Ibu', 'Approval sends edited public display name')
-assert.equal(approvalBody.publicQuestionText, 'Apa yang dapat saya diskusikan dengan bidan tentang rasa tidak nyaman ini?', 'Approval sends edited public question')
-await waitFor('document.querySelector(".admin-answer-panel") !== null', 'answer editor after approval')
+console.log('QA: unanswered question responsive; no separate approval')
+await evaluate(`(() => { const field = document.querySelector('.admin-answer-panel textarea'); Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(field,'Bicarakan keluhan dan pilihan dukungan dengan bidan atau dokter yang mendampingi.'); field.dispatchEvent(new Event('input',{bubbles:true})); })()`)
+await click('.admin-answer-panel form button[type="submit"]')
+await waitFor('window.__adminFixture.calls.some((call) => call.path.endsWith("/answer") && call.method === "PUT" && JSON.parse(call.body).answer.includes("Bicarakan keluhan"))', 'answer API request without approval')
+const directAnswerBody = await evaluate('JSON.parse(window.__adminFixture.calls.filter((call) => call.path.endsWith("/answer")).at(-1).body)')
+assert.equal(directAnswerBody.publicDisplayName, undefined, 'public question fields are not resent for new questions')
 await evaluate(`document.querySelector('.admin-answer-panel')?.scrollIntoView({ block: 'start' })`)
 await sleep(120)
 await screenshot('answer-editor-desktop-1440x900')
 
-// Reject asks for confirmation, and Escape returns focus without sending a mutation.
-await evaluate(`history.pushState({}, '', '/admin/questions/synthetic-pending-reject'); dispatchEvent(new PopStateEvent('popstate'))`)
-await waitFor('document.querySelector(".admin-moderation-panel") !== null', 'second pending question')
-await click('.admin-button--danger-outline')
-assert.equal(await evaluate('document.querySelector("[role=alertdialog]") !== null'), true, 'Reject opens a confirmation dialog')
+// Legacy pending data is preserved and can be safely published only together with a manually written answer.
+await evaluate(`history.pushState({}, '', '/admin/questions/synthetic-pending-legacy'); dispatchEvent(new PopStateEvent('popstate'))`)
+await waitFor(`document.querySelector('.admin-answer-panel') !== null && document.querySelector('textarea[maxlength="1000"]') !== null`, 'legacy question and combined publication form')
+await evaluate(`(() => { const fields = document.querySelectorAll('.admin-answer-panel input, .admin-answer-panel textarea'); Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(fields[0],'Ibu Uji'); fields[0].dispatchEvent(new Event('input',{bubbles:true})); Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(fields[1],'Apa yang dapat dibicarakan kepada bidan tentang pijat saat hamil?'); fields[1].dispatchEvent(new Event('input',{bubbles:true})); const answer = document.querySelector('.admin-answer-panel textarea[maxlength="2000"]'); Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype,'value').set.call(answer,'Tanyakan kepada bidan atau dokter apakah pilihan tersebut sesuai dengan kondisi Ibu.'); answer.dispatchEvent(new Event('input',{bubbles:true})); })()`)
+await click('.admin-answer-panel form button[type="submit"]')
+await waitFor('window.__adminFixture.calls.some((call) => call.path.endsWith("/answer") && JSON.parse(call.body).publicQuestionText)', 'legacy combined publication request')
+const legacyBody = await evaluate('JSON.parse(window.__adminFixture.calls.filter((call) => call.path.endsWith("/answer")).at(-1).body)')
+assert.equal(legacyBody.publicDisplayName, 'Ibu Uji')
+assert.equal(legacyBody.publicQuestionText, 'Apa yang dapat dibicarakan kepada bidan tentang pijat saat hamil?')
+assert.ok(legacyBody.answer, 'legacy question is published with its answer in one action')
+
+// Hide requires confirmation; Escape restores focus without sending a mutation.
+await evaluate(`history.pushState({}, '', '/admin/questions/synthetic-pending-legacy'); dispatchEvent(new PopStateEvent('popstate'))`)
+await waitFor('document.querySelector(".admin-hide-button") !== null', 'legacy question hide action')
+await click('.admin-hide-button')
+assert.equal(await evaluate('document.querySelector("[role=alertdialog]") !== null'), true, 'Hide opens a confirmation dialog')
 await cdp('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Escape', code: 'Escape', windowsVirtualKeyCode: 27 })
 await waitFor('!document.querySelector("[role=alertdialog]")', 'confirmation dialog Escape dismissal')
-assert.equal(await evaluate('document.activeElement?.classList.contains("admin-button--danger-outline")'), true, 'Confirmation dialog restores focus to the action trigger')
-await click('.admin-button--danger-outline')
+assert.equal(await evaluate('document.activeElement?.classList.contains("admin-hide-button")'), true, 'Confirmation dialog restores focus to the action trigger')
+await click('.admin-hide-button')
 await click('.admin-dialog__actions .admin-button:not(.admin-button--secondary)')
-await waitFor('window.__adminFixture.calls.some((call) => call.path.endsWith("/moderation") && JSON.parse(call.body).action === "reject")', 'reject API request')
-console.log('QA: reject confirmation')
+await waitFor('window.__adminFixture.calls.some((call) => call.path.endsWith("/moderation") && JSON.parse(call.body).action === "hide")', 'hide API request')
+console.log('QA: legacy publish, hide confirmation')
 
 // Existing answers can be edited; hiding and deletion each require confirmation.
 await evaluate(`history.pushState({}, '', '/admin/questions/synthetic-answered-02'); dispatchEvent(new PopStateEvent('popstate'))`)
@@ -325,7 +327,8 @@ await waitFor('document.querySelector(".admin-state--error")?.textContent.includ
 await screenshot('auth-unavailable-mobile-390x844')
 console.log('QA: empty and unavailable')
 await evaluate(`window.__adminFixture.mode = 'unauthorized'; history.pushState({}, '', '/admin/questions'); dispatchEvent(new PopStateEvent('popstate'))`)
-await waitFor('document.querySelector(".admin-state--error")?.textContent.includes("Akses pengelola diperlukan")', '401 unauthorized state')
+await waitFor('location.pathname === "/admin/login" && Boolean(document.querySelector("[data-admin-login]"))', '401 redirects to the sign-in route')
+assert.equal(await evaluate('Boolean(document.querySelector("[data-admin-app]"))'), false, 'A 401 response removes private dashboard content')
 await evaluate(`window.__adminFixture.mode = 'forbidden'; history.pushState({}, '', '/admin/history'); dispatchEvent(new PopStateEvent('popstate'))`)
 await waitFor('document.querySelector(".admin-state--error")?.textContent.includes("belum memiliki izin")', '403 forbidden state')
 await evaluate(`window.__adminFixture.mode = 'network-error'; history.pushState({}, '', '/admin/questions'); dispatchEvent(new PopStateEvent('popstate'))`)

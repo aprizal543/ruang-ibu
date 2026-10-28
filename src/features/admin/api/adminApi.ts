@@ -73,8 +73,11 @@ export function moderateQuestion(id: string, payload: { action: 'approve'; publi
   return request(`/api/admin/questions/${encodeURIComponent(id)}/moderation`, { method: 'POST', body: JSON.stringify(payload) })
 }
 
-export function saveAnswer(id: string, answer: string): Promise<{ id: string; status: 'answered'; answerUpdatedAt: string }> {
-  return request(`/api/admin/questions/${encodeURIComponent(id)}/answer`, { method: 'PUT', body: JSON.stringify({ answer }) })
+export function saveAnswer(id: string, answer: string, legacyPublicText?: { publicDisplayName: string; publicQuestionText: string }): Promise<{ id: string; status: 'answered'; answerUpdatedAt: string }> {
+  return request(`/api/admin/questions/${encodeURIComponent(id)}/answer`, {
+    method: 'PUT',
+    body: JSON.stringify({ answer, ...legacyPublicText }),
+  })
 }
 
 export function deleteQuestion(id: string): Promise<{ id: string; deleted: true }> {

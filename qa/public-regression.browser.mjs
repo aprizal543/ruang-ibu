@@ -128,6 +128,7 @@ const articleState = []
 for (const route of routes) {
   await open(route)
   await waitFor('Boolean(document.querySelector(".therapy-article-figure img"))', `article figure ${route}`)
+  assert.equal(await evaluate('Boolean(document.querySelector("[data-public-qna]"))'), true, `${route} includes the public Q&A area`)
   await evaluate(`new Promise((resolve, reject) => { const image=document.querySelector('.therapy-article-figure img'); image.loading='eager'; if(image.complete && image.naturalWidth) return resolve(true); image.addEventListener('load',()=>resolve(true),{once:true}); image.addEventListener('error',()=>reject(new Error('Article photo failed: '+image.currentSrc)),{once:true}); setTimeout(()=>reject(new Error('Photo load timeout: '+image.currentSrc)),6000) })`)
   const state = await evaluate(`(() => ({ title:document.querySelector('#therapy-detail-title')?.innerText.trim(), scrollY, photoWidth:document.querySelector('.therapy-article-figure img')?.naturalWidth, overflow:document.documentElement.scrollWidth>document.documentElement.clientWidth }))()`)
   assert.ok(state.title, `${route} renders an article title`)
@@ -146,7 +147,10 @@ console.log('QA: all 11 article photos')
 
 // Individual source link opens the enclosing disclosure and places its row in view.
 await open('/terapi/nyeri-persalinan#section-referensi-S8')
+await waitFor('document.querySelector("#therapy-detail-title")?.textContent.trim() === "Nyeri Persalinan"', 'the requested article content')
 await waitFor('Boolean(document.getElementById("section-referensi-S8")?.closest("details")?.open)', 'S8 disclosure open')
+const sourceAnchorVisible = `(() => { const target=document.getElementById('section-referensi-S8'); if(!target) return false; const rect=target.getBoundingClientRect(); return rect.top>=0 && rect.top<innerHeight && rect.bottom>0 })()`
+await waitFor(sourceAnchorVisible, 'S8 source row aligned into view')
 const sourceState = await evaluate(`(() => { const target=document.getElementById('section-referensi-S8'); const rect=target.getBoundingClientRect(); return {top:rect.top,bottom:rect.bottom,href:target.querySelector('a')?.href,visible:rect.top>=0 && rect.top<innerHeight && rect.bottom>0} })()`)
 assert.equal(sourceState.visible, true, `The individual source row is visible: ${JSON.stringify(sourceState)}`)
 assert.ok(sourceState.href?.startsWith('http'), 'The source row has an external publisher link')

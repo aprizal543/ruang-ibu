@@ -117,12 +117,15 @@ test('private provisioning uses a verified Google subject and offers no password
   await assert.rejects(readFile(new URL('../../functions/api/auth/register.ts', import.meta.url)))
 })
 
-test('public service-worker precache excludes admin chunks and CSP permits only the GIS sources required by Google', async () => {
+test('public service-worker precache excludes admin chunks and CSP permits only the required Google GIS and Turnstile sources', async () => {
   const vite = await readFile(new URL('../../vite.config.ts', import.meta.url), 'utf8')
   const headers = await readFile(new URL('../../public/_headers', import.meta.url), 'utf8')
   for (const chunk of ['AdminLayout', 'AdminPages', 'AdminLoginPage', 'authApi', 'auth-context']) assert.match(vite, new RegExp(`\\*\\*\\/${chunk}-\\*\\.js`))
   assert.match(headers, /accounts\.google\.com\/gsi\/client/u)
   assert.match(headers, /accounts\.google\.com\/gsi\//u)
+  assert.match(headers, /script-src[^\n]*https:\/\/challenges\.cloudflare\.com/u)
+  assert.match(headers, /connect-src[^\n]*https:\/\/challenges\.cloudflare\.com/u)
+  assert.match(headers, /frame-src[^\n]*https:\/\/challenges\.cloudflare\.com/u)
   assert.match(headers, /frame-ancestors 'none'/u)
 })
 

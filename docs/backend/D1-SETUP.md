@@ -93,8 +93,9 @@ Cloudflare's D1 Audit Logs document configuration events including database crea
 | `DB` | D1 binding | Session/admin/Q&A storage. Preview only in checked-in Wrangler config. |
 | `GOOGLE_OAUTH_CLIENT_ID` | Non-secret Pages variable | Google GIS Web Client ID used as JWT `audience`. Must match the exact Preview OAuth client. |
 | `ADMIN_AUTH_HMAC_KEY` | Pages secret | HMAC of challenge/login rate-limit keys; minimum 32 bytes; no static fallback. |
-| `TURNSTILE_SECRET_KEY` | Pages secret | Visitor question POST verification (public M5 form is not implemented). |
-| `TURNSTILE_ALLOWED_HOSTNAMES` | Pages variable | Exact hostname allowlist for Turnstile. |
+| `TURNSTILE_SECRET_KEY` | Pages encrypted secret | Visitor question POST verification. Never expose to Vite or browser. |
+| `TURNSTILE_SITE_KEY` | Pages runtime variable (public) | Served by `GET /api/questions/config` for the official browser widget. Configure for the exact QA hostname. |
+| `TURNSTILE_ALLOWED_HOSTNAMES` | Pages runtime variable | Exact hostname allowlist for Turnstile Siteverify. Configure the QA alias only for QA. |
 | `RATE_LIMIT_HMAC_KEY` | Pages secret | Visitor question submission throttling. |
 
 Cloudflare Access issuer/AUD/admin email vars are not consumed by the application authentication path. An owner may separately choose an edge policy, but it is neither a login requirement nor configured by this milestone. Never create a custom password or share credentials.
