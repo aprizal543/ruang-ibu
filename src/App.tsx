@@ -14,6 +14,7 @@ import EvaluationPage from './pages/EvaluationPage'
 import { AboutPage, FaqPage, NotFoundPage, SafetyPage, SourcesPage } from './pages/InformationPages'
 import SiteMenu from './components/layout/SiteMenu'
 import RouteScrollManager from './components/navigation/RouteScrollManager'
+import './styles/responsive-desktop.css'
 
 const AdminLayout = lazy(() => import('./features/admin/components/AdminLayout'))
 const AdminLoginPage = lazy(() => import('./features/admin/pages/AdminLoginPage'))

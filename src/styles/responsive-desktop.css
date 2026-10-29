@@ -1,0 +1,207 @@
+/* Wide-screen adaptations only. Keep the approved <768px mobile styles untouched. */
+@media (min-width: 768px) {
+  .bottom-tabs {
+    top: 0;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    display: flex;
+    width: 100%;
+    max-width: none;
+    height: 76px;
+    min-height: 76px;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(10px, 2.4vw, 38px);
+    padding: 8px 28px;
+    border-top: 0;
+    border-bottom: 1px solid rgba(235, 229, 221, .9);
+    box-shadow: 0 5px 22px rgba(49, 59, 52, .045);
+  }
+
+  .bottom-tabs__item {
+    min-width: 92px;
+    min-height: 48px;
+    flex: 0 1 132px;
+    flex-direction: row;
+    gap: 9px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+
+  .bottom-tabs__item:hover { color: var(--ri-forest); background: rgba(18, 77, 61, .055); }
+
+  .home-shell {
+    width: 100%;
+    max-width: 1440px;
+    padding-top: 76px;
+    padding-bottom: 0;
+    overflow: visible;
+  }
+
+  .home-shell > .site-header { display: none; }
+  .home-first-screen { grid-template-rows: minmax(520px, min(68vh, 720px)) auto; }
+  .hero { min-height: 520px; }
+  .hero__photo { width: 66%; object-position: 42% 40%; }
+  .hero__wash {
+    background:
+      linear-gradient(90deg, var(--ri-paper) 0%, rgba(248, 244, 238, .98) 27%, rgba(248, 244, 238, .78) 43%, rgba(248, 244, 238, .24) 63%, rgba(248, 244, 238, 0) 82%),
+      linear-gradient(0deg, var(--ri-paper) 0%, rgba(248, 244, 238, .05) 22%, rgba(248, 244, 238, 0) 58%);
+  }
+  .hero__content { max-width: 680px; padding: clamp(66px, 8vw, 112px) 0 40px clamp(44px, 8vw, 120px); }
+  .hero__title { max-width: 620px; font-size: clamp(54px, 5.2vw, 74px); }
+  .hero__description { max-width: 390px; font-size: 17px; }
+  .hero__actions { flex-direction: row; align-items: center; gap: 12px; margin-top: 24px; }
+  .benefits { width: min(100% - 64px, 1100px); min-height: 118px; margin: -2px auto 30px; padding: 18px 20px; }
+  .benefit { align-items: center; justify-content: center; gap: 10px; }
+  .home-editorial-content { width: min(100% - 64px, 1180px); margin: 0 auto; padding-bottom: 60px; }
+  .home-editorial-content .editorial-section { padding: 54px 0; }
+  .home-editorial-content .editorial-section__body { max-width: 100%; }
+  .home-editorial-content .home-about .editorial-section__body { max-width: 760px; }
+  .home-editorial-content .home-guides .guide-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; }
+  .home-editorial-content .home-guides .guide-entry--offset { margin-top: 0; }
+  .home-editorial-content .home-therapies .therapy-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .home-audio-band { display: grid; grid-template-columns: 54px minmax(0, 760px); justify-content: center; gap: 22px; padding: 46px; }
+  .home-audio-band__icon { width: 46px; height: 46px; }
+  .home-evaluation { padding-top: 60px; padding-bottom: 60px; }
+  .home-safety-footer { padding: 42px 0 0; }
+  .home-safety-footer__notice { width: min(100%, 900px); margin: 0 auto; }
+  .home-safety-footer__links { justify-content: center; }
+
+  .therapy-page,
+  .therapy-detail-page,
+  .maternity-guide,
+  .information-page,
+  .evaluation-page,
+  .relaxation-experience:not(.is-immersive) {
+    max-width: 1440px;
+    padding-top: 76px;
+    padding-bottom: 40px;
+  }
+
+  .therapy-page__main { width: min(100% - 64px, 1240px); margin: 0 auto; }
+  .therapy-header,
+  .therapy-detail-header,
+  .maternity-guide__header,
+  .evaluation-page__header,
+  .relaxation-catalog__header { height: 64px; }
+  .therapy-intro { min-height: 250px; border-radius: 0 0 24px 24px; }
+  .therapy-intro__content { max-width: 660px; padding: 38px 44px; }
+  .therapy-intro h2 { max-width: 530px; font-size: clamp(38px, 4vw, 52px); }
+  .therapy-intro p { max-width: 48ch; font-size: 16px; }
+  .therapy-intro__botanical { right: 7%; width: 205px; height: 245px; }
+  .therapy-search { max-width: 660px; margin: 24px auto 0; }
+  .therapy-filters { justify-content: center; flex-wrap: wrap; overflow: visible; padding: 18px 0 10px; }
+  .therapy-filter { flex: 0 0 auto; padding-inline: 18px; font-size: 13px; }
+  .therapy-category-note { margin: 4px 0 12px; text-align: center; font-size: 13px; }
+  .therapy-results { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; padding: 0; }
+  .therapy-row { min-height: 112px; grid-template-columns: 96px minmax(0, 1fr) 20px; gap: 16px; padding: 10px 14px 10px 0; }
+  .therapy-row__thumbnail { width: 96px; height: 92px; border-radius: 14px; }
+  .therapy-row__title { font-size: 16px; }
+  .therapy-row__description { font-size: 14px; }
+
+  .therapy-detail-main { width: min(100%, 1240px); margin: 0 auto; padding: 44px 40px 60px; }
+  .therapy-article { max-width: 920px; }
+  .therapy-article h1 { max-width: 780px; font-size: clamp(42px, 4.4vw, 58px); }
+  .therapy-article__summary p,
+  .therapy-detail__section p,
+  .therapy-detail__audio p,
+  .therapy-detail__safety p { max-width: 68ch; }
+  .therapy-article-figure { max-width: 900px; margin-top: 28px; margin-bottom: 16px; }
+  .therapy-article-figure img { max-height: 560px; object-fit: cover; object-position: center; }
+  .therapy-detail__section,
+  .therapy-detail__audio { padding-block: 34px; }
+  .therapy-detail__section h2,
+  .therapy-detail__audio h2 { font-size: 30px; }
+  .therapy-detail__practice-steps { max-width: 720px; }
+  .therapy-detail__sources,
+  .public-qna { max-width: 920px; }
+
+  .maternity-guide__hero { min-height: clamp(340px, 38vw, 500px); padding: 44px max(48px, calc((100vw - 1180px) / 2)); }
+  .maternity-guide__hero-copy { width: min(50%, 600px); }
+  .maternity-guide__hero h1 { max-width: 580px; font-size: clamp(42px, 4.6vw, 62px); }
+  .maternity-guide__content { width: min(100% - 64px, 1120px); margin: 0 auto; padding: 0 0 52px; }
+  .maternity-guide__lead { max-width: 68ch; margin-top: 30px; font-size: 18px; }
+  .maternity-guide__section { max-width: 860px; margin-top: 38px; }
+  .maternity-guide__section h2 { font-size: 32px; }
+  .maternity-guide__paragraph > p,
+  .maternity-guide__safety-copy > p { max-width: 68ch; font-size: 17px; }
+  .maternity-guide__related-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .maternity-guide__audio-callout { max-width: 760px; }
+
+  .information-page__main { width: min(100% - 64px, 1180px); margin: 0 auto; padding: 52px 0 60px; }
+  .information-page__intro { max-width: 780px; padding-bottom: 38px; }
+  .information-page__intro h1 { max-width: 760px; font-size: clamp(42px, 4.5vw, 60px); }
+  .information-page__intro > p:last-child { max-width: 68ch; font-size: 18px; }
+  .information-page__content { grid-template-columns: minmax(0, 1fr); }
+  .information-section { padding: 30px 36px 34px; border-radius: 18px; }
+  .information-section h2 { font-size: 30px; }
+  .information-section p { max-width: 72ch; font-size: 16px; }
+  .information-source-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 40px; }
+  .information-page__source-disclosure { max-width: 920px; }
+  .information-footer { padding: 28px 0 0; }
+
+  .evaluation-page__main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, .72fr); align-items: start; gap: 26px 40px; width: min(100% - 64px, 1180px); margin: 0 auto; padding: 42px 0 60px; }
+  .evaluation-page__intro { grid-column: 1 / -1; min-height: 0; padding: 0 0 25px; }
+  .evaluation-page__intro h1 { max-width: 760px; font-size: clamp(42px, 4.5vw, 58px); }
+  .evaluation-page__intro > p { max-width: 68ch; font-size: 17px; }
+  .evaluation-form { grid-column: 1; gap: 14px; padding-top: 0; }
+  .evaluation-ratings { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+  .evaluation-rating { padding: 18px; }
+  .evaluation-rating__heading { font-size: 15px; }
+  .evaluation-page__safety { grid-column: 2; grid-row: 2; align-self: start; margin-top: 0; padding: 22px; }
+  .evaluation-result { grid-column: 1 / -1; max-width: 860px; }
+
+  .relaxation-catalog { width: min(100% - 64px, 1200px); margin: 0 auto; }
+  .relaxation-catalog__header { border-radius: 0 0 14px 14px; }
+  .relaxation-catalog__main { padding: 0 0 48px; }
+  .relaxation-catalog__hero { min-height: 280px; padding: 48px 250px 40px 0; }
+  .relaxation-catalog__hero h1 { max-width: 620px; font-size: clamp(42px, 4.6vw, 60px); }
+  .relaxation-catalog__hero > p:last-child { max-width: 58ch; font-size: 16px; }
+  .relaxation-catalog__hero > img { top: 16px; right: 12px; width: 240px; height: 230px; }
+  .relaxation-catalog__search { max-width: 680px; margin: 20px auto 0; }
+  .relaxation-catalog__collection { padding-top: 20px; }
+  .relaxation-catalog__filters { justify-content: center; flex-wrap: wrap; overflow: visible; margin-bottom: 16px; }
+  .relaxation-catalog__tracks { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 34px; }
+  .relaxation-catalog__credit { max-width: 920px; margin-inline: auto; }
+
+  .relaxation-experience.is-immersive { max-width: none; }
+  .immersive-player { padding-right: max(48px, calc((100vw - 1120px) / 2)); padding-left: max(48px, calc((100vw - 1120px) / 2)); }
+  .immersive-player__content { width: min(100%, 700px); }
+  .immersive-player__track-copy h1 { font-size: clamp(44px, 5vw, 64px); }
+
+  .admin-main { width: min(100%, 1680px); padding-right: clamp(36px, 5vw, 88px); padding-left: clamp(36px, 5vw, 88px); }
+}
+
+@media (min-width: 821px) {
+  .admin-app .admin-main { width: min(100%, 1680px); padding-right: clamp(28px, 4vw, 72px); padding-left: clamp(28px, 4vw, 72px); }
+  .admin-app .admin-overview-grid { grid-template-columns: minmax(0, 1.2fr) minmax(270px, .8fr); }
+  .admin-app .admin-detail-grid { grid-template-columns: minmax(0, 1.45fr) minmax(260px, .75fr); }
+}
+
+@media (min-width: 1200px) {
+  .admin-app .admin-main { padding-right: clamp(48px, 5vw, 92px); padding-left: clamp(48px, 5vw, 92px); }
+  .admin-app .admin-overview-grid { grid-template-columns: minmax(0, 1.3fr) minmax(320px, .7fr); }
+  .admin-app .admin-detail-grid { grid-template-columns: minmax(0, 1.6fr) minmax(300px, .7fr); }
+}
+
+@media (min-width: 1024px) {
+  .therapy-results { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .therapy-row { grid-template-columns: 86px minmax(0, 1fr) 20px; }
+  .therapy-row__thumbnail { width: 86px; }
+  .home-editorial-content .home-therapies .therapy-list { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .home-editorial-content .home-guides .guide-list { gap: 32px; }
+  .evaluation-page__main { grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr); }
+  .evaluation-ratings { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .relaxation-catalog__tracks { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 52px; }
+}
+
+@media (min-width: 1440px) {
+  .home-first-screen { grid-template-rows: minmax(620px, min(70vh, 780px)) auto; }
+  .hero { min-height: 620px; }
+  .therapy-page__main { width: min(100% - 96px, 1320px); }
+  .maternity-guide__content { width: min(100% - 96px, 1180px); }
+  .information-page__main { width: min(100% - 96px, 1240px); }
+  .evaluation-page__main { width: min(100% - 96px, 1240px); }
+  .relaxation-catalog { width: min(100% - 96px, 1320px); }
+}
