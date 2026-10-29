@@ -161,3 +161,7 @@ New candidate records examined but **not added to the production registry or use
 These records were verified from PubMed metadata/abstract, not claimed as full-text reviews where full text was not examined. They are not currently wired to article source IDs. Their absence from the public source register is deliberate because neither is a like-for-like replacement for the current bounded claims.
 
 This source audit's statuses are **VERIFIED** only for the narrowly described bibliographic/source scope; T03 and blocked direct pages remain **BLOCKED** for broader claims. No source is represented as clinical approval.
+
+## Editorial refresh 2026-10-29 — current status supersedes earlier snapshot
+
+The detailed refreshed inventory, article word counts, archived IDs, 2022–2026 bibliography, date uncertainty, claim matrix, and before/after examples are in [EDITORIAL-REFRESH-2026-10-29.md](EDITORIAL-REFRESH-2026-10-29.md). This is the current source-to-copy snapshot and supersedes earlier interim classifications where they differ. S1, S3, S4, S25, S27, and S28 are archived and no longer mapped by current content. S30 remains an explicitly dated 2020 ACOG patient-information exception used narrowly for heat safety; it is not described as recent research. C01–C08 identities and DOI/URLs are unchanged. All articles/guides remain clinical drafts.

@@ -60,23 +60,23 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
     headerTitle: 'Panduan Ibu Hamil',
     heroEyebrow: 'Trimester III',
     heroTitle: 'Mempersiapkan Diri dengan Lebih Tenang',
-    heroDescription: 'Selama trimester III, Ibu mungkin merasakan nyeri punggung atau khawatir menjelang persalinan. Kenali berbagai pilihan untuk menjaga kenyamanan, seperti pilihan pernapasan, musik, kompres hangat, dan pijat kehamilan.',
+    heroDescription: 'Trimester III bisa membawa banyak pertanyaan dan perubahan sehari-hari. Ibu dapat membaca tentang rasa pegal, persiapan persalinan, dan beberapa pilihan dukungan; kecocokannya tetap perlu dibicarakan dengan bidan atau dokter yang mengenal kondisi Ibu.',
     heroImage: heroPregnancyImage,
     heroImageAlt: 'Ibu hamil duduk dengan tenang sambil memegang perutnya',
     clinicalReview: 'draft',
-    sourceReviewedAt: '2026-10-23',
-    sourceIds: ['S17', 'S18', 'S19', 'S20', 'S23', 'S24', 'S25', 'S2', 'S6', 'S14', 'S26', 'S27', 'S29', 'S30', 'S31', 'C01', 'C02', 'C03', 'C04', 'C05', 'C06'],
+    sourceReviewedAt: '2026-10-29',
+    sourceIds: ['S17', 'S18', 'S19', 'S20', 'S23', 'S24', 'S2', 'S6', 'S14', 'S26', 'S29', 'S30', 'S31', 'S41', 'S42', 'S43', 'C01', 'C02', 'C03', 'C04', 'C05', 'C06'],
     sections: [
       {
         id: 'persiapan',
         heading: 'Persiapan menjelang persalinan',
         paragraphs: [
           {
-            text: 'Ibu dapat mulai menuliskan hal yang ingin dibicarakan saat kontrol, seperti tempat bersalin yang direncanakan, siapa yang ingin mendampingi, dan pilihan yang penting bagi Ibu. Rencana ini membantu menyampaikan keinginan, tetapi dapat berubah mengikuti kondisi saat persalinan.',
+            text: 'Ibu dapat mencatat hal yang ingin dibicarakan saat kontrol, misalnya tempat bersalin yang direncanakan, siapa yang ingin mendampingi, dan pertanyaan tentang pilihan perawatan. Catatan ini membantu tim memahami keinginan Ibu, tetapi bukan janji bahwa setiap pilihan akan tersedia atau selalu sesuai ketika kondisi persalinan berubah.',
             sourceIds: ['S17'],
           },
           {
-            text: 'Menyiapkan catatan kehamilan dan barang penting lebih awal dapat membantu saat waktunya berangkat. Kebutuhan setiap keluarga dan aturan tempat bersalin dapat berbeda, jadi periksa kembali daftar dengan fasilitas yang Ibu pilih.',
+            text: 'Menyiapkan catatan kehamilan dan barang penting lebih awal dapat mengurangi kerepotan saat waktunya berangkat. Kebutuhan keluarga, aturan fasilitas, dan rencana perjalanan berbeda-beda; Ibu dapat meminta daftar terbaru dari tempat bersalin yang dipilih.',
             sourceIds: ['S18'],
           },
         ],
@@ -86,7 +86,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
         heading: 'Menjaga kenyamanan selama kehamilan',
         paragraphs: [
           {
-            text: 'Kenyamanan dan kebutuhan setiap Ibu berbeda. Bila ada keluhan, kekhawatiran, atau pertanyaan tentang pilihan yang sesuai, ceritakan kepada bidan atau dokter yang memeriksa Ibu. Informasi di halaman ini tidak dapat menilai kondisi kehamilan secara pribadi.',
+            text: 'Nyeri, rasa lelah, dan kekhawatiran dapat memengaruhi kegiatan harian dengan cara yang berbeda. Catat hal yang ingin ditanyakan dan ceritakan kepada bidan atau dokter. Informasi di halaman ini bersifat umum dan tidak dapat menentukan penyebab keluhan atau pilihan yang sesuai untuk kondisi pribadi Ibu.',
             sourceIds: ['S19'],
           },
         ],
@@ -96,8 +96,8 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
         heading: 'Pilih topik yang Ibu butuhkan',
         paragraphs: [
           {
-            text: 'Baca tentang nyeri punggung trimester III, kekhawatiran menjelang persalinan, pernapasan, musik, kompres hangat, dan pijat kehamilan. Pilih bacaan yang sesuai dengan pertanyaan Ibu.',
-            sourceIds: ['S2', 'S26', 'S30', 'C01', 'C02', 'C03', 'C04', 'C05', 'C06'],
+            text: 'Di bawah ini tersedia bacaan tentang nyeri punggung, kekhawatiran menjelang persalinan, pernapasan, musik, rasa hangat, dan pijat. Sebagian bukti masih terbatas atau berasal dari program khusus. Ibu dapat memilih topik yang menjawab pertanyaan, lalu membicarakan keputusan perawatan dengan tenaga kesehatan.',
+            sourceIds: ['S2', 'S26', 'S30', 'S31', 'S41', 'S42', 'S43', 'C01', 'C02', 'C03', 'C04', 'C05', 'C06'],
           },
         ],
         relatedItems: [
@@ -108,7 +108,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
             href: '/terapi/nyeri-punggung-kehamilan',
             image: therapyImages.backComfort,
             imageAlt: 'Ibu hamil beristirahat miring di tempat tidur',
-            sourceIds: ['S26', 'S30', 'C01', 'C02', 'C03', 'C04'],
+            sourceIds: ['S26', 'S30', 'S42', 'C01', 'C02', 'C03', 'C04'],
           },
           {
             topicId: 'A06',
@@ -117,7 +117,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
             href: '/terapi/kecemasan-menjelang-persalinan',
             image: therapyImages.pregnancySupport,
             imageAlt: 'Seorang perempuan menemani ibu hamil di rumah',
-            sourceIds: ['S5', 'S17', 'C05', 'C06'],
+            sourceIds: ['S5', 'S17', 'S43', 'S41', 'C05', 'C06'],
           },
           {
             topicId: 'A03',
@@ -126,7 +126,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
             href: '/terapi/teknik-pernapasan',
             image: therapyImages.breathing,
             imageAlt: 'Ilustrasi ibu hamil sedang menenangkan diri',
-            sourceIds: ['S6'],
+            sourceIds: ['S2', 'S32', 'S39'],
           },
           {
             topicId: 'A02',
@@ -135,7 +135,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
             href: '/terapi/terapi-musik',
             image: therapyImages.music,
             imageAlt: 'Headphone sebagai ilustrasi pilihan musik',
-            sourceIds: ['S2', 'C04', 'C05', 'C06'],
+            sourceIds: ['S2', 'S41', 'S40', 'C04', 'C05', 'C06'],
           },
           {
             topicId: 'A04',
@@ -144,7 +144,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
             href: '/terapi/kompres-hangat-kehamilan',
             image: therapyImages.warmCompressPregnancy,
             imageAlt: 'Bantalan hangat berlapis kain di atas handuk; bukan petunjuk penggunaan',
-            sourceIds: ['C01', 'C02', 'C03', 'S30'],
+            sourceIds: ['C01', 'C02', 'C03', 'C04', 'S30'],
           },
           {
             topicId: 'A05',
@@ -153,7 +153,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
             href: '/terapi/pijat-kehamilan',
             image: therapyImages.prenatalMassage,
             imageAlt: 'Suasana pijat profesional untuk ibu hamil; bukan demonstrasi teknik',
-            sourceIds: ['S27', 'S31'],
+            sourceIds: ['S2', 'S31'],
           },
         ],
       },
@@ -174,7 +174,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
         paragraphs: [
           {
             text: 'Beberapa tanda selama kehamilan memerlukan bantuan kesehatan segera. Hubungi bidan atau fasilitas kesehatan yang merawat Ibu; jangan menunggu jadwal kontrol berikutnya.',
-            sourceIds: ['S19', 'S20', 'S23', 'S24', 'S25'],
+            sourceIds: ['S19', 'S20', 'S23', 'S24'],
           },
         ],
         safetyItems: [
@@ -184,7 +184,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
           },
           {
             text: 'Perdarahan, sakit perut hebat, kejang, sakit kepala berat, gangguan penglihatan yang muncul tiba-tiba, atau pembengkakan mendadak pada wajah maupun tangan.',
-            sourceIds: ['S19', 'S23', 'S24', 'S25'],
+            sourceIds: ['S19', 'S23', 'S24'],
           },
           {
             text: 'Sesak atau sulit bernapas, serta demam tinggi, perlu segera mendapat perhatian tenaga kesehatan.',
@@ -193,7 +193,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
         ],
         safetyClosing: {
           text: 'Kontak dan jalur layanan berbeda di setiap daerah. Simpan nomor bidan dan fasilitas yang merawat Ibu. Jika terasa seperti keadaan darurat yang mengancam nyawa, cari bantuan gawat darurat setempat.',
-          sourceIds: ['S19', 'S23', 'S24', 'S25'],
+          sourceIds: ['S19', 'S23', 'S24'],
         },
       },
     ],
@@ -203,23 +203,23 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
     headerTitle: 'Panduan Bersalin',
     heroEyebrow: 'Selama persalinan',
     heroTitle: 'Mendampingi Setiap Langkah Persalinan',
-    heroDescription: 'Kenali nyeri dan rasa khawatir saat persalinan, serta pilihan pernapasan, musik, dan dukungan pendamping. Pelajari juga pijat pendamping dan kompres hangat yang dibicarakan bersama tim kesehatan.',
+    heroDescription: 'Persalinan dapat terasa berbeda bagi setiap Ibu. Panduan ini membantu Ibu mengenali beberapa pilihan dukungan, memahami batas bukti yang tersedia, dan menyiapkan pertanyaan untuk tim kesehatan yang mendampingi.',
     heroImage: therapyImages.massage,
     heroImageAlt: 'Foto ilustrasi sentuhan pada perut ibu, bukan demonstrasi teknik pemijatan',
     clinicalReview: 'draft',
-    sourceReviewedAt: '2026-10-23',
-    sourceIds: ['S1', 'S2', 'S17', 'S21', 'S22', 'S6', 'S15', 'S20', 'S23', 'S8', 'S29', 'C04', 'C05', 'C06', 'C07', 'C08'],
+    sourceReviewedAt: '2026-10-29',
+    sourceIds: ['S2', 'S17', 'S21', 'S22', 'S6', 'S15', 'S20', 'S23', 'S8', 'S29', 'S32', 'S33', 'S34', 'S35', 'S36', 'S41', 'S43', 'S44', 'C04', 'C05', 'C06', 'C07', 'C08'],
     sections: [
       {
         id: 'mengenal-persalinan',
         heading: 'Mengenal persalinan',
         paragraphs: [
           {
-            text: 'Persalinan dapat diawali dengan kontraksi atau rasa mengencang, nyeri punggung, keluarnya lendir, rasa ingin buang air besar, atau air ketuban pecah. Tanda yang dirasakan dapat berbeda; tidak semua tanda muncul pada setiap Ibu.',
+            text: 'Persalinan dapat ditandai kontraksi atau rasa mengencang yang datang berulang, nyeri punggung, keluarnya lendir, atau air ketuban pecah. Tanda yang muncul dan waktunya dapat berbeda; informasi ini tidak dapat memastikan apakah persalinan sudah dimulai.',
             sourceIds: ['S21'],
           },
           {
-            text: 'Jika Ibu merasa persalinan mulai, atau masih ragu, hubungi bidan atau fasilitas tempat Ibu berencana bersalin untuk mendapat arahan sesuai keadaan dan rencana perawatan Ibu.',
+            text: 'Jika Ibu merasa persalinan mulai, air ketuban pecah, atau masih ragu, hubungi bidan atau fasilitas tempat Ibu berencana bersalin. Mereka dapat menanyakan keadaan Ibu dan memberi arahan sesuai rencana layanan setempat.',
             sourceIds: ['S21'],
           },
         ],
@@ -230,7 +230,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
         paragraphs: [
           {
             text: 'Materi berikut membahas nyeri dan kekhawatiran selama persalinan, pernapasan, musik, pijat pendamping, serta kompres hangat dalam perawatan. Ibu dapat menyampaikan pilihan kepada tim kesehatan.',
-            sourceIds: ['S1', 'S2', 'S8', 'S22', 'C07', 'C08'],
+            sourceIds: ['S2', 'S8', 'S22', 'S32', 'S41', 'S44', 'C07', 'C08'],
           },
         ],
         relatedItems: [
@@ -241,7 +241,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
             href: '/terapi/nyeri-persalinan',
             image: therapyImages.laborSupport,
             imageAlt: 'Pendamping berada di sisi ibu di ruang perawatan persalinan',
-            sourceIds: ['S2', 'S8', 'C07'],
+            sourceIds: ['S2', 'S8', 'S44', 'C07'],
           },
           {
             topicId: 'B06',
@@ -259,7 +259,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
             href: '/terapi/teknik-pernapasan',
             image: therapyImages.breathing,
             imageAlt: 'Ilustrasi ibu hamil sedang menenangkan diri',
-            sourceIds: ['S1', 'S2', 'S6'],
+            sourceIds: ['S2', 'S32'],
           },
           {
             topicId: 'B02',
@@ -277,7 +277,7 @@ export const maternityGuides: Record<'pregnancy' | 'birth', MaternityGuideConten
             href: '/terapi/pijat-pendamping',
             image: therapyImages.laborTouch,
             imageAlt: 'Ilustrasi dua tangan saling menggenggam sebagai dukungan pendamping',
-            sourceIds: ['S1', 'S2'],
+            sourceIds: ['S2', 'S33', 'S34'],
           },
           {
             topicId: 'B05',

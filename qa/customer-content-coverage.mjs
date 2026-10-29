@@ -94,16 +94,13 @@ assert.match(references, /S30:\s*\{[\s\S]*?Back Pain During Pregnancy[\s\S]*?aco
 assert.match(articles, /'kompres-hangat-kehamilan'[\s\S]*?S30/, 'Pregnancy warm-compress content must cite ACOG safety guidance')
 assert.match(articles, /clinicalReview: \{ status: 'draft' \}/, 'Customer article clinical review must remain in draft status')
 assert.match(articles, /Kompres Hangat Saat Hamil[\s\S]*?Mengenal Kompres Hangat/, 'Pregnancy warm-compress article title and subheading are missing')
-for (const step of [
-  'Berikut beberapa hal yang dapat Ibu perhatikan saat menggunakan sumber hangat untuk membantu meredakan pegal pada otot punggung.',
-  'Gunakan sumber hangat pada otot punggung yang terasa pegal.',
-  'pilih pengaturan panas paling rendah',
-  'dengan handuk agar tidak langsung menyentuh kulit',
-  'Batasi lama pemakaian. Jangan gunakan terlalu lama.',
-  'nyeri berat, tidak membaik, atau disertai keluhan yang mengkhawatirkan',
-]) {
-  assert.ok(articles.includes(step), `Patient-facing warm-compress guidance is missing: ${step}`)
-}
+for (const phrase of [
+  'Artikel ini tidak menentukan suhu',
+  'tanyakan terlebih dahulu apakah pilihan itu sesuai',
+  'Panas berlebih dapat melukai kulit',
+  'Hentikan bila kulit terasa panas berlebihan',
+]) assert.ok(articles.includes(phrase), `Patient-facing warm-compress safety boundary is missing: ${phrase}`)
+assert.doesNotMatch(articles, /pengaturan panas paling rendah|gunakan kompres.*selama \d+ menit/i, 'The page does not invent a home-use dose or heat setting')
 assert.match(therapyDetails, /<ol className="therapy-detail__source-guide-list">/, 'Source-based guide must render as a numbered list')
 assert.match(therapyStyles, /\.therapy-detail__source-guide-list\s*\{[^}]*list-style:\s*decimal/s, 'Numbered guide markers must be explicitly visible')
 

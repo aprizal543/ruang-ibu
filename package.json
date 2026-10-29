@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty",
-    "test:content": "node qa/customer-content-coverage.mjs && node qa/m2-content-regression.mjs",
+    "test:content": "node qa/customer-content-coverage.mjs && node qa/m2-content-regression.mjs && node --import tsx qa/editorial-source-refresh.mjs",
     "test:backend": "node --import tsx --test qa/backend/*.test.ts qa/backend/*.test.mjs",
     "test:auth:workerd": "node qa/workers/google-oidc-workerd.test.mjs",
     "admin:verify-google-sub": "node --import tsx scripts/admin/verify-google-sub.mjs",

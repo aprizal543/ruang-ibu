@@ -21,7 +21,7 @@ function customerArticle(
     slug,
     title,
     categories,
-    sourceReview: { status: 'source_reviewed', reviewedAt: '2026-10-25' },
+    sourceReview: { status: 'source_reviewed', reviewedAt: '2026-10-29' },
     clinicalReview: { status: 'draft' },
     introduction: { text: introduction, referenceIds: introductionRefs },
     sections,
@@ -29,35 +29,36 @@ function customerArticle(
     practiceGuide,
     audio: { status: 'not_applicable' },
     referenceIds,
-    updatedAt: '2026-10-25',
+    updatedAt: '2026-10-29',
   }
 }
 
 export const customerRevisionArticles: Record<string, TherapyArticleDefinition> = {
   'nyeri-punggung-kehamilan': customerArticle(
     'A01', 'nyeri-punggung-kehamilan', 'Nyeri Punggung saat Kehamilan', ['Hamil'],
-    'Nyeri punggung dapat muncul selama kehamilan, termasuk trimester III. Keluhan ini tidak selalu memiliki penyebab yang sama, jadi nyeri yang berat atau disertai gejala lain perlu dibicarakan dengan tenaga kesehatan.',
-    ['S26', 'C01', 'C02', 'C03', 'C04'],
+    'Punggung yang terasa pegal dapat membuat kegiatan sehari-hari lebih melelahkan, terutama ketika tubuh berubah selama kehamilan. Keluhan ini cukup sering dibicarakan oleh ibu hamil, tetapi penyebab dan tingkat rasa tidak nyaman setiap orang tidak selalu sama. Tenaga kesehatan dapat membantu menilai keluhan Ibu.',
+    ['S26', 'S42', 'C01', 'C02', 'C03', 'C04'],
     [
       { id: 'pengertian', heading: 'Apa itu nyeri punggung saat kehamilan?', paragraphs: [
-        { text: 'Ini adalah rasa pegal atau nyeri di punggung yang dialami saat hamil. Keluhan otot dan sendi dapat berhubungan dengan perubahan postur serta beban tubuh yang bertambah, tetapi nyeri punggung juga dapat memiliki penyebab lain.', referenceIds: ['S26', 'C02'] },
-        { text: 'Kompres hangat pernah dipelajari pada ibu hamil dengan nyeri punggung trimester III di Pekanbaru. Pesertanya terbatas, sehingga hasilnya belum tentu sama pada setiap Ibu dan tidak menjelaskan semua penyebab nyeri punggung.', referenceIds: ['C01', 'C02', 'C03'] },
+        { text: 'Rasa pegal dapat terasa di punggung bawah dan mengganggu saat duduk lama, berdiri, tidur, atau berpindah posisi. Perubahan tubuh selama hamil dapat ikut berperan, tetapi artikel ini tidak dapat memastikan penyebab nyeri yang dialami Ibu.', referenceIds: ['S26', 'S42'] },
+        { text: 'Bagi sebagian orang, pegal terasa lebih mengganggu setelah banyak berdiri atau menjelang akhir hari. Keluhan yang berubah atau semakin berat tetap perlu dibicarakan, bukan ditebak sendiri penyebabnya.', referenceIds: ['S30', 'S26'] },
+        { text: 'Penelitian tentang kompres hangat yang tercatat di Indonesia melibatkan kelompok terbatas dan satu laporan kasus. Temuan tersebut memberi gambaran awal, tetapi belum cukup untuk memastikan seberapa besar manfaatnya atau apakah hasilnya sama bagi semua Ibu.', referenceIds: ['C01', 'C02', 'C03'] },
       ] },
       { id: 'tujuan', heading: 'Pilihan untuk merasa lebih nyaman', paragraphs: [
-        { text: 'Ibu dapat bertanya tentang pilihan untuk membantu kenyamanan, seperti dukungan postur, istirahat, atau sumber hangat pada otot punggung yang pegal. Tinjauan beberapa pilihan tanpa obat menemukan hasil yang beragam; tidak ada satu cara yang cocok untuk semua Ibu.', referenceIds: ['S26', 'S30', 'C04'] },
-        { text: 'Kompres hangat dan kompres air jahe pernah dibahas dalam kelompok kecil atau satu kasus. Hasil awal ini belum memastikan manfaat yang sama bagi setiap Ibu.', referenceIds: ['C01', 'C02', 'C03'] },
+        { text: 'Ibu bisa mencatat kapan keluhan muncul, posisi atau kegiatan yang membuatnya terasa berbeda, dan hal yang membantu Ibu beristirahat. Catatan sederhana ini dapat dibawa saat kontrol untuk dibicarakan bersama bidan atau dokter.', referenceIds: ['S26', 'S30'] },
+        { text: 'Tinjauan pada nyeri punggung atau panggul saat hamil menilai program latihan dan edukasi yang beragam. Hasilnya tidak menetapkan satu latihan atau terapi yang cocok untuk semua orang, sehingga pilihan sebaiknya dibicarakan dengan tenaga kesehatan yang mengenal kondisi Ibu.', referenceIds: ['S42', 'C04'] },
       ] },
       { id: 'kapan-dipertimbangkan', heading: 'Kapan meminta bantuan?', paragraphs: [
-        { text: 'Hubungi bidan atau dokter bila nyeri terasa sangat berat, menetap, membuat Ibu khawatir, atau Ibu ingin mengetahui pilihan penanganan yang sesuai. Nyeri punggung pada trimester kedua atau ketiga dapat berkaitan dengan persalinan lebih awal.', referenceIds: ['S26'] },
-        { text: 'Segera cari arahan kesehatan jika nyeri disertai demam, perdarahan, nyeri saat buang air kecil, nyeri di sisi tubuh, atau kebas pada tungkai maupun area sekitar bokong dan kemaluan.', referenceIds: ['S26'] },
+        { text: 'Hubungi bidan atau dokter bila rasa sakit berat, tidak membaik, terasa berbeda dari biasanya, atau membuat Ibu khawatir. Nyeri punggung pada trimester kedua atau ketiga kadang perlu dinilai karena dapat berkaitan dengan persalinan lebih awal.', referenceIds: ['S26'] },
+        { text: 'Segera minta arahan tenaga kesehatan jika nyeri disertai demam, perdarahan, nyeri saat buang air kecil, nyeri di sisi tubuh, atau kebas pada tungkai maupun area sekitar bokong dan kemaluan. Jangan menunggu hanya karena mengira semua nyeri punggung adalah keluhan kehamilan biasa.', referenceIds: ['S26'] },
       ] },
     ],
     'Jangan menganggap semua nyeri punggung sebagai keluhan biasa. Halaman ini tidak dapat menentukan penyebab nyeri atau menggantikan pemeriksaan.',
-    ['S26', 'S30', 'C01', 'C02', 'C03', 'C04'],
-    ['S26', 'C01', 'C02', 'C03', 'C04'],
+    ['S26', 'S42', 'C01', 'C02', 'C03', 'C04'],
+    ['S26', 'S42', 'C01', 'C02', 'C03', 'C04'],
     { status: 'source_based', note: 'Pilihan ini merupakan pengenalan umum; tenaga kesehatan dapat membantu menilai keluhan dan pilihan yang sesuai.', instructions: [
       { text: 'Ceritakan lokasi, kapan nyeri muncul, dan apakah ada keluhan lain kepada bidan atau dokter.', referenceIds: ['S26'] },
-      { text: 'Tanyakan pilihan untuk membantu kenyamanan sebelum mencoba terapi atau alat panas.', referenceIds: ['S26', 'C01'] },
+      { text: 'Tanyakan pilihan untuk membantu kenyamanan sebelum mencoba terapi atau sumber panas.', referenceIds: ['S26', 'S30'] },
       { text: 'Minta bantuan segera bila nyeri berat atau disertai tanda yang disebutkan pada bagian keselamatan.', referenceIds: ['S26'] },
     ] },
   ),
@@ -65,29 +66,29 @@ export const customerRevisionArticles: Record<string, TherapyArticleDefinition> 
   'kompres-hangat-kehamilan': {
     ...customerArticle(
       'A04', 'kompres-hangat-kehamilan', 'Kompres Hangat Saat Hamil', ['Hamil'],
-      'Kompres hangat merupakan salah satu cara yang dapat dipertimbangkan untuk membantu meredakan rasa tidak nyaman pada punggung selama kehamilan. Beberapa penelitian melaporkan penurunan nyeri setelah penggunaan kompres hangat, tetapi hasilnya dapat berbeda pada setiap Ibu. Penggunaannya perlu dilakukan dengan aman.',
+      'Sebagian Ibu mempertimbangkan rasa hangat saat punggung terasa pegal. Penelitian kompres hangat pada ibu hamil masih terbatas, jadi belum dapat memastikan manfaatnya bagi setiap orang. Sebelum mencoba, Ibu dapat menanyakan pilihan yang sesuai kepada bidan atau dokter.',
       ['C01', 'C02', 'C03', 'S30'],
       [
         { id: 'pengertian', heading: 'Apa itu kompres hangat?', paragraphs: [
-        { text: 'Kompres hangat menggunakan bantalan pemanas atau botol berisi air hangat untuk membantu menenangkan otot punggung yang pegal. Ibu dapat menanyakan pilihan ini kepada bidan atau dokter yang mengetahui kondisi kehamilan Ibu.', referenceIds: ['S30'] },
+        { text: 'Kompres hangat berarti menggunakan sumber hangat pada area tubuh yang terasa tidak nyaman. Artikel ini tidak menentukan suhu, lama pemakaian, atau cara penggunaan untuk kondisi Ibu; tanyakan pilihan yang aman kepada tenaga kesehatan.', referenceIds: ['S30'] },
         ] },
         { id: 'tujuan', heading: 'Apa tujuannya?', paragraphs: [
-          { text: 'Beberapa kajian melaporkan nyeri punggung terasa berkurang setelah kompres hangat digunakan. Namun, jumlah peserta terbatas dan sebagian tulisan hanya membahas satu kasus. Hasilnya dapat berbeda pada setiap Ibu.', referenceIds: ['C01', 'C02', 'C03'] },
+          { text: 'Satu penelitian lokal dan dua laporan dengan cakupan terbatas meneliti kompres pada nyeri punggung saat hamil. Hasil awalnya tidak cukup untuk menyimpulkan bahwa kompres pasti mengurangi nyeri atau aman dengan cara yang sama pada semua keadaan kehamilan.', referenceIds: ['C01', 'C02', 'C03'] },
+          { text: 'Tinjauan yang membandingkan berbagai pilihan non-obat untuk nyeri punggung terkait kehamilan menemukan bukti yang beragam. Tinjauan tersebut tidak menguji satu aturan penggunaan kompres yang dapat diterapkan kepada semua orang.', referenceIds: ['C04'] },
         ] },
         { id: 'kapan-dipertimbangkan', heading: 'Kapan dapat dipertimbangkan?', paragraphs: [
-          { text: 'Jika punggung terasa pegal, Ibu dapat bertanya kepada bidan atau dokter apakah kompres hangat sesuai untuk kondisi Ibu. Jangan gunakan kompres untuk menunda pemeriksaan bila nyeri terasa berat atau membuat Ibu khawatir.', referenceIds: ['S26', 'S30'] },
-          { text: 'Panas berlebih dapat melukai kulit. Atur bantalan pemanas pada setelan terendah dan lapisi bantalan atau botol air hangat dengan handuk. Batasi lama penggunaan dan hentikan bila terasa terlalu panas atau tidak nyaman.', referenceIds: ['S30'] },
+          { text: 'Bila Ibu ingin mencoba rasa hangat, tanyakan terlebih dahulu apakah pilihan itu sesuai untuk keluhan dan keadaan kehamilan Ibu. Jangan gunakan kompres untuk menunda pemeriksaan bila nyeri berat atau ada keluhan lain.', referenceIds: ['S26', 'S30'] },
+          { text: 'Panas berlebih dapat melukai kulit. ACOG menyarankan pengaturan terendah untuk bantalan pemanas, lapisan handuk antara kulit dan sumber panas, serta membatasi lama pemakaian. Hentikan bila terasa terlalu panas, nyeri, atau tidak nyaman; jangan menganggap satu cara cocok untuk semua keadaan.', referenceIds: ['S30'] },
         ] },
       ],
       'Jangan menempelkan sumber panas langsung pada kulit. Jika nyeri punggung terasa berat, berlangsung lama, atau membuat Ibu khawatir, hubungi bidan atau dokter.',
       ['S26', 'S30'],
-      ['C01', 'C02', 'C03', 'S26', 'S30'],
-      { status: 'source_based', note: 'Berikut beberapa hal yang dapat Ibu perhatikan saat menggunakan sumber hangat untuk membantu meredakan pegal pada otot punggung.', instructions: [
-        { text: 'Gunakan sumber hangat pada otot punggung yang terasa pegal.', referenceIds: ['S30'] },
-        { text: 'Jika memakai bantalan pemanas, pilih pengaturan panas paling rendah.', referenceIds: ['S30'] },
-        { text: 'Lapisi bantalan pemanas atau botol air hangat dengan handuk agar tidak langsung menyentuh kulit.', referenceIds: ['S30'] },
-        { text: 'Batasi lama pemakaian. Jangan gunakan terlalu lama.', referenceIds: ['S30'] },
-        { text: 'Hentikan jika terasa terlalu panas atau tidak nyaman. Hubungi bidan atau dokter bila nyeri berat, tidak membaik, atau disertai keluhan yang mengkhawatirkan.', referenceIds: ['S26', 'S30'] },
+      ['C01', 'C02', 'C03', 'C04', 'S26', 'S30'],
+      { status: 'source_based', note: 'Jika Ibu mempertimbangkan sumber hangat, bicarakan kecocokan dengan tenaga kesehatan dan ikuti batas keamanan yang tercantum di halaman ini.', instructions: [
+        { text: 'Bicarakan lebih dahulu dengan bidan atau dokter apakah rasa hangat sesuai untuk keluhan dan keadaan kehamilan Ibu.', referenceIds: ['S30'] },
+        { text: 'Jangan gunakan kompres sebagai pengganti pemeriksaan bila nyeri terasa berat, menetap, atau disertai gejala lain.', referenceIds: ['S26', 'S30'] },
+        { text: 'Jika memakai bantalan pemanas, pilih pengaturan terendah dan gunakan lapisan kain di antara alat dan kulit; batasi lama pemakaian sesuai arahan ACOG.', referenceIds: ['S30'] },
+        { text: 'Hentikan bila kulit terasa panas berlebihan, nyeri, atau tidak nyaman. Jangan gunakan kompres untuk menunda pemeriksaan bila ada keluhan yang mengkhawatirkan.', referenceIds: ['S26', 'S30'] },
       ] },
     ),
     summaryHeading: 'Mengenal Kompres Hangat',
@@ -95,44 +96,47 @@ export const customerRevisionArticles: Record<string, TherapyArticleDefinition> 
 
   'pijat-kehamilan': customerArticle(
     'A05', 'pijat-kehamilan', 'Pijat untuk Ibu Hamil', ['Hamil', 'Relaksasi'],
-    'Pijat kehamilan adalah pijat yang disesuaikan untuk seseorang yang sedang hamil. Pijat dapat dipertimbangkan sebagai pilihan kenyamanan, tetapi jenis pijat dan kecocokannya perlu dibicarakan dengan tenaga yang memahami kebutuhan kehamilan.',
-    ['S27', 'S31'],
+    'Pijat saat hamil sering ditanyakan sebagai pilihan untuk merasa nyaman. Penelitian yang tersedia tidak cukup untuk menjanjikan manfaat pijat umum atau menentukan bahwa semua jenis pijat sesuai untuk setiap kehamilan. Jika Ibu mempertimbangkannya, bicarakan dahulu dengan bidan atau dokter.',
+    ['S31', 'S2'],
     [
       { id: 'pengertian', heading: 'Apa itu pijat kehamilan?', paragraphs: [
-        { text: 'Pijat kehamilan dilakukan oleh terapis yang memiliki pelatihan untuk bekerja dengan ibu hamil. Ini berbeda dari pijat pendamping selama persalinan, yang membahas sentuhan pilihan Ibu pada saat kontraksi.', referenceIds: ['S27'] },
+        { text: 'Istilah pijat kehamilan dapat mencakup layanan dan teknik yang berbeda. Penelitian tentang satu jenis pijat tidak otomatis berlaku untuk teknik lain, sehingga artikel ini tidak mengajarkan posisi, tekanan, atau gerakan pijat.', referenceIds: ['S31'] },
       ] },
       { id: 'tujuan', heading: 'Apa tujuannya?', paragraphs: [
-        { text: 'Sebagian orang memilih pijat agar merasa lebih rileks atau nyaman. Bukti langsung masih terbatas; sebuah studi kelayakan kecil meneliti pijat remedial pada nyeri gelang panggul, bukan manfaat pijat umum untuk relaksasi atau semua ibu hamil.', referenceIds: ['S31'] },
-        { text: 'Pilih penyedia yang terlatih menangani pijat kehamilan dan sampaikan bahwa Ibu sedang hamil. Ibu berhak menyetujui, menolak, atau meminta pijat dihentikan kapan saja.', referenceIds: ['S27'] },
+        { text: 'Satu studi kecil tahun 2023 menguji apakah penelitian pijat remedial untuk nyeri gelang panggul dapat dilaksanakan. Tujuan utamanya adalah menilai kelayakan penelitian, bukan memastikan pijat mengurangi keluhan atau memberi manfaat relaksasi secara umum.', referenceIds: ['S31'] },
+        { text: 'Jika tujuan Ibu adalah membantu nyeri atau rasa tegang, tanyakan pilihan dukungan yang tersedia sebelum memilih layanan. Studi kelayakan tersebut tidak memberi dasar untuk memperkirakan hasil pada pijat lain atau pada semua kehamilan.', referenceIds: ['S2', 'S31'] },
+        { text: 'Karena bukti langsung terbatas, Ibu dapat meminta penjelasan tentang layanan, pengalaman terapis, dan cara menghormati batas kenyamanan. Ibu berhak menolak sentuhan atau meminta sesi dihentikan.', referenceIds: ['S2', 'S31'] },
+        { text: 'Pijat bukan kewajiban dan bukan pengganti pemeriksaan bila ada keluhan.', referenceIds: ['S2', 'S31'] },
       ] },
       { id: 'kapan-dipertimbangkan', heading: 'Kapan berkonsultasi lebih dahulu?', paragraphs: [
-        { text: 'Jika kehamilan Ibu memiliki komplikasi atau dinilai berisiko tinggi, tanyakan kepada bidan atau dokter apakah pijat sesuai untuk kondisi Ibu. Sampaikan riwayat kehamilan sebelum membuat janji.', referenceIds: ['S27'] },
-        { text: 'Bicarakan pilihan pijat dengan terapis yang terlatih menangani kehamilan. Hentikan dan beri tahu terapis bila sentuhan terasa nyeri atau tidak nyaman.', referenceIds: ['S27'] },
+        { text: 'Bicarakan rencana pijat dengan bidan atau dokter, terutama bila Ibu memiliki pertanyaan tentang kondisi kehamilan atau sedang menjalani perawatan tertentu. Artikel ini tidak dapat menentukan kecocokan layanan secara pribadi.', referenceIds: ['S2'] },
+        { text: 'Jika Ibu memilih layanan, pastikan penyedia mengetahui bahwa Ibu sedang hamil dan tanyakan pelatihan serta pendekatan yang digunakan. Hentikan bila sentuhan terasa tidak nyaman.', referenceIds: ['S2'] },
       ] },
     ],
     'Jangan menerima pijat yang tidak diinginkan atau terasa menyakitkan. Jika Ibu ragu tentang kondisi kehamilan, mintalah saran bidan atau dokter terlebih dahulu.',
-    ['S27', 'S31'],
-    ['S27', 'S31'],
+    ['S2', 'S31'],
+    ['S2', 'S31'],
     { status: 'source_based', note: 'Bukti langsung untuk pijat umum saat hamil terbatas. Panduan ini berfokus pada komunikasi dan pemilihan layanan, bukan teknik pijat.', instructions: [
-      { text: 'Tanyakan kepada bidan atau dokter apakah pijat sesuai dengan keadaan kehamilan Ibu.', referenceIds: ['S27'] },
-      { text: 'Sebelum membuat janji, tanyakan pengalaman dan pelatihan terapis dalam menangani klien hamil.', referenceIds: ['S27'] },
-      { text: 'Sampaikan bahwa Ibu sedang hamil dan ceritakan hal yang perlu diketahui terapis tentang kenyamanan Ibu.', referenceIds: ['S27'] },
-      { text: 'Ibu boleh menolak, mengubah pilihan, atau meminta sesi dihentikan bila terasa tidak nyaman.', referenceIds: ['S27'] },
+      { text: 'Tanyakan kepada bidan atau dokter pertanyaan Ibu tentang pilihan pijat dan kondisi kehamilan.', referenceIds: ['S2'] },
+      { text: 'Bila memilih layanan, tanyakan pengalaman dan pendekatan terapis dalam menangani klien hamil.', referenceIds: ['S2'] },
+      { text: 'Sampaikan bahwa Ibu sedang hamil dan jelaskan batas kenyamanan yang ingin dihormati.', referenceIds: ['S2'] },
+      { text: 'Ibu boleh menolak sentuhan, mengubah pilihan, atau meminta sesi dihentikan kapan saja.', referenceIds: ['S2'] },
       { text: 'Studi pijat untuk nyeri gelang panggul adalah studi kelayakan kecil dan bukan bukti manfaat pijat umum; tanyakan tenaga kesehatan jika masih ragu.', referenceIds: ['S31'] },
     ] },
   ),
 
   'kecemasan-menjelang-persalinan': customerArticle(
     'A06', 'kecemasan-menjelang-persalinan', 'Kekhawatiran Menjelang Persalinan', ['Hamil', 'Relaksasi'],
-    'Rasa khawatir menjelang persalinan bisa dialami siapa saja. Merasa khawatir saja tidak berarti Ibu mengalami gangguan kesehatan mental. Ibu boleh meminta dukungan kapan pun membutuhkannya.',
-    ['S5', 'C05', 'C06'],
+    'Mendekati persalinan, wajar bila muncul banyak pertanyaan tentang rasa sakit, kesehatan Ibu atau bayi, dan perubahan setelah kelahiran. Setiap orang punya pengalaman berbeda. Rasa khawatir saja bukan diagnosis, dan Ibu boleh meminta dukungan tanpa harus menunggu sampai keadaan terasa berat.',
+    ['S5', 'S43', 'C05', 'C06', 'S41'],
     [
       { id: 'pengertian', heading: 'Mengenal rasa khawatir', paragraphs: [
-        { text: 'Ibu mungkin memikirkan proses persalinan, kesehatan diri atau bayi, pengalaman sebelumnya, rasa nyeri, atau perubahan setelah bayi lahir. Setiap orang dapat memiliki kekhawatiran yang berbeda.', referenceIds: ['S5', 'S17'] },
+        { text: 'Pikiran tentang proses persalinan, pengalaman sebelumnya, nyeri, kondisi bayi, atau kehidupan setelah lahir dapat memunculkan pertanyaan dan rasa cemas. Tidak ada satu cara merasa yang berlaku untuk semua Ibu; membicarakan kekhawatiran adalah hal yang boleh dilakukan.', referenceIds: ['S5', 'S17'] },
       ] },
       { id: 'tujuan', heading: 'Dukungan yang dapat dipilih', paragraphs: [
-        { text: 'Ibu dapat berbagi dengan orang yang dipercaya, meminta pendamping mendengarkan, dan membawa pertanyaan saat bertemu bidan atau dokter. Musik atau kegiatan relaksasi boleh dicoba jika terasa nyaman, tetapi tidak menggantikan dukungan profesional.', referenceIds: ['S5', 'S17', 'C05', 'C06'] },
-        { text: 'Satu studi menggunakan musik saat pemeriksaan denyut jantung bayi pada kehamilan berisiko tinggi. Studi lain menggabungkan musik dengan edukasi kesehatan untuk ibu yang baru pertama kali hamil. Keduanya merupakan program khusus, berbeda dari mendengarkan playlist biasa seperti audio Ruang Ibu.', referenceIds: ['C05', 'C06'] },
+        { text: 'Ibu dapat meminta seseorang yang dipercaya untuk mendengarkan, menuliskan pertanyaan, atau meminta bidan menjelaskan hal yang belum jelas. Tinjauan pada ibu hamil menemukan hubungan antara dukungan sosial yang dirasakan dan rasa takut menghadapi persalinan, tetapi hubungan ini tidak membuktikan bahwa satu bentuk dukungan akan mengurangi rasa cemas setiap orang.', referenceIds: ['S43', 'S5', 'S17'] },
+        { text: 'Meminta dukungan tidak berarti Ibu harus menceritakan semuanya sekaligus. Ibu dapat memilih siapa yang dipercaya dan menyampaikan jenis bantuan yang diinginkan, misalnya didengarkan atau ditemani saat konsultasi.', referenceIds: ['S17', 'S22'] },
+        { text: 'Penelitian musik selama kehamilan menggunakan sesi atau program yang dirancang khusus, termasuk pada pemeriksaan tertentu atau bersama edukasi kesehatan. Hasil penelitian tersebut tidak dapat dianggap sebagai bukti bahwa playlist biasa memberi hasil yang sama.', referenceIds: ['S41', 'C05', 'C06'] },
       ] },
       { id: 'kapan-dipertimbangkan', heading: 'Kapan mencari dukungan profesional?', paragraphs: [
         { text: 'Hubungi bidan, dokter, atau tenaga kesehatan bila kekhawatiran terus mengganggu tidur, kegiatan sehari-hari, atau membuat Ibu merasa kewalahan. Mereka dapat membantu membicarakan pilihan dukungan yang tersedia.', referenceIds: ['S5'] },
@@ -140,35 +144,35 @@ export const customerRevisionArticles: Record<string, TherapyArticleDefinition> 
       ] },
     ],
     'Khawatir bukan berarti Ibu gagal mempersiapkan diri. Jangan menghentikan perawatan atau menunda bantuan karena mencoba musik atau relaksasi.',
-    ['S5', 'C05', 'C06'],
-    ['S5', 'S17', 'C05', 'C06'],
+    ['S5', 'S17', 'S43', 'S41', 'C05', 'C06'],
+    ['S5', 'S17', 'S43', 'S41', 'C05', 'C06'],
     { status: 'source_based', note: 'Pilihan ini berfokus pada dukungan dan komunikasi, bukan latihan terapi atau diagnosis.', instructions: [
       { text: 'Ceritakan kepada pendamping hal yang paling membuat Ibu khawatir dan dukungan yang Ibu inginkan.', referenceIds: ['S17'] },
       { text: 'Tuliskan pertanyaan untuk dibahas dengan bidan atau dokter saat kunjungan.', referenceIds: ['S5', 'S17'] },
-      { text: 'Pilih musik hanya jika terasa nyaman; Ibu dapat mengganti atau menghentikannya kapan saja.', referenceIds: ['C05', 'C06'] },
+      { text: 'Jika musik terasa menyenangkan, Ibu boleh mendengarkannya; ganti atau hentikan bila tidak nyaman. Penelitian program musik tidak menjamin hasil yang sama dari playlist biasa.', referenceIds: ['S41', 'C05', 'C06'] },
     ] },
   ),
 
   'nyeri-persalinan': customerArticle(
     'B01', 'nyeri-persalinan', 'Nyeri Persalinan', ['Bersalin'],
-    'Nyeri persalinan sering berkaitan dengan kontraksi rahim dan perubahan selama proses kelahiran. Pengalaman, kebutuhan dukungan, dan pilihan pereda nyeri dapat berbeda pada setiap Ibu.',
-    ['S2', 'S8', 'C07'],
+    'Persalinan dapat disertai rasa mengencang, tekanan, atau nyeri yang berubah selama prosesnya. Ada banyak pilihan dukungan dan pereda nyeri, dan kebutuhan setiap Ibu berbeda. Tim yang mendampingi dapat membantu menjelaskan pilihan menurut keadaan Ibu saat itu.',
+    ['S2', 'S8', 'S44', 'C07'],
     [
       { id: 'pengertian', heading: 'Mengapa nyeri dapat dirasakan?', paragraphs: [
-        { text: 'Kontraksi membantu proses persalinan berlangsung. Sensasi dapat terasa di perut, panggul, atau punggung, dan berubah sepanjang proses. Tidak ada satu pola pengalaman yang berlaku untuk semua Ibu.', referenceIds: ['S2', 'S8'] },
+        { text: 'Kontraksi merupakan bagian dari proses persalinan. Rasa yang dialami dapat berubah dari waktu ke waktu dan mungkin terasa di perut, panggul, atau punggung. Tiap Ibu dapat menggambarkan nyeri dengan cara berbeda, jadi sampaikan pengalaman Ibu kepada tenaga kesehatan.', referenceIds: ['S2', 'S8'] },
       ] },
       { id: 'tujuan', heading: 'Pilihan dukungan dan pereda nyeri', paragraphs: [
-        { text: 'Pilihan tanpa obat dapat mencakup dukungan pendamping, suasana yang nyaman, musik, napas yang terasa nyaman, atau pijat jika Ibu setuju. Pilihan dengan obat atau tindakan medis dapat dibicarakan bersama tenaga kesehatan.', referenceIds: ['S2', 'S8', 'S22'] },
-        { text: 'Tanyakan kepada tim persalinan pilihan apa yang tersedia dan sesuai dengan kondisi Ibu. Ibu dapat menyampaikan pilihan atau meminta penjelasan lebih lanjut.', referenceIds: ['S2', 'S8'] },
-        { text: 'Rangkuman bukti menunjukkan musik mungkin membantu mengurangi nyeri pada sebagian tahap persalinan. Hasilnya belum tentu sama bagi setiap Ibu.', referenceIds: ['C07'] },
+        { text: 'Pilihan dapat mencakup dukungan pendamping, musik yang Ibu pilih, cara bernapas atau relaksasi yang Ibu inginkan, dan pilihan pereda nyeri lain. Pedoman NICE menyebut beberapa cara tanpa obat sebagai pilihan pada tahap awal persalinan, tetapi hal ini bukan jaminan bahwa nyeri akan hilang atau berkurang untuk setiap Ibu.', referenceIds: ['S2', 'S8', 'S22'] },
+        { text: 'Ibu dapat meminta penjelasan tentang manfaat, keterbatasan, dan hal yang perlu dipertimbangkan sebelum memilih. Keputusan dapat dibicarakan bersama tim persalinan dan dapat berubah sesuai keadaan serta keinginan Ibu.', referenceIds: ['S2', 'S8'] },
+        { text: 'Tinjauan musik tahun 2023 menemukan penurunan intensitas nyeri pada studi yang dirangkum, tetapi hasil tersebut berasal dari berbagai program dan cara mendengarkan. Tinjauan lain yang berfokus pada ibu pertama kali melahirkan menemukan hasil nyeri yang terbatas dan hasil kecemasan yang belum jelas. Musik pilihan Ibu dapat didukung sebagai pilihan, bukan pengganti bantuan klinis.', referenceIds: ['S44', 'C07'] },
       ] },
       { id: 'kapan-dipertimbangkan', heading: 'Peran tim kesehatan', paragraphs: [
         { text: 'Bidan atau dokter mendampingi proses persalinan dan membantu membahas pilihan menurut kebutuhan serta keadaan Ibu. Sampaikan bila nyeri berubah, pilihan tidak nyaman, atau Ibu ingin bertanya tentang pereda nyeri lain.', referenceIds: ['S2', 'S8'] },
       ] },
     ],
     'Jangan menunda menghubungi tenaga kesehatan untuk mencoba cara kenyamanan. Halaman ini tidak dapat menilai kondisi persalinan Ibu; tetap ikuti arahan bidan atau dokter.',
-    ['S2', 'S8', 'C07'],
-    ['S2', 'S8', 'S22', 'C07'],
+    ['S2', 'S8', 'S22', 'S44', 'C07'],
+    ['S2', 'S8', 'S22', 'S44', 'C07'],
     { status: 'source_based', note: 'Pilihan dukungan bergantung pada keadaan persalinan dan keinginan Ibu. Diskusikan pilihan dengan tim yang mendampingi.', instructions: [
       { text: 'Sampaikan kepada bidan atau dokter bagaimana nyeri terasa dan dukungan apa yang Ibu inginkan.', referenceIds: ['S2', 'S8'] },
       { text: 'Tanyakan pilihan pereda nyeri yang tersedia, termasuk manfaat dan hal yang perlu dipertimbangkan.', referenceIds: ['S2', 'S8'] },
@@ -179,16 +183,17 @@ export const customerRevisionArticles: Record<string, TherapyArticleDefinition> 
 
   'kompres-hangat-persalinan': customerArticle(
     'B05', 'kompres-hangat-persalinan', 'Kompres Hangat Saat Persalinan', ['Bersalin'],
-    'Kompres hangat saat persalinan merupakan bagian dari perawatan yang berbeda dari kompres pada punggung saat hamil. Pilihan dan waktu penggunaannya perlu dibicarakan dengan tenaga kesehatan yang mendampingi.',
-    ['S2', 'S29', 'C01', 'C02', 'C03', 'S35', 'S36'],
+    'Kompres hangat saat persalinan berbeda dari kompres untuk punggung pegal saat hamil. Pada tahap tertentu, tenaga kesehatan dapat menawarkan kompres hangat pada area perineum sebagai salah satu pilihan perawatan. Ibu dapat meminta penjelasan dan menyampaikan apakah terasa nyaman.',
+    ['S2', 'S35', 'S36'],
     [
       { id: 'pengertian', heading: 'Apa itu kompres hangat saat persalinan?', paragraphs: [
-        { text: 'Kompres hangat dapat menjadi salah satu pilihan perawatan selama persalinan. Pada tahap kedua, bidan dapat menawarkan kompres pada area perineum, yaitu bagian di antara vagina dan anus, sesuai kondisi dan pilihan Ibu.', referenceIds: ['S2'] },
-        { text: 'Laporan kompres pada nyeri punggung membahas masa kehamilan, bukan perawatan saat proses persalinan. Karena itu, temuan tersebut tidak menjadi petunjuk untuk tindakan kompres selama persalinan.', referenceIds: ['C01', 'C02', 'C03'] },
+        { text: 'Perineum adalah area di antara vagina dan anus. Pedoman NICE menyebut tenaga kesehatan menawarkan kompres hangat yang lembap pada area tersebut ketika bagian bayi mulai menekan perineum pada tahap kedua persalinan, lalu memeriksa apakah suhunya terasa nyaman bagi Ibu.', referenceIds: ['S2'] },
+        { text: 'Ini merupakan perawatan oleh tim yang mendampingi persalinan, bukan cara yang perlu dilakukan sendiri atau panduan untuk mengompres punggung saat hamil.', referenceIds: ['S2', 'S36'] },
       ] },
       { id: 'tujuan', heading: 'Apa tujuannya?', paragraphs: [
-        { text: 'Tinjauan terbaru menilai kompres perineum hangat pada kala II persalinan. Bukti tersebut membahas perawatan oleh tim kesehatan dan tidak berlaku untuk kompres punggung saat hamil.', referenceIds: ['S35', 'S36'] },
-        { text: 'Kompres saat persalinan bukan cara yang sama dengan kompres pada punggung saat hamil. Tanyakan kepada bidan bila Ibu ingin memahami pilihan perawatan yang tersedia.', referenceIds: ['S2', 'C01', 'C02', 'C03'] },
+        { text: 'Tinjauan sistematis dan Cochrane menelaah kompres perineum pada kala II. Hasil sejumlah luaran tidak sama tingkat kepastiannya; karena itu artikel ini tidak menjanjikan hasil tertentu atau menyamakan tindakan ini dengan kompres hangat untuk nyeri punggung.', referenceIds: ['S35', 'S36'] },
+        { text: 'Pedoman NICE menyebut pilihan ini tidak berlaku untuk persalinan di dalam air. Tim yang merawat Ibu akan mempertimbangkan situasi persalinan dan memastikan suhu kompres terasa nyaman bila tindakan ditawarkan.', referenceIds: ['S2'] },
+        { text: 'Bila kompres ditawarkan, Ibu dapat meminta penjelasan tentang tujuan dan pilihan lain yang tersedia. Perawatan perlu mengikuti kondisi saat itu dan keputusan yang dibicarakan bersama tim.', referenceIds: ['S2', 'S36'] },
       ] },
       { id: 'kapan-dipertimbangkan', heading: 'Kapan dipertimbangkan?', paragraphs: [
         { text: 'Kompres perineum merupakan pilihan perawatan pada tahap kedua persalinan yang ditangani oleh tenaga kesehatan. Pastikan bidan mengetahui apakah suhunya terasa nyaman bagi Ibu.', referenceIds: ['S2'] },
@@ -196,8 +201,8 @@ export const customerRevisionArticles: Record<string, TherapyArticleDefinition> 
       ] },
     ],
     'Jangan melakukan kompres perineum atau tindakan kompres persalinan secara mandiri dari petunjuk website. Ikuti penjelasan dan arahan tenaga kesehatan yang sedang merawat Ibu.',
-    ['S2'],
-    ['S2', 'C01', 'C02', 'C03', 'S35', 'S36'],
+    ['S2', 'S35', 'S36'],
+    ['S2', 'S35', 'S36'],
     { status: 'source_based', note: 'Kompres hangat pada tahap kedua persalinan merupakan pilihan perawatan yang dilakukan oleh tenaga kesehatan, bukan tindakan mandiri.', instructions: [
       { text: 'Tanyakan kepada bidan apakah kompres hangat termasuk pilihan perawatan yang sesuai bagi Ibu.', referenceIds: ['S2'] },
       { text: 'Jika tim kesehatan menawarkan kompres perineum pada kala II, sampaikan apakah terasa nyaman. Ibu boleh meminta penjelasan atau meminta tindakan dihentikan.', referenceIds: ['S2', 'S36'] },
@@ -207,27 +212,28 @@ export const customerRevisionArticles: Record<string, TherapyArticleDefinition> 
 
   'kecemasan-persalinan': customerArticle(
     'B06', 'kecemasan-persalinan', 'Kekhawatiran Selama Persalinan', ['Bersalin', 'Relaksasi'],
-    'Rasa takut, khawatir, atau tegang dapat muncul saat persalinan. Perasaan ini dapat berubah dari waktu ke waktu. Merasa takut tidak berarti Ibu mengalami gangguan mental.',
-    ['S2', 'S22', 'C07', 'C08'],
+    'Rasa takut atau khawatir saat persalinan dapat muncul karena nyeri, perubahan keadaan, atau hal yang belum sempat dijelaskan. Perasaan tersebut tidak otomatis berarti Ibu mengalami gangguan kesehatan mental. Ibu berhak meminta dukungan dan penjelasan dengan cara yang terasa nyaman.',
+    ['S2', 'S22', 'S43', 'C07', 'C08'],
     [
       { id: 'pengertian', heading: 'Mengapa kekhawatiran dapat muncul?', paragraphs: [
-        { text: 'Ibu mungkin merasa khawatir tentang nyeri, perubahan yang terjadi, kondisi bayi, atau hal yang belum jelas. Pengalaman persalinan berbeda; Ibu tidak harus menghadapi kekhawatiran sendirian.', referenceIds: ['S2', 'S22'] },
+        { text: 'Kekhawatiran bisa berkaitan dengan nyeri, kondisi bayi, pengalaman sebelumnya, atau belum memahami apa yang sedang dilakukan. Pengalaman setiap orang berbeda. Bila ada pertanyaan, Ibu boleh meminta penjelasan secara langsung kepada tim yang merawat.', referenceIds: ['S2', 'S22'] },
       ] },
       { id: 'tujuan', heading: 'Dukungan dan pilihan kenyamanan', paragraphs: [
-        { text: 'Pendamping dapat mendengarkan, membantu menyampaikan kebutuhan yang Ibu pilih, dan memberi dukungan tanpa memaksa sentuhan. Tim kesehatan dapat menjelaskan apa yang sedang dilakukan dan menjawab pertanyaan.', referenceIds: ['S2', 'S22'] },
-        { text: 'Musik atau napas yang terasa nyaman dapat dipilih sebagai teman. Rangkuman bukti musik saat persalinan menunjukkan nyeri mungkin lebih ringan pada sebagian tahap, tetapi perubahan rasa cemas belum terlihat jelas. Hasil untuk nyeri dan kecemasan berbeda.', referenceIds: ['C07'] },
-        { text: 'Dalam satu studi di sebuah rumah sakit, ibu hamil cukup bulan yang mendengarkan musik melaporkan rasa cemas yang lebih rendah. Temuan ini belum tentu sama bagi setiap Ibu.', referenceIds: ['C08'] },
+        { text: 'Pendamping dapat mendengarkan, membantu menyampaikan kebutuhan yang Ibu pilih, atau mendampingi tanpa sentuhan. Ibu dapat meminta tim kesehatan menjelaskan tindakan dan memberi tahu apa yang membuat Ibu lebih nyaman. Dukungan tidak harus berupa nasihat atau sentuhan.', referenceIds: ['S2', 'S22'] },
+        { text: 'Tinjauan musik saat persalinan melaporkan hasil nyeri dan kecemasan yang tidak sama: hasil kecemasan gabungan belum menunjukkan perbedaan yang jelas. Hasil ini tidak membuktikan bahwa musik dapat mengatasi rasa khawatir saat persalinan.', referenceIds: ['C07', 'S44'] },
+        { text: 'Satu tinjauan dukungan sosial meneliti rasa takut menghadapi persalinan selama kehamilan, bukan kecemasan klinis ketika persalinan berlangsung. Untuk kondisi Ibu saat ini, tim kesehatan tetap menjadi tempat meminta bantuan dan penjelasan.', referenceIds: ['S43', 'S2'] },
+        { text: 'Satu studi di rumah sakit pada ibu hamil cukup bulan melaporkan perubahan kecemasan setelah musik, tetapi konteks dan cara pemberiannya tertentu. Temuan dari satu tempat tidak menjamin hasil yang sama bagi Ibu atau playlist biasa.', referenceIds: ['C08', 'S41'] },
       ] },
       { id: 'kapan-dipertimbangkan', heading: 'Kapan meminta bantuan?', paragraphs: [
         { text: 'Beri tahu bidan atau dokter bila rasa takut terasa berat, Ibu tidak memahami tindakan yang dijelaskan, ingin mengubah pilihan, atau membutuhkan bantuan. Ibu boleh meminta penjelasan dan waktu untuk menyampaikan preferensi bila keadaan memungkinkan.', referenceIds: ['S2', 'S22'] },
       ] },
     ],
     'Jangan memaksakan musik, sentuhan, atau latihan relaksasi. Arahan perawatan dan komunikasi dengan tim kesehatan tetap menjadi prioritas.',
-    ['S2', 'S22', 'C07', 'C08'],
-    ['S2', 'S22', 'C07', 'C08'],
+    ['S2', 'S22', 'S43', 'S44', 'C07', 'C08', 'S41'],
+    ['S2', 'S22', 'S43', 'S44', 'C07', 'C08', 'S41'],
     { status: 'source_based', note: 'Panduan ini hanya menyarankan komunikasi dan pilihan Ibu; bukan teknik untuk mengatasi kondisi klinis.', instructions: [
       { text: 'Sampaikan kepada pendamping atau bidan bila Ibu merasa khawatir atau membutuhkan penjelasan.', referenceIds: ['S2', 'S22'] },
-      { text: 'Pilih atau hentikan musik sesuai kenyamanan dan kebutuhan komunikasi dengan tim persalinan.', referenceIds: ['S2', 'C07', 'C08'] },
+      { text: 'Gunakan musik hanya jika Ibu menginginkannya dan tetap dapat berkomunikasi dengan tim; hentikan bila mengganggu atau terasa tidak nyaman.', referenceIds: ['S2', 'S44'] },
       { text: 'Minta dukungan langsung bila rasa takut atau keadaan terasa sulit dihadapi.', referenceIds: ['S2', 'S22'] },
     ] },
   ),

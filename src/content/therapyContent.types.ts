@@ -20,6 +20,7 @@ export type TherapySourceReview =
 
 export interface TherapyReference {
   id: string
+  referenceStatus?: 'active' | 'archived'
   sourceType?: 'original_research' | 'systematic_review' | 'overview_of_reviews' | 'clinical_guideline' | 'official_health_information' | 'historical_source'
   title: string
   displayTitle?: string

@@ -134,3 +134,7 @@ These editorial statuses apply to narrow claims only: **VERIFIED** = source dire
 | T04 | S2 permits preference-led labor massage in its bounded context when companion techniques are taught. | S33/S34 do not validate generic lay massage, pressure, location, or duration; no such instruction is published. | LIMITED EVIDENCE; CLINICAL REVIEW REQUIRED |
 
 Source identities, IDs, C01–C08 DOI/URLs, and all article reference anchors are unchanged. `clinicalReview` remains `draft` for every article.
+
+## Editorial refresh 2026-10-29 — current claim/source mapping
+
+The current article-level matrix and status labels are in [EDITORIAL-REFRESH-2026-10-29.md](EDITORIAL-REFRESH-2026-10-29.md). It supersedes older rows above where a source was since archived or copy was narrowed. Current A05 no longer actively maps to S27; current T03 has no general grounding efficacy or self-guided steps; current B05 explicitly limits warm perineal compress to maternity-team care in second stage and records the NICE water-birth exclusion. Archived S1/S3/S4/S25/S27/S28 are retained only as historical registry records and cannot be treated as evidence supporting current copy. Source statuses do not confer clinical approval.

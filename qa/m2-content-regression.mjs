@@ -50,8 +50,9 @@ assert.match(sourcesPage, /filter\(\(source\) => source\.sourceType !== 'histori
 assert.match(sourcesPage, /getTherapySourceTypeLabel\(source\.sourceType\)/, 'Public sources show their type category')
 assert.match(sourceDisclosure, /source\.category/, 'Article source lists can display source categories')
 assert.match(await read('src/components/guides/MaternityGuidePage.tsx'), /category:\s*getTherapySourceTypeLabel\(source\.sourceType\)/, 'Pregnancy and birth guides display source categories')
-assert.match(sourceBlocks.get('S1'), /sourceType:\s*'clinical_guideline'/, 'WHO 2018 is classified as a guideline')
-assert.match(sourceBlocks.get('S27'), /sourceType:\s*'official_health_information'/, 'ACOG 2020 is classified as official health information')
+assert.match(sourceBlocks.get('S1'), /sourceType:\s*'historical_source'/, 'WHO 2018 is retained as an archived source')
+assert.match(sourceBlocks.get('S2'), /sourceType:\s*'clinical_guideline'/, 'NICE NG235 is retained as the current intrapartum guideline')
+assert.match(sourceBlocks.get('S27'), /sourceType:\s*'historical_source'/, 'ACOG 2020 massage information is archived')
 for (const [id, block] of sourceBlocks) {
   assert.match(block, /sourceType:/, `${id} has a source category`)
   if (/sourceType:\s*'(original_research|systematic_review|overview_of_reviews)'/.test(block)) {

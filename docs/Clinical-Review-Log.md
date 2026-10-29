@@ -173,3 +173,9 @@ ACOG S30: https://www.acog.org/womens-health/faqs/back-pain-during-pregnancy . P
 ### Audit sumber seluruh situs — 28 Oktober 2026
 
 Audit referensi 2022–2026 dicatat pada `docs/content-research/PHASE-2.3-SOURCE-AUDIT.md` dan `THERAPY-CLAIM-SOURCE-MATRIX.md`. Audit bibliografi dan pemetaan sumber bukan telaah klinis. Semua artikel, panduan Hamil/Bersalin, dan bagian praktik tetap `draft`; tidak ada materi yang disetujui secara klinis. Sebelum rilis, reviewer kebidanan Indonesia perlu memeriksa khusus batas penggunaan kompres hangat, klaim pijat kehamilan, pemisahan latihan napas kehamilan dari napas kala persalinan, definisi grounding T03, pijat pendamping, dan tanda bahaya terhadap jalur layanan lokal.
+
+### Editorial refresh — 29 Oktober 2026
+
+The 11 article copy revisions and updated maternity-guide source mappings are recorded in `docs/content-research/EDITORIAL-REFRESH-2026-10-29.md`. No clinician review or approval was performed as part of this editorial work. Every article and both guides remain `clinicalReview: draft`.
+
+A qualified Indonesian midwife/obstetric clinician should review exact current copy, contraindications and referral wording, particularly A01/A04 heat and back-pain safety; A05/T04 massage boundaries and consent; A06/B06 emotional-support and urgent-help language; T01 breathing scope; T02 subjective music wording; T03 support-only framing; B05 perineal compress conditions and water-birth exception; and pregnancy/labor danger signs and local care pathways in both guides. Record reviewer identity/qualification, date, decision, safety check and notes in this log before changing any approval state.
