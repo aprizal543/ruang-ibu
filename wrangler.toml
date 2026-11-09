@@ -16,7 +16,7 @@ migrations_dir = "migrations"
 [env.production.vars]
 GOOGLE_OAUTH_CLIENT_ID = "58823770770-4nqm2e2m197d36hvs9vdif89debi2lbu.apps.googleusercontent.com"
 TURNSTILE_SITE_KEY = "0x4AAAAAAFpegnscxxPJYONH"
-TURNSTILE_ALLOWED_HOSTNAMES = "ruang-ibu.pages.dev"
+TURNSTILE_ALLOWED_HOSTNAMES = "ruang-ibu.pages.dev,ruangibu.my.id"
 
 [[env.preview.d1_databases]]
 binding = "DB"
